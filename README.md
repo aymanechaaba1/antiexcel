@@ -62,7 +62,4 @@ This is a school management web app where teacher (admin) manage their students 
 
 ### Setup tRPC
 
-<code
-
-> npm i <span class="bg-pink-200">@trpc/client</span> @trpc/server
-> @trpc/react-query @tanstack/react-query</code
+`npm i @trpc/server @trpc/react-query @tanstack/react-query`
