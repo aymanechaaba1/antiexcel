@@ -1,11 +1,7 @@
 'use client';
 
 import { trpc } from '@/app/_trpc/client';
-import {
-  generateChartData,
-  getStudentsByMonth,
-  getStudentsByYear,
-} from '@/lib/utils';
+import { generateChartData } from '@/lib/utils';
 import { Card, Title, LineChart } from '@tremor/react';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
@@ -36,6 +32,7 @@ function Chart() {
 
   if (!students) return;
 
+  //FIXME:
   const chartData = generateChartData(students, 2023);
 
   if (!students) return;

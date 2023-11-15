@@ -9,6 +9,9 @@ function Nav() {
       <Link href={'/students'} className="text-sm dark:text-gray-300">
         Students
       </Link>
+      <Link href={'/teachers'} className="text-sm dark:text-gray-300">
+        Teachers
+      </Link>
     </div>
   );
 }

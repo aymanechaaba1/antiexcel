@@ -52,13 +52,11 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       const student = row.original;
       return (
-        <Avatar className="rounded-lg">
+        <Avatar className="">
           <AvatarImage src={student?.avatar} />
-          {!student?.avatar && (
-            <AvatarFallback>
-              {getAvatarName(student.firstname, student.lastname)}
-            </AvatarFallback>
-          )}
+          <AvatarFallback className="">
+            {getAvatarName(student.firstname, student.lastname)}
+          </AvatarFallback>
         </Avatar>
       );
     },

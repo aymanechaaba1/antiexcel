@@ -1,14 +1,6 @@
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Medal,
-  PersonStanding,
-  TrendingDown,
-  TrendingUp,
-  User2,
-  Users,
-} from 'lucide-react';
-import Chart from '../Chart';
+import { Medal, User2 } from 'lucide-react';
 import { serverClient } from '@/app/_trpc/serverClient';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';

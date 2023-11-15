@@ -4,8 +4,8 @@ function Section({
   className,
 }: {
   children: React.ReactNode;
-  title: string;
-  className: string;
+  title?: string;
+  className?: string;
 }) {
   return (
     <div className={className}>

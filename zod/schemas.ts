@@ -43,9 +43,9 @@ export const formSchema = z.object({
 export type FormSchema = z.infer<typeof formSchema>;
 
 export const studentSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.string().optional(),
-  updated_at: z.string().optional(),
+  id: z.string().cuid(),
+  created_at: z.date().nullable(),
+  updated_at: z.date().nullable(),
   firstname: z
     .string({
       invalid_type_error: 'firstname must be a string.',
@@ -66,11 +66,11 @@ export const studentSchema = z.object({
     .max(50, {
       message: 'lastname must be 50 characters max.',
     }),
-  birthdate: z.string(),
   gender: z.string(),
   grade: z.string().max(1, {
     message: 'grade must be a number between 1 and 6.',
   }),
+  birthdate: z.date(),
   school: z.string(),
   avatar: z.string({
     invalid_type_error: 'avatar/picture must be a string.',
@@ -81,8 +81,8 @@ export type Student = z.infer<typeof studentSchema>;
 
 export const contactFormSchema = z.object({
   id: z.string().cuid().optional(),
-  created_at: z.date().optional(),
-  updated_at: z.date().optional(),
+  created_at: z.date().nullable(),
+  updated_at: z.date().nullable(),
   email: z.string().email(),
   phone: z.string().min(10).max(14),
   name: z.string().min(3).max(10),
@@ -93,8 +93,8 @@ export const contactFormSchema = z.object({
 
 export const contactSchema = z.object({
   id: z.string().cuid().optional(),
-  created_at: z.date().optional(),
-  updated_at: z.date().optional(),
+  created_at: z.date().nullable(),
+  updated_at: z.date().nullable(),
   email: z.string().email(),
   phone: z.string().min(10).max(14),
   name: z.string().min(3).max(10),
@@ -103,3 +103,24 @@ export const contactSchema = z.object({
   student_id: z.string().cuid(),
 });
 export type Contact = z.infer<typeof contactSchema>;
+
+export const teacherFormSchema = z.object({
+  email: z.string().email(),
+  phone: z.string().min(10).max(14),
+  name: z.string().min(3),
+  avatar: z.instanceof(File).optional(),
+  subject: z.string().min(3),
+});
+
+export const teacherSchema = z.object({
+  id: z.string().cuid().optional(),
+  created_at: z.date().optional(),
+  updated_at: z.date().optional(),
+  email: z.string().email(),
+  phone: z.string().min(10).max(14).optional(),
+  name: z.string().min(3),
+  avatar: z.string().optional(),
+  subject: z.string(),
+  user_id: z.string().cuid(),
+});
+export type Teacher = z.infer<typeof teacherSchema>;

@@ -9,7 +9,6 @@ import { columns } from './columns';
 
 async function StudentsPage() {
   const session = await getServerSession(authOptions);
-
   if (!session) redirect('/api/auth/signin');
 
   const data = await serverClient.getStudents({

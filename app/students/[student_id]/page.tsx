@@ -1,4 +1,9 @@
-import { formatDate, formatSchool, upperFirst } from '@/lib/utils';
+import {
+  formatDate,
+  formatSchool,
+  getAvatarName,
+  upperFirst,
+} from '@/lib/utils';
 import Image from 'next/image';
 
 import EditSheet from '@/components/EditSheet';
@@ -6,6 +11,8 @@ import { serverClient } from '@/app/_trpc/serverClient';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import AddContactForm from '@/components/AddContact';
+import { Avatar, AvatarImage } from '@/components/ui/avatar';
+import { AvatarFallback } from '@radix-ui/react-avatar';
 
 async function StudentPage({
   params: { student_id },
@@ -34,9 +41,10 @@ async function StudentPage({
           alt={student.firstname}
           width={200}
           height={200}
-          className="rounded-lg"
+          className="rounded-lg w-96 h-96 object-cover"
+          priority={true}
         />
-        <div className="grid grid-cols-2 gap-x-10 gap-y-4">
+        <div className="grid grid-cols-2 gap-x-10 gap-y-4 border p-5 rounded-lg">
           <p className="text-gray-500">Firstname</p>
           <p>{upperFirst(student.firstname)}</p>
           <p className="text-gray-500">Lastname</p>
@@ -50,16 +58,22 @@ async function StudentPage({
           <p className="text-gray-500">School</p>
           <p>{formatSchool(student.school)}</p>
           <p className="text-gray-500">Created At</p>
-          <p>{student.created_at?.toDateString()}</p>
+          <p>
+            {new Intl.DateTimeFormat('en-US', {
+              month: 'short',
+              day: '2-digit',
+              year: 'numeric',
+            }).format(student.created_at!)}
+          </p>
           <p className="text-gray-500">Last Update</p>
           <p>
-            {formatDate(student.updated_at!, 'en-US', {
-              day: '2-digit',
+            {new Intl.DateTimeFormat('en-US', {
               month: 'short',
+              day: '2-digit',
               year: 'numeric',
-              minute: '2-digit',
               hour: '2-digit',
-            })}
+              minute: '2-digit',
+            }).format(student.updated_at!)}
           </p>
           <p className="text-gray-500">Contact</p>
           {student.contact ? (
@@ -67,7 +81,7 @@ async function StudentPage({
               {student.contact.name}
             </Link>
           ) : (
-            <AddContactForm />
+            <AddContactForm student_id={student_id} />
           )}
         </div>
       </div>

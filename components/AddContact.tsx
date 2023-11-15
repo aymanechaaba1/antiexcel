@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -30,17 +31,67 @@ import {
 } from './ui/select';
 import ProgressBar from './ProgressBar';
 import { useState } from 'react';
+import { getFilename, getUploadTask, uploadFile } from '@/lib/utils';
+import {
+  StorageError,
+  UploadTaskSnapshot,
+  getDownloadURL,
+} from 'firebase/storage';
+import { trpc } from '@/app/_trpc/client';
 
-function AddContactForm() {
+function AddContactForm({ student_id }: { student_id: string }) {
   const [form] = useCustomForm({
     formSchema: contactFormSchema,
+    defaultValues: {
+      email: '',
+      phone: '',
+      name: '',
+      relationship: '',
+    },
   });
 
   const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
 
+  const addContact = trpc.addContact.useMutation();
+
   function onSubmit(values: z.infer<typeof contactFormSchema>) {
-    console.log(values);
+    if (values.avatar) {
+      // upload file
+      const fileName = getFilename(values.avatar.name);
+
+      const uploadTask = getUploadTask(`avatars/${fileName}`, values.avatar);
+
+      const onSnapshot = (snapshot: UploadTaskSnapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(progress);
+      };
+
+      const onError = (error: StorageError) => {
+        // Handle unsuccessful uploads
+        console.error(`Upload was unsuccessful. ${error.message}`);
+      };
+
+      const onSuccess = async () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL:
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+
+        console.log(downloadURL);
+
+        // add contact
+        // addContact.mutate({
+        //   ...values,
+        //   avatar: downloadURL,
+        //   student_id,
+        // });
+
+        // setOpen(false);
+      };
+
+      uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
+    }
   }
 
   return (
@@ -74,7 +125,11 @@ function AddContactForm() {
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
-                    <Input placeholder="eg: 06 28 29 59 30" {...field} />
+                    <Input
+                      type="tel"
+                      placeholder="eg: 06 28 29 59 30"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -109,12 +164,13 @@ function AddContactForm() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="mother">Mother</SelectItem>
-                      <SelectItem value="father">Father</SelectItem>
-                      <SelectItem value="brother">Brother</SelectItem>
-                      <SelectItem value="sister">Sister</SelectItem>
-                      <SelectItem value="uncle">Uncle</SelectItem>
-                      <SelectItem value="aunt">Aunt</SelectItem>
+                      {['Mother', 'Father', 'Brother', 'Sister'].map(
+                        (cibling, i) => (
+                          <SelectItem key={i} value={cibling.toLowerCase()}>
+                            {cibling}
+                          </SelectItem>
+                        )
+                      )}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -149,7 +205,7 @@ function AddContactForm() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit">Add</Button>
           </form>
         </Form>
       </DialogContent>

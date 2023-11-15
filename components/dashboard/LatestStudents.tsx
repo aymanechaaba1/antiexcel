@@ -1,36 +1,32 @@
-import { fetchStudents, upperFirst } from '@/lib/utils';
+import { fetchStudents, getAvatarName, upperFirst } from '@/lib/utils';
 import Section from '../Section';
 import Image from 'next/image';
-import { Button } from '../ui/button';
-import { Mail } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 async function LatestStudents() {
   const students = await fetchStudents();
   if (!students) return;
 
+  const studentsSorted = students.sort(
+    (a: any, b: any) => b.created_at - a.created_at
+  );
+
+  console.log(studentsSorted);
+
   return (
     <Section className="p-4 border rounded-lg" title="Latest Students">
       <div className="space-y-4 max-h-72 overflow-y-scroll">
-        {students.map((student) => (
-          <div
-            key={student.id}
-            className="flex items-center justify-between gap-5"
-          >
-            <Image
-              src={student.avatar}
-              width={50}
-              height={50}
-              alt={student.firstname}
-              className="rounded-full object-cover h-10 w-10"
-            />
-            <p className="flex-1">{`${upperFirst(
-              student.firstname
-            )} ${upperFirst(student.lastname)}`}</p>
-            <div className="flex items-center gap-3">
-              <Button variant={'secondary'} size={'icon'}>
-                <Mail className="w-4" />
-              </Button>
-            </div>
+        {studentsSorted.map((student) => (
+          <div key={student.id} className="flex items-center gap-4">
+            <Avatar>
+              <AvatarImage src={student.avatar} alt={student.firstname} />
+              <AvatarFallback>
+                {getAvatarName(student.firstname, student.lastname)}
+              </AvatarFallback>
+            </Avatar>
+            <p>
+              {student.firstname} {student.lastname}
+            </p>
           </div>
         ))}
       </div>

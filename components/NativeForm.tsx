@@ -7,9 +7,13 @@ import { Label } from './ui/label';
 import { SelectDemo } from './SelectDemo';
 import { ComboboxDemo } from './ComboBoxDemo';
 import { Button } from './ui/button';
-import { getFilename, uploadFile } from '@/lib/utils';
+import { getFilename, getUploadTask, uploadFile } from '@/lib/utils';
 import ProgressBar from './ProgressBar';
-import { getDownloadURL } from 'firebase/storage';
+import {
+  StorageError,
+  UploadTaskSnapshot,
+  getDownloadURL,
+} from 'firebase/storage';
 import { useSession } from 'next-auth/react';
 import { updateStudent } from '@/actions';
 import { Student } from '@/zod/schemas';
@@ -20,80 +24,98 @@ function NativeForm({
   setOpenSheet,
 }: {
   id: string;
-  defaultValues?: Student;
+  defaultValues: Student;
   setOpenSheet: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  if (!defaultValues) return;
+
   const avatarInput = useRef<HTMLInputElement>(null);
 
-  const [birthdate, setBirthdate] = React.useState<Date>(); // birthdate
+  const [birthdate, setBirthdate] = React.useState<Date | undefined>(
+    new Date(defaultValues.birthdate)
+  ); // birthdate
 
   const [progress, setProgress] = useState(0);
 
   const [open, setOpen] = React.useState(false);
 
-  if (!defaultValues) return;
   const [school, setSchool] = React.useState(defaultValues.school); // school
 
   const { data: session } = useSession();
   if (!session) return;
 
+  const updateStudentFn = async (
+    formData: FormData,
+    birthdate: Date,
+    school: string,
+    downloadUrl?: string
+  ) => {
+    await updateStudent({
+      firstname: formData.get('firstname') as string,
+      lastname: formData.get('lastname') as string,
+      birthdate: birthdate.toISOString(),
+      gender: formData.get('gender') as string,
+      grade: formData.get('grade') as string,
+      school,
+      avatar: downloadUrl!,
+      id,
+      user_id: session.user.id,
+    });
+
+    setOpen(false);
+
+    // close sheet
+    setOpenSheet(false);
+  };
+
   return (
     <form
-      action={(formData: FormData) => {
+      action={async (formData: FormData) => {
         const avatar = formData.get('avatar') as File | Blob;
-        if (!avatar) return;
 
-        // upload new avatar to firebase
-        const uploadTask = uploadFile(
-          `avatars/${getFilename(avatar.name)}`,
-          avatar
-        );
+        if (!birthdate) return;
 
-        uploadTask.on(
-          'state_changed',
-          (snapshot) => {
+        // there is an avatar
+        if (avatar.size) {
+          // upload new avatar to firebase
+          const fileName = getFilename(avatar.name);
+
+          const uploadTask = getUploadTask(`avatars/${fileName}`, avatar);
+
+          const onSnapshot = (snapshot: UploadTaskSnapshot) => {
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             setProgress(progress);
-            switch (snapshot.state) {
-              case 'paused':
-                console.log('Upload is paused');
-                break;
-              case 'running':
-                console.log('Upload is running');
-                break;
-            }
-          },
-          (error) => {
+          };
+
+          const onError = (error: StorageError) => {
             // Handle unsuccessful uploads
             console.error(`Upload was unsuccessful. ${error.message}`);
-          },
-          async () => {
+          };
+
+          const onSuccess = async () => {
             // Handle successful uploads on complete
             // For instance, get the download URL:
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-            if (!birthdate || !school) return;
-
             // update student
-            await updateStudent({
-              firstname: formData.get('firstname') as string,
-              lastname: formData.get('lastname') as string,
-              birthdate: birthdate.toISOString(),
-              gender: formData.get('gender') as string,
-              grade: formData.get('grade') as string,
-              school,
-              avatar: downloadURL,
-              user_id: session.user.id,
-              id,
-            });
+            await updateStudentFn(formData, birthdate, school, downloadURL);
+          };
 
-            setOpen(false);
+          uploadFile(
+            `avatars/${fileName}`,
+            avatar,
+            onSnapshot,
+            onError,
+            onSuccess
+          );
+        }
 
-            // close sheet
-            setOpenSheet(false);
-          }
-        );
+        // no avatar
+        if (!avatar.size) {
+          // update student
+          await updateStudentFn(formData, birthdate, school);
+        }
       }}
       className="space-y-5"
     >

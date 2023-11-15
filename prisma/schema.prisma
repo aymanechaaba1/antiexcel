@@ -43,6 +43,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   students      Student[]
+  teachers      Teacher[]
 }
 
 model VerificationToken {
@@ -54,9 +55,9 @@ model VerificationToken {
 }
 
 model Student {
-  id         String    @id @default(cuid())
-  created_at DateTime? @default(now())
-  updated_at DateTime? @updatedAt
+  id         String               @id @default(cuid())
+  created_at DateTime?            @default(now())
+  updated_at DateTime?            @updatedAt
   firstname  String
   lastname   String
   gender     String
@@ -64,9 +65,10 @@ model Student {
   birthdate  DateTime
   school     String
   avatar     String
-  admin      User      @relation(fields: [user_id], references: [id])
-  user_id    String
+  admin      User                 @relation(fields: [user_id], references: [id])
+  user_id    String               
   contact    Contact?
+  teachers   TeachersOnStudents[]
 }
 
 model Contact {
@@ -80,4 +82,29 @@ model Contact {
   avatar       String?
   student      Student   @relation(fields: [student_id], references: [id])
   student_id   String    @unique
+}
+
+model Teacher {
+  id         String               @id @default(cuid())
+  created_at DateTime?            @default(now())
+  updated_at DateTime?            @updatedAt
+  email      String               @unique
+  phone      String?              @unique
+  name       String
+  avatar     String?
+  subject    String
+  students   TeachersOnStudents[]
+  user       User                 @relation(fields: [user_id], references: [id])
+  user_id    String               
+}
+
+model TeachersOnStudents {
+  student     Student  @relation(fields: [student_id], references: [id])
+  student_id  String
+  teacher     Teacher  @relation(fields: [teacher_id], references: [id])
+  teacher_id  String
+  assigned_at DateTime @default(now())
+  assigned_by String
+
+  @@id([student_id, teacher_id])
 }

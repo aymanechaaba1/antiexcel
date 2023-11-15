@@ -1,5 +1,9 @@
 import { type ClassValue, clsx } from 'clsx';
-import { uploadBytesResumable } from 'firebase/storage';
+import {
+  StorageError,
+  UploadTaskSnapshot,
+  uploadBytesResumable,
+} from 'firebase/storage';
 import { twMerge } from 'tailwind-merge';
 import { ref } from 'firebase/storage';
 import { storage } from './firebase';
@@ -34,9 +38,18 @@ export const formatUnderscore = (word: string) =>
 export const getFilename = (fileUrl: string) =>
   fileUrl.split('\\').slice(-1).join('');
 
-export const uploadFile = (refUrl: string, file: File | Blob) => {
-  const uploadTask = uploadBytesResumable(ref(storage, refUrl), file);
-  return uploadTask;
+export const getUploadTask = (refUrl: string, file: File | Blob) =>
+  uploadBytesResumable(ref(storage, refUrl), file);
+
+export const uploadFile = (
+  refUrl: string,
+  file: File | Blob,
+  onSnapshot: (snapshot: UploadTaskSnapshot) => void,
+  onError: (error: StorageError) => void,
+  onSuccess: () => void
+) => {
+  const uploadTask = getUploadTask(refUrl, file);
+  uploadTask.on('state_changed', onSnapshot, onError, onSuccess);
 };
 
 export const getBase64 = (file: File | Blob) => {

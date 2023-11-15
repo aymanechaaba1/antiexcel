@@ -19,7 +19,6 @@ import {
 } from '@/components/ui/popover';
 import { schools } from './RegistrationForm';
 import { z } from 'zod';
-import { SchoolsEnum } from '@/hooks/useCustomForm';
 
 export function ComboboxDemo({
   open,

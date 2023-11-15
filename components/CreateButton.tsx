@@ -16,8 +16,12 @@ import { useState } from 'react';
 import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
 import { useSession } from 'next-auth/react';
-import { getFilename, uploadFile } from '@/lib/utils';
-import { getDownloadURL } from 'firebase/storage';
+import { getFilename, getUploadTask, uploadFile } from '@/lib/utils';
+import {
+  StorageError,
+  UploadTaskSnapshot,
+  getDownloadURL,
+} from 'firebase/storage';
 import { formSchema } from '@/zod/schemas';
 
 function CreateButton() {
@@ -31,38 +35,37 @@ function CreateButton() {
   const addStudent = trpc.addStudent.useMutation();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const uploadTask = uploadFile(
-      `avatars/${getFilename(values.avatar.name)}`,
-      values.avatar
-    );
+    const fileName = getFilename(values.avatar.name);
 
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(progress);
-      },
-      (error) => {
-        // Handle unsuccessful uploads
-        console.error(`Upload was unsuccessful. ${error.message}`);
-      },
-      async () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL:
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setDownloadUrl(downloadURL);
+    const uploadTask = getUploadTask(`avatars/${fileName}`, values.avatar);
 
-        addStudent.mutate({
-          ...values,
-          birthdate: values.birthdate.toISOString(),
-          avatar: downloadURL,
-          user_id: session.user.id,
-        });
+    const onSnapshot = (snapshot: UploadTaskSnapshot) => {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      setProgress(progress);
+    };
 
-        setOpen(false);
-      }
-    );
+    const onError = (error: StorageError) => {
+      // Handle unsuccessful uploads
+      console.error(`Upload was unsuccessful. ${error.message}`);
+    };
+
+    const onSuccess = async () => {
+      // Handle successful uploads on complete
+      // For instance, get the download URL:
+      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+      setDownloadUrl(downloadURL);
+
+      addStudent.mutate({
+        ...values,
+        birthdate: values.birthdate,
+        avatar: downloadURL,
+        user_id: session.user.id,
+      });
+
+      setOpen(false);
+    };
+
+    uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
   };
 
   return (

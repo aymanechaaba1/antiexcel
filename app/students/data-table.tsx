@@ -54,8 +54,6 @@ export function DataTable<TData, TValue>({
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
 
-  const deleteStudent = trpc.deleteStudent.useMutation();
-
   const table = useReactTable({
     data,
     columns,
@@ -72,6 +70,11 @@ export function DataTable<TData, TValue>({
       rowSelection,
       columnFilters,
       columnVisibility,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 3,
+      },
     },
   });
 
