@@ -17,7 +17,6 @@ import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -35,7 +34,7 @@ import { trpc } from '@/app/_trpc/client';
 
 import React from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { Check, ChevronsUpDown, MoreHorizontal } from 'lucide-react';
+import { Check, ChevronsUpDown } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -46,16 +45,11 @@ import {
 import Section from './Section';
 import { useSession } from 'next-auth/react';
 import { redirect } from 'next/navigation';
-import { useRouter } from 'next/navigation';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from './ui/dropdown-menu';
 import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu';
+import { useSubscriptionsStore } from '@/store/store';
+import { useToast } from './ui/use-toast';
+import { ToastAction } from './ui/toast';
+import Link from 'next/link';
 
 export const subjects = [
   { label: 'English', value: 'english' },
@@ -90,12 +84,36 @@ function AddTeacher() {
 
   const addTeacher = trpc.addTeacher.useMutation({
     onSuccess() {
-      utils.getTeachers.refetch();
+      utils.getTeachers.invalidate();
     },
   });
 
+  const { toast } = useToast();
+
+  const { subscription } = useSubscriptionsStore((state) => state);
+
+  if (!session) return;
+  const { data: user, isLoading: loadingUser } = trpc.getUser.useQuery({
+    id: session.user.id,
+  });
+
   function onSubmit(values: z.infer<typeof teacherFormSchema>) {
-    if (!session) redirect(`api/auth/signin`);
+    // !subscription && user.students === 3 => return toast notification
+    if (!subscription && user && user.teachers.length === 3) {
+      return toast({
+        title: 'Oops, You must be a PRO!',
+        description: "You're limited to 3 teachers.",
+        action: (
+          <ToastAction
+            className="bg-gray-900 hover:bg-gray-900 border"
+            altText="Become a PRO!"
+          >
+            <Link href={`/#pricing`}>Become a PRO!</Link>
+          </ToastAction>
+        ),
+        variant: 'destructive',
+      });
+    }
 
     if (!values.avatar) return;
 
@@ -118,6 +136,7 @@ function AddTeacher() {
       // For instance, get the download URL:
       const url = await getDownloadURL(uploadTask.snapshot.ref);
 
+      if (!session) return;
       addTeacher.mutate({
         ...values,
         avatar: url,

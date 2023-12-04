@@ -1,3 +1,4 @@
+import { signIn } from 'next-auth/react';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import { PrismaClient } from '@prisma/client';
 import { NextAuthOptions } from 'next-auth';
@@ -37,5 +38,8 @@ export const authOptions: NextAuthOptions = {
 
       return session;
     },
+  },
+  pages: {
+    signIn: '/auth/signin',
   },
 } satisfies NextAuthOptions;

@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from './ui/sheet';
 import { Button } from './ui/button';
-import { Teacher } from '@/zod/schemas';
+import { teacherFormSchema } from '@/zod/schemas';
 import { z } from 'zod';
 import useCustomForm from '@/hooks/useCustomForm';
 import {
@@ -23,7 +23,7 @@ import {
 import { Input } from './ui/input';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { cn } from '@/lib/utils';
+import { cn, getFilename, getUploadTask, uploadFile } from '@/lib/utils';
 import {
   Command,
   CommandEmpty,
@@ -33,33 +33,106 @@ import {
 } from './ui/command';
 import ProgressBar from './ProgressBar';
 import { subjects } from './AddTeacher';
+import { serverClient } from '@/app/_trpc/serverClient';
+import { trpc } from '@/app/_trpc/client';
+import {
+  StorageError,
+  UploadTaskSnapshot,
+  getDownloadURL,
+} from 'firebase/storage';
 
-const editFormSchema = z.object({
-  email: z.string().email().optional(),
-  phone: z.string().min(10).max(14).optional(),
-  name: z.string().min(3).optional(),
-  avatar: z.instanceof(File).nullable(),
-  subject: z.string().min(3).optional(),
-});
+function EditTeacherSheet({
+  defaultValues,
+  teacher_id,
+}: {
+  defaultValues: Awaited<ReturnType<(typeof serverClient)['getTeacher']>>;
+  teacher_id: string;
+}) {
+  if (!defaultValues) return;
 
-function EditTeacher({ defaultValues }: { defaultValues: Teacher }) {
+  const formattedAvatar = new File(
+    [getFilename(defaultValues.avatar!)],
+    defaultValues.avatar!,
+    {
+      type: 'text/plain',
+    }
+  );
+
   const [form] = useCustomForm({
-    formSchema: editFormSchema,
-    defaultValues,
+    formSchema: teacherFormSchema,
+    defaultValues: {
+      ...defaultValues,
+      avatar: formattedAvatar,
+    },
   });
 
   const [progress, setProgress] = React.useState(0);
   const [open, setOpen] = React.useState(false);
-  const [subject, setSubject] = React.useState(defaultValues.subject);
 
-  function onSubmit(values: z.infer<typeof editFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+  const utils = trpc.useContext();
+
+  const updateTeacher = trpc.updateTeacher.useMutation({
+    onSuccess() {
+      utils.getTeacher.invalidate();
+      utils.getTeachers.invalidate();
+    },
+  });
+
+  async function onSubmit(values: z.infer<typeof teacherFormSchema>) {
+    if (!values.avatar) return;
+
+    // if current avatar is equal to values.avatar
+    if (formattedAvatar.name === values.avatar?.name) {
+      // 1. update data
+      updateTeacher.mutate({
+        ...values,
+        id: teacher_id,
+        avatar: defaultValues?.avatar!,
+      });
+
+      setOpen(false);
+    } // if current avatar is different than values.avatar
+    else if (formattedAvatar.name !== values.avatar?.name) {
+      // 1. upload avatar
+
+      const fileName = getFilename(values.avatar.name);
+
+      const uploadTask = getUploadTask(`teachers/${fileName}`, values.avatar);
+
+      const onSnapshot = (snapshot: UploadTaskSnapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(progress);
+      };
+
+      const onError = (error: StorageError) => {
+        // Handle unsuccessful uploads
+        console.error(`Upload was unsuccessful. ${error.message}`);
+      };
+
+      const onSuccess = async () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL:
+        const url = await getDownloadURL(uploadTask.snapshot.ref);
+
+        // 2. update data
+        updateTeacher.mutate({
+          ...values,
+          id: teacher_id,
+          avatar: url,
+        });
+
+        form.reset();
+        setProgress(0);
+        setOpen(false);
+      };
+
+      uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
+    }
   }
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button variant="default">Edit</Button>
       </SheetTrigger>
@@ -76,7 +149,7 @@ function EditTeacher({ defaultValues }: { defaultValues: Teacher }) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input defaultValue={defaultValues.email} {...field} />
+                    <Input defaultValue={defaultValues?.email} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -91,7 +164,7 @@ function EditTeacher({ defaultValues }: { defaultValues: Teacher }) {
                   <FormControl>
                     <Input
                       type="tel"
-                      defaultValue={defaultValues.phone!}
+                      defaultValue={defaultValues?.phone!}
                       {...field}
                     />
                   </FormControl>
@@ -106,7 +179,7 @@ function EditTeacher({ defaultValues }: { defaultValues: Teacher }) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input defaultValue={defaultValues.name} {...field} />
+                    <Input defaultValue={defaultValues?.name} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -147,7 +220,7 @@ function EditTeacher({ defaultValues }: { defaultValues: Teacher }) {
                             <CommandItem
                               value={subject.label}
                               key={subject.value}
-                              onSelect={(val) => {
+                              onSelect={() => {
                                 form.setValue('subject', subject.value);
                               }}
                             >
@@ -206,4 +279,4 @@ function EditTeacher({ defaultValues }: { defaultValues: Teacher }) {
   );
 }
 
-export default EditTeacher;
+export default EditTeacherSheet;

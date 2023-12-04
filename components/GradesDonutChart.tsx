@@ -1,9 +1,8 @@
 'use client';
 
-import { trpc } from '@/app/_trpc/client';
+import { serverClient } from '@/app/_trpc/serverClient';
 import { Card, DonutChart, Title } from '@tremor/react';
-import { useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
+import { Session } from 'next-auth';
 
 const valueFormatter = (number: number) =>
   new Intl.NumberFormat('en-US', {
@@ -12,15 +11,14 @@ const valueFormatter = (number: number) =>
     .format(number)
     .toString();
 
-function ChartDonut() {
-  const { data: session } = useSession();
-  if (!session) redirect(`/api/auth/signin`);
-
-  const { data: students } = trpc.getStudents.useQuery({
-    user_id: session.user.id,
-  });
-
-  if (!students) return;
+function GradesDonutChart({
+  session,
+  students,
+}: {
+  session: Session | null;
+  students: Awaited<ReturnType<(typeof serverClient)['getStudents']>>;
+}) {
+  if (!session) return;
 
   const data = students.map((student) => ({
     grade: +student.grade,
@@ -52,4 +50,4 @@ function ChartDonut() {
   );
 }
 
-export default ChartDonut;
+export default GradesDonutChart;

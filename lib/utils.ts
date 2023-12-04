@@ -7,10 +7,7 @@ import {
 import { twMerge } from 'tailwind-merge';
 import { ref } from 'firebase/storage';
 import { storage } from './firebase';
-import { getServerSession } from 'next-auth';
-import { authOptions } from './auth';
 import { serverClient } from '@/app/_trpc/serverClient';
-import { Student } from '@/zod/schemas';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -69,50 +66,21 @@ export const formatSchool = (school: string) =>
     .map((word) => upperFirst(word))
     .join(' ');
 
-export const fetchStudents = async () => {
-  const session = await getServerSession(authOptions);
-  if (!session) return;
-
-  const students = await serverClient.getStudents({
-    user_id: session.user.id,
-  });
-
-  return students;
+export const getNbStudentsByMonth = (
+  data:
+    | Awaited<ReturnType<(typeof serverClient)['getStudents']>>
+    | Awaited<ReturnType<(typeof serverClient)['getTeachers']>>,
+  month: number
+) => {
+  return data.filter((entry) => entry.created_at?.getMonth() === month).length;
 };
 
-export const getStudentsByYear = (students: Student[], year: number) =>
-  students.filter(
-    (student) => new Date(student.created_at!).getFullYear() === year
+export const getSubjectProportion = (
+  teachers: Awaited<ReturnType<(typeof serverClient)['getTeachers']>>,
+  subject: string
+) => {
+  return (
+    teachers.filter((teacher) => teacher.subject === subject).length /
+    teachers.length
   );
-
-export const getStudentsByMonth = (students: Student[], month: number) =>
-  students.filter(
-    (student) => new Date(student.created_at!).getMonth() === month
-  );
-
-export const generateChartData = (students: Student[], year: number) => {
-  const months = [
-    'Jan',
-    'Feb',
-    'Mar',
-    'Apr',
-    'May',
-    'Jun',
-    'Jul',
-    'Aug',
-    'Sep',
-    'Oct',
-    'Nov',
-    'Dec',
-  ];
-
-  return months.map((month) => {
-    return {
-      month,
-      students: getStudentsByYear(
-        getStudentsByMonth(students, months.indexOf(month)),
-        year
-      ).length,
-    };
-  });
 };

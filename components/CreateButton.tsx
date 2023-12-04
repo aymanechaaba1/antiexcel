@@ -23,18 +23,70 @@ import {
   getDownloadURL,
 } from 'firebase/storage';
 import { formSchema } from '@/zod/schemas';
+import { useSubscriptionsStore } from '@/store/store';
+import { useToast } from './ui/use-toast';
+import { ToastAction } from './ui/toast';
+import Link from 'next/link';
 
 function CreateButton() {
+  const utils = trpc.useContext();
+
   const [open, setOpen] = useState(false);
   const [_, setDownloadUrl] = useState('');
   const [progress, setProgress] = useState(0);
 
   const { data: session } = useSession();
-  if (!session) return;
 
-  const addStudent = trpc.addStudent.useMutation();
+  const { subscription } = useSubscriptionsStore((state) => state);
+
+  if (!session) return;
+  const { data: user, isLoading: loadingUser } = trpc.getUser.useQuery({
+    id: session.user.id,
+  });
+
+  const { data: teachers, isLoading: loadingTeachers } =
+    trpc.getTeachers.useQuery({
+      user_id: session.user.id,
+    });
+
+  const addStudent = trpc.addStudent.useMutation({
+    onSuccess: () => {
+      utils.getStudents.invalidate();
+    },
+  });
+
+  const { toast } = useToast();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    // !subscription && user.students === 3 => return toast notification
+    if (!subscription && user && user.students.length === 3) {
+      return toast({
+        title: 'Oops, You must be a PRO!',
+        description: "You're limited to 3 students.",
+        action: (
+          <ToastAction
+            className="bg-gray-900 hover:bg-gray-900 border"
+            altText="Become a PRO!"
+          >
+            <Link href={`/#pricing`}>Become a PRO!</Link>
+          </ToastAction>
+        ),
+        variant: 'destructive',
+      });
+    }
+
+    if (!teachers || teachers.length === 0) {
+      return toast({
+        title: 'Please add at least one teacher.',
+        action: (
+          <ToastAction className="bg-gray-900" altText="Add a Teacher">
+            <Link href={`/teachers`}></Link>
+          </ToastAction>
+        ),
+        variant: 'destructive',
+      });
+    }
+
     const fileName = getFilename(values.avatar.name);
 
     const uploadTask = getUploadTask(`avatars/${fileName}`, values.avatar);
@@ -57,7 +109,7 @@ function CreateButton() {
 
       addStudent.mutate({
         ...values,
-        birthdate: values.birthdate,
+        birthdate: values.birthdate.toISOString(),
         avatar: downloadURL,
         user_id: session.user.id,
       });
@@ -72,7 +124,7 @@ function CreateButton() {
     <div className="flex justify-end">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button className="mt-5" variant="default">
+          <Button onClick={() => {}} className="mt-5" variant="default">
             Create
           </Button>
         </DialogTrigger>

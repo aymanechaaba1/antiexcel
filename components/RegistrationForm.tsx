@@ -40,6 +40,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import useCustomForm from '@/hooks/useCustomForm';
 import ProgressBar from './ProgressBar';
 import { FormSchema, formSchema } from '@/zod/schemas';
+import { SelectTeacher } from './SelectTeacher';
 
 export const schools = [
   { label: 'Chkail', value: 'chkail' },
@@ -59,8 +60,8 @@ function RegistrationForm({
   progress,
   setProgress,
 }: {
-  open?: boolean;
-  setOpen?: Dispatch<SetStateAction<boolean>>;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
   defaultValues?: FormSchema;
   buttonLabel: string;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
@@ -72,6 +73,9 @@ function RegistrationForm({
   const [form] = useCustomForm({
     formSchema: formSchema,
   });
+
+  const [openComboTeacher, setOpenComboTeacher] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState('');
 
   return (
     <Form {...form}>
@@ -256,6 +260,13 @@ function RegistrationForm({
               <FormMessage />
             </FormItem>
           )}
+        />
+        <SelectTeacher
+          openComboTeacher={openComboTeacher}
+          setOpenComboTeacher={setOpenComboTeacher}
+          selectedTeacher={selectedTeacher}
+          setSelectedTeacher={setSelectedTeacher}
+          form={form}
         />
         <FormField
           control={form.control}

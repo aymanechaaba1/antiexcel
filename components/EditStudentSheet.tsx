@@ -13,13 +13,14 @@ import {
 import { Button } from '@/components/ui/button';
 import NativeForm from './NativeForm';
 import { Student } from '@/zod/schemas';
+import { serverClient } from '@/app/_trpc/serverClient';
 
-function EditSheet({
+function EditStudentSheet({
   id,
   defaultValues,
 }: {
   id: string;
-  defaultValues: Student;
+  defaultValues: Awaited<ReturnType<(typeof serverClient)['getStudent']>>;
 }) {
   const [openSheet, setOpenSheet] = React.useState(false);
 
@@ -47,4 +48,4 @@ function EditSheet({
   );
 }
 
-export default EditSheet;
+export default EditStudentSheet;

@@ -17,6 +17,7 @@ import {
 import { useSession } from 'next-auth/react';
 import { updateStudent } from '@/actions';
 import { Student } from '@/zod/schemas';
+import { serverClient } from '@/app/_trpc/serverClient';
 
 function NativeForm({
   id,
@@ -24,7 +25,7 @@ function NativeForm({
   setOpenSheet,
 }: {
   id: string;
-  defaultValues: Student;
+  defaultValues: Awaited<ReturnType<(typeof serverClient)['getStudent']>>;
   setOpenSheet: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   if (!defaultValues) return;
@@ -53,7 +54,7 @@ function NativeForm({
     await updateStudent({
       firstname: formData.get('firstname') as string,
       lastname: formData.get('lastname') as string,
-      birthdate: birthdate.toISOString(),
+      birthdate,
       gender: formData.get('gender') as string,
       grade: formData.get('grade') as string,
       school,
@@ -96,10 +97,20 @@ function NativeForm({
           const onSuccess = async () => {
             // Handle successful uploads on complete
             // For instance, get the download URL:
-            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
 
             // update student
-            await updateStudentFn(formData, birthdate, school, downloadURL);
+            await updateStudent({
+              firstname: formData.get('firstname') as string,
+              lastname: formData.get('lastname') as string,
+              birthdate,
+              gender: formData.get('gender') as string,
+              grade: formData.get('grade') as string,
+              school,
+              avatar: downloadUrl!,
+              id,
+              user_id: session.user.id,
+            });
           };
 
           uploadFile(
@@ -112,10 +123,9 @@ function NativeForm({
         }
 
         // no avatar
-        if (!avatar.size) {
+        if (!avatar.size)
           // update student
           await updateStudentFn(formData, birthdate, school);
-        }
       }}
       className="space-y-5"
     >
@@ -176,7 +186,6 @@ function NativeForm({
           type="file"
           accept="image/png, image/jpeg"
           name="avatar"
-          onChange={(e) => {}}
         />
         <ProgressBar progress={progress} setProgress={setProgress} />
       </div>

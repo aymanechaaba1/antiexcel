@@ -6,19 +6,13 @@ import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { DataTable } from './data-table';
 import { columns } from './columns';
+import StudentsTable from '@/components/StudentsTable';
 
-async function StudentsPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect('/api/auth/signin');
-
-  const data = await serverClient.getStudents({
-    user_id: session?.user.id,
-  });
-
+function StudentsPage() {
   return (
     <>
       <CreateButton />
-      {data && <DataTable columns={columns} data={data} />}
+      <StudentsTable />
     </>
   );
 }

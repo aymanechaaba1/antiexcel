@@ -12,28 +12,16 @@ import {
 } from './ui/form';
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from './ui/sheet';
-import { Toast } from './ui/toast';
 import useCustomForm from '@/hooks/useCustomForm';
-import { Student, Teacher } from '@/zod/schemas';
 import { Checkbox } from './ui/checkbox';
-import { assignStudents } from '@/actions';
 import { trpc } from '@/app/_trpc/client';
-import { useEffect, useRef, useState } from 'react';
-
-const FormSchema = z.object({
-  studentIds: z
-    .array(z.string())
-    .refine((value) => value.some((item) => item), {
-      message: 'You have to select at least one item.',
-    }),
-});
+import { useEffect, useState } from 'react';
+import { serverClient } from '@/app/_trpc/serverClient';
 
 function AssignStudents({
   teacher_id,
@@ -41,51 +29,96 @@ function AssignStudents({
 }: {
   teacher_id: string;
 
-  students: Student[];
+  students: Awaited<ReturnType<(typeof serverClient)['getStudents']>>;
 }) {
+  const utils = trpc.useContext();
+
   const teacher = trpc.getTeacher.useQuery({
     id: teacher_id,
   });
 
-  const studentIds = students.map((student) => ({
-    id: student.id,
-    label: student.firstname,
-  }));
+  const items = [
+    ...students.map((student) => ({
+      id: student?.id,
+      label: student?.firstname,
+    })),
+  ] as const;
+
+  const FormSchema = z.object({
+    items: z.array(z.string().cuid()),
+  });
+
+  const [defaultStudents, setDefaultStudents] = useState<string[] | undefined>(
+    []
+  );
+
+  useEffect(() => {
+    const ids = teacher.data?.students.map((student) => student.student_id);
+    setDefaultStudents(ids);
+  }, [teacher.data?.students]);
 
   const [openSheet, setOpenSheet] = useState(false);
+
   const [form] = useCustomForm({
     formSchema: FormSchema,
     defaultValues: {
-      studentIds: [],
+      items: defaultStudents,
     },
   });
 
-  const { mutate } = trpc.assignStudentToTeacher.useMutation();
+  const assignStudentToTeacher = trpc.assignStudentToTeacher.useMutation({
+    onSuccess() {
+      utils.getStudentsTeacher.invalidate();
+    },
+  });
+  const deleteStudentFromTeacher = trpc.deleteStudentFromTeacher.useMutation({
+    onSuccess() {
+      utils.getStudentsTeacher.invalidate();
+    },
+  });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     // get checked values
-    console.log(data.studentIds);
+    const checkedStudents = data.items;
 
     // get unchecked values
-    console.log(
-      students
-        .filter((student, i) => {
-          const sId = data.studentIds[i];
-          return sId !== student.id;
-        })
-        .map((student) => student.id)
-    );
+    const uncheckedStudents = students
+      .filter((student, i) => {
+        const sId = data.items[i];
+        return sId !== student?.id;
+      })
+      .map((student) => student?.id);
 
-    // add checked values
+    // loop over each checked student
+    checkedStudents.forEach((sId, i) => {
+      const student_id = teacher.data?.students[i].student_id;
 
-    // check if unchecked values exist in teacher.data.students
-    // if exists, remove them
-    // if not, return
+      // 1. check for students who don't exist in the list
+      if (student_id !== sId) {
+        // 2. true, add them
+        assignStudentToTeacher.mutate({
+          student_id: sId,
+          teacher_id,
+        });
+      } else return;
+    });
 
-    // setOpenSheet(false);
+    // loop over each unchecked student
+    uncheckedStudents.forEach((sId, i) => {
+      const student_id = teacher.data?.students[i].student_id;
+
+      // 1. check for those who exist in the list
+      if (student_id === sId) {
+        // 2. true, remove them
+        deleteStudentFromTeacher.mutate({
+          student_id: sId,
+          teacher_id,
+        });
+      } else return;
+    });
+
+    setOpenSheet(false);
   }
-
-  // checked if student's id exists in teacher.students
 
   return (
     <Sheet open={openSheet} onOpenChange={setOpenSheet}>
@@ -103,14 +136,14 @@ function AssignStudents({
           >
             <FormField
               control={form.control}
-              name="studentIds"
+              name="items"
               render={() => (
                 <FormItem>
-                  {studentIds.map((student) => (
+                  {items.map((student) => (
                     <FormField
                       key={student.id}
                       control={form.control}
-                      name="studentIds"
+                      name="items"
                       render={({ field }) => {
                         return (
                           <FormItem
@@ -119,6 +152,9 @@ function AssignStudents({
                           >
                             <FormControl>
                               <Checkbox
+                                defaultChecked={field.value?.includes(
+                                  student.id
+                                )}
                                 checked={field.value?.includes(student.id)}
                                 onCheckedChange={(checked) => {
                                   return checked
@@ -147,7 +183,9 @@ function AssignStudents({
                 </FormItem>
               )}
             />
-            <Button type="submit">Submit</Button>
+            <Button type="submit">
+              {form.formState.isSubmitting ? 'Submitting...' : 'Submit'}
+            </Button>
           </form>
         </Form>
       </SheetContent>

@@ -24,9 +24,11 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { trpc } from '../_trpc/client';
 import { serverClient } from '../_trpc/serverClient';
-import { Student } from '@/zod/schemas';
+import { useSession } from 'next-auth/react';
 
-export const columns: ColumnDef<Student>[] = [
+export const columns: ColumnDef<
+  Awaited<ReturnType<(typeof serverClient)['getStudent']>>
+>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -55,7 +57,7 @@ export const columns: ColumnDef<Student>[] = [
         <Avatar className="">
           <AvatarImage src={student?.avatar} />
           <AvatarFallback className="">
-            {getAvatarName(student.firstname, student.lastname)}
+            {getAvatarName(student?.firstname!, student?.lastname!)}
           </AvatarFallback>
         </Avatar>
       );
@@ -89,7 +91,10 @@ export const columns: ColumnDef<Student>[] = [
       return <div className="text-left font-medium">Birthdate</div>;
     },
     cell: ({ row }) => {
-      const formattedDate = formatDate(row.getValue('birthdate'), 'en-US');
+      const formattedDate = formatDate(
+        new Date(row.getValue('birthdate')),
+        'en-US'
+      );
       return <div className="">{formattedDate}</div>;
     },
   },
@@ -102,6 +107,30 @@ export const columns: ColumnDef<Student>[] = [
       )?.label;
 
       return <div className="text-left font-medium">{school}</div>;
+    },
+  },
+  {
+    accessorKey: 'teacher_id',
+    header: () => <div className="text-left">Teacher</div>,
+    cell: ({ row }) => {
+      const { data: session } = useSession();
+      if (!session) return;
+      const { data: teachers } = trpc.getTeachers.useQuery({
+        user_id: session.user.id,
+      });
+      if (!teachers) return;
+
+      const teachersCombo = [
+        ...teachers.map((teacher) => ({
+          value: teacher.id,
+          label: teacher.name,
+        })),
+      ] as const;
+
+      const teacher = teachersCombo.find(
+        (teacher) => teacher.value === row.getValue('teacher_id')
+      )?.label;
+      return <div className="text-left font-medium">{teacher}</div>;
     },
   },
   {
@@ -130,7 +159,7 @@ export const columns: ColumnDef<Student>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-left font-medium">
-          {formatDate(row.getValue('created_at'), 'en-US', {
+          {formatDate(new Date(row.getValue('created_at')), 'en-US', {
             day: '2-digit',
             month: 'short',
             year: 'numeric',
@@ -168,7 +197,7 @@ export const columns: ColumnDef<Student>[] = [
       const deleteStudent = trpc.deleteStudent.useMutation();
 
       const deleteStudentHandler = async () => {
-        if (!student.id) return;
+        if (!student?.id) return;
         // delete student logic
 
         deleteStudent.mutate({
@@ -187,13 +216,13 @@ export const columns: ColumnDef<Student>[] = [
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(student.id!)}
+                onClick={() => navigator.clipboard.writeText(student?.id!)}
               >
                 Copy student ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Link prefetch={false} href={`/students/${student.id}`}>
+                <Link prefetch={false} href={`/students/${student?.id}`}>
                   View student
                 </Link>
               </DropdownMenuItem>
