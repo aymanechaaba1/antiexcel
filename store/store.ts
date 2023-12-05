@@ -21,3 +21,14 @@ export const useTransactionsStore = create<TransactionsState>((set) => ({
   setTransactions: (transactions: Transaction[] | null | undefined) =>
     set({ transactions }),
 }));
+
+interface AccessTokenState {
+  access_token: string | null | undefined;
+  setAccessToken: (access_token: string | null | undefined) => void;
+}
+
+export const useAccessToken = create<AccessTokenState>((set) => ({
+  access_token: undefined,
+  setAccessToken: (access_token: string | null | undefined) =>
+    set({ access_token }),
+}));

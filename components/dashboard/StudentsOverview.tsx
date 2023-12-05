@@ -1,10 +1,7 @@
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Medal, User2 } from 'lucide-react';
 import { serverClient } from '@/app/_trpc/serverClient';
-import { Session, getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+import { Session } from 'next-auth';
 
 async function StudentsOverview({
   session,
@@ -34,7 +31,7 @@ async function StudentsOverview({
     ?.at(0) as number;
 
   return (
-    <Section className="space-y-4" title="Students StudentsOverview">
+    <Section className="space-y-4" title="Students Overview">
       <div className="grid grid-cols-2 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">

@@ -1,10 +1,11 @@
+'use client';
+
 import { serverClient } from '@/app/_trpc/serverClient';
-import { Session } from 'next-auth';
 import Section from './Section';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { upperFirst } from '@/lib/utils';
-
-export const revalidate = 0;
+import { useSubscriptionsStore } from '@/store/store';
+import { Session } from 'next-auth';
 
 function TeachersOverview({
   session,
@@ -13,7 +14,9 @@ function TeachersOverview({
   session: Session | null;
   teachers: Awaited<ReturnType<(typeof serverClient)['getTeachers']>>;
 }) {
-  if (!session) return;
+  const { subscription } = useSubscriptionsStore((state) => state);
+
+  const isPro = session && subscription;
 
   const subjectCount = teachers.reduce((acc: any, teacher) => {
     acc[teacher.subject] = (acc[teacher.subject] || 0) + 1;
@@ -30,7 +33,7 @@ function TeachersOverview({
     .find(([subject, count]) => count === maxCount)
     ?.at(0) as string;
 
-  if (teachers)
+  if (teachers && isPro)
     return (
       <Section className="space-y-4" title="Teachers Overview">
         <div className="grid grid-cols-2 gap-4">

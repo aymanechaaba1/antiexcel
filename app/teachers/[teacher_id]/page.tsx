@@ -20,27 +20,23 @@ async function TeacherDetailsPage({ params: { teacher_id } }: Params) {
   const teacher = await serverClient.getTeacher({
     id: teacher_id,
   });
-  if (!teacher) return;
 
-  const students = await serverClient.getStudentsByTeacher({
-    teacher_id,
-  });
-
-  return (
-    <>
-      <div>
-        <div className="my-5 flex items-center justify-end gap-5 rounded-lg py-3 px-2 ">
-          <EditTeacher teacher_id={teacher_id} defaultValues={teacher} />
+  if (teacher)
+    return (
+      <>
+        <div>
+          <div className="my-5 flex items-center justify-end gap-5 rounded-lg py-3 px-2 ">
+            <EditTeacher teacher_id={teacher_id} defaultValues={teacher} />
+          </div>
+          <TeacherDetails teacher_id={teacher_id} />
         </div>
-        <TeacherDetails teacher_id={teacher_id} />
-      </div>
-      {students.length !== 0 && (
-        <Suspense fallback={<StudentsListSkeleton />}>
-          <StudentsList students={students} />
-        </Suspense>
-      )}
-    </>
-  );
+        {teacher.students.length !== 0 && (
+          <Suspense fallback={<StudentsListSkeleton />}>
+            <StudentsList students={teacher.students} />
+          </Suspense>
+        )}
+      </>
+    );
 }
 
 export default TeacherDetailsPage;

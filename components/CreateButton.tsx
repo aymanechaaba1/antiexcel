@@ -124,7 +124,7 @@ function CreateButton() {
     <div className="flex justify-end">
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <Button onClick={() => {}} className="mt-5" variant="default">
+          <Button className="mt-5" variant="default">
             Create
           </Button>
         </DialogTrigger>

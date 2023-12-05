@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -55,43 +56,43 @@ function AddContactForm({ student_id }: { student_id: string }) {
 
   const addContact = trpc.addContact.useMutation();
 
-  function onSubmit(values: z.infer<typeof contactFormSchema>) {
-    if (values.avatar) {
-      // upload file
-      const fileName = getFilename(values.avatar.name);
+  async function onSubmit(values: z.infer<typeof contactFormSchema>) {
+    console.log(values);
 
-      const uploadTask = getUploadTask(`avatars/${fileName}`, values.avatar);
+    // if (values.avatar) {
+    //   // upload file
+    //   const fileName = getFilename(values.avatar.name);
 
-      const onSnapshot = (snapshot: UploadTaskSnapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(progress);
-      };
+    //   const uploadTask = getUploadTask(`avatars/${fileName}`, values.avatar);
 
-      const onError = (error: StorageError) => {
-        // Handle unsuccessful uploads
-        console.error(`Upload was unsuccessful. ${error.message}`);
-      };
+    //   const onSnapshot = (snapshot: UploadTaskSnapshot) => {
+    //     const progress =
+    //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //     setProgress(progress);
+    //   };
 
-      const onSuccess = async () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL:
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+    //   const onError = (error: StorageError) => {
+    //     // Handle unsuccessful uploads
+    //     console.error(`Upload was unsuccessful. ${error.message}`);
+    //   };
 
-        console.log(downloadURL);
+    //   const onSuccess = async () => {
+    //     // Handle successful uploads on complete
+    //     // For instance, get the download URL:
+    //     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
 
-        // add contact
-        // addContact.mutate({
-        //   ...values,
-        //   avatar: downloadURL,
-        //   student_id,
-        // });
+    // add contact
+    // addContact.mutate({
+    //   ...values,
+    //   avatar: downloadURL,
+    //   student_id,
+    // });
 
-        // setOpen(false);
-      };
+    // setOpen(false);
+    // };
 
-      uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
-    }
+    // uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
+    // }
   }
 
   return (
@@ -102,6 +103,7 @@ function AddContactForm({ student_id }: { student_id: string }) {
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Contact</DialogTitle>
+          <DialogDescription></DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -112,7 +114,7 @@ function AddContactForm({ student_id }: { student_id: string }) {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="somename@gmail.com" {...field} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -126,9 +128,9 @@ function AddContactForm({ student_id }: { student_id: string }) {
                   <FormLabel>Phone</FormLabel>
                   <FormControl>
                     <Input
+                      {...field}
                       type="tel"
                       placeholder="eg: 06 28 29 59 30"
-                      {...field}
                     />
                   </FormControl>
                   <FormMessage />

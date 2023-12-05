@@ -55,7 +55,14 @@ export const columns: ColumnDef<
       const student = row.original;
       return (
         <Avatar className="">
-          <AvatarImage src={student?.avatar} />
+          <div className="rounded-full">
+            <AvatarImage
+              src={student?.avatar}
+              width={15}
+              height={15}
+              className="w-full object-cover"
+            />
+          </div>
           <AvatarFallback className="">
             {getAvatarName(student?.firstname!, student?.lastname!)}
           </AvatarFallback>

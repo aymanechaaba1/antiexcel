@@ -8,6 +8,7 @@ import DashboardChart from '@/components/DashboardChart';
 import StudentsOverview from '@/components/dashboard/StudentsOverview';
 import SubjectsDonutChart from '@/components/SubjectsDonutChart';
 import GradesDonutChart from '@/components/GradesDonutChart';
+import LatestTeachers from '@/components/LatestTeachers';
 
 async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -25,13 +26,19 @@ async function DashboardPage() {
     <div className="space-y-4">
       <StudentsOverview session={session} students={students} />
       <TeachersOverview session={session} teachers={teachers} />
-      <DashboardChart students={students} teachers={teachers} />
+      <DashboardChart
+        session={session}
+        students={students}
+        teachers={teachers}
+      />
       <div className="flex flex-col md:flex-row gap-4 md:items-center">
         <GradesDonutChart session={session} students={students} />
-        <SubjectsDonutChart teachers={teachers} />
+        <SubjectsDonutChart session={session} teachers={teachers} />
       </div>
-
-      <LatestStudents students={students} />
+      <div className="flex flex-col md:flex-row gap-4 md:items-center">
+        <LatestStudents students={students} />
+        <LatestTeachers session={session} teachers={teachers} />
+      </div>
     </div>
   );
 }

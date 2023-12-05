@@ -27,6 +27,8 @@ import {
   FormMessage,
 } from './ui/form';
 import { UseFormReturn } from 'react-hook-form';
+import { Avatar } from './ui/avatar';
+import { AvatarImage } from '@radix-ui/react-avatar';
 
 export function SelectTeacher({
   openComboTeacher,
@@ -53,6 +55,7 @@ export function SelectTeacher({
     ...teachers.map((teacher) => ({
       value: teacher.id,
       label: teacher.name,
+      avatar: teacher.avatar,
     })),
   ] as const;
 
@@ -98,15 +101,27 @@ export function SelectTeacher({
                           setOpenComboTeacher(false);
                         }}
                       >
-                        <Check
-                          className={cn(
-                            'mr-2 h-4 w-4',
-                            teacher.value === field.value
-                              ? 'opacity-100'
-                              : 'opacity-0'
-                          )}
-                        />
-                        {teacher.label}
+                        <div className="flex items-center gap-3">
+                          <Check
+                            className={cn(
+                              'mr-2 h-4 w-4',
+                              teacher.value === field.value
+                                ? 'opacity-100'
+                                : 'opacity-0'
+                            )}
+                          />
+                          <Avatar>
+                            {teacher.avatar && (
+                              <div className="rounded-full w-10 h-10">
+                                <AvatarImage
+                                  src={teacher.avatar}
+                                  className="w-full object-cover"
+                                ></AvatarImage>
+                              </div>
+                            )}
+                          </Avatar>
+                          {teacher.label}
+                        </div>
                       </CommandItem>
                     ))}
                   </CommandGroup>

@@ -8,6 +8,7 @@ import { twMerge } from 'tailwind-merge';
 import { ref } from 'firebase/storage';
 import { storage } from './firebase';
 import { serverClient } from '@/app/_trpc/serverClient';
+import { PayPalAccessTokenResponse } from '@/types/paypal-accesstoken-response';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -83,4 +84,23 @@ export const getSubjectProportion = (
     teachers.filter((teacher) => teacher.subject === subject).length /
     teachers.length
   );
+};
+
+export const fetchNewAccessToken = async () => {
+  const res = await fetch(`https://api-m.sandbox.paypal.com/v1/oauth2/token`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Basic ${Buffer.from(
+        `${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}:${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_SECRET}`
+      ).toString('base64')}`,
+    },
+    body: 'grant_type=client_credentials',
+  });
+
+  if (!res.ok) throw new Error(`Invalid response format!`);
+
+  const data: PayPalAccessTokenResponse = await res.json();
+
+  return data;
 };

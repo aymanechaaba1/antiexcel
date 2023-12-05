@@ -99,6 +99,7 @@ export const appRouter = router({
         },
         include: {
           contact: true,
+          teacher: true,
         },
       });
     }),
@@ -268,19 +269,6 @@ export const appRouter = router({
           name: input.name,
           avatar: input.avatar,
           subject: input.subject,
-        },
-      });
-    }),
-  getStudentsByTeacher: publicProcedure
-    .input(
-      z.object({
-        teacher_id: z.string().cuid(),
-      })
-    )
-    .query(async ({ input }) => {
-      return await prisma.student.findMany({
-        where: {
-          teacher_id: input.teacher_id,
         },
       });
     }),

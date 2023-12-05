@@ -6,6 +6,7 @@ import AddContactForm from './AddContact';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { serverClient } from '@/app/_trpc/serverClient';
+import { ArrowBigUpDash, ArrowUpRight } from 'lucide-react';
 
 async function StudentDetails({ student_id }: { student_id: string }) {
   const session = await getServerSession(authOptions);
@@ -45,6 +46,14 @@ async function StudentDetails({ student_id }: { student_id: string }) {
           <p>{student.grade}</p>
           <p className="text-gray-500">School</p>
           <p>{formatSchool(student.school)}</p>
+          <p className="text-gray-500">Teacher</p>
+          <Link
+            href={`/teachers/${student.teacher_id}`}
+            className="text-blue-500 flex items-center gap-2"
+          >
+            <span>{student.teacher?.name}</span>
+            <ArrowUpRight className="w-4 h-4" />
+          </Link>
           <p className="text-gray-500">Created At</p>
           <p>
             {new Intl.DateTimeFormat('en-US', {

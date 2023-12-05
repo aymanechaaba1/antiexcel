@@ -2,7 +2,12 @@
 
 import { trpc } from '@/app/_trpc/client';
 import { useToast } from '@/components/ui/use-toast';
-import { useSubscriptionsStore, useTransactionsStore } from '@/store/store';
+import { fetchNewAccessToken } from '@/lib/utils';
+import {
+  useAccessToken,
+  useSubscriptionsStore,
+  useTransactionsStore,
+} from '@/store/store';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
@@ -16,17 +21,23 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
     id: session.user.id,
   });
 
+  const { access_token, setAccessToken } = useAccessToken((state) => state);
   const { setSubscription } = useSubscriptionsStore((state) => state);
   const { setTransactions } = useTransactionsStore((state) => state);
 
   useEffect(() => {
     if (!user || !user.subscription_id) return;
 
+    const intervalId = setInterval(async () => {
+      const { access_token } = await fetchNewAccessToken();
+      if (access_token) setAccessToken(access_token);
+    }, 32400);
+
     fetch(
       `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${user.subscription_id}`,
       {
         headers: {
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_PAYPAL_TOKEN}`,
+          Authorization: `Bearer ${access_token}`,
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
@@ -53,24 +64,22 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
           }&end_time=${new Date().toISOString()}`,
           {
             headers: {
-              Authorization: `Bearer ${process.env.NEXT_PUBLIC_PAYPAL_TOKEN}`,
+              Authorization: `Bearer ${access_token}`,
               'Content-Type': 'application/json',
               Accept: 'application/json',
             },
           }
-        )
-          .then((transactionsRes) => transactionsRes.json())
-          .then((transactions) => {
-            console.log(transactions);
-            setTransactions(transactions.transactions);
-          });
+        );
+      })
+      .then((transactionsRes) => transactionsRes.json())
+      .then((transactions) => {
+        setTransactions(transactions.transactions);
       });
 
     return () => {
-      setSubscription(null);
-      setTransactions(null);
+      clearInterval(intervalId);
     };
-  }, [user, setSubscription]);
+  }, [user, access_token, setAccessToken, setSubscription, setTransactions]);
 
   return <>{children}</>;
 }

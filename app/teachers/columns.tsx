@@ -17,9 +17,6 @@ import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-
 type Teacher = Awaited<ReturnType<(typeof serverClient)['getTeacher']>>;
 export const columns: ColumnDef<Teacher>[] = [
   {
@@ -50,7 +47,16 @@ export const columns: ColumnDef<Teacher>[] = [
 
       return (
         <Avatar className="">
-          <AvatarImage src={teacher.avatar!} />
+          {teacher.avatar && (
+            <div className="rounded-full">
+              <AvatarImage
+                src={teacher.avatar}
+                width={15}
+                height={15}
+                className="w-full object-cover"
+              />
+            </div>
+          )}
           <AvatarFallback className="">
             {getAvatarName(teacher?.name)}
           </AvatarFallback>
@@ -82,6 +88,13 @@ export const columns: ColumnDef<Teacher>[] = [
   {
     accessorKey: 'phone',
     header: 'Phone',
+  },
+  {
+    accessorKey: 'students',
+    header: 'Students',
+    cell: ({ row }) => {
+      return <p>{row.original?.students.length}</p>;
+    },
   },
   {
     id: 'actions',
