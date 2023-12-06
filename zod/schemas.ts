@@ -8,6 +8,18 @@ export const schoolsEnum = z.enum(
 );
 export type SchoolsEnum = z.infer<typeof schoolsEnum>;
 
+export const contactFormSchema = z.object({
+  id: z.string().cuid().optional(),
+  created_at: z.date().nullable(),
+  updated_at: z.date().nullable(),
+  email: z.string().email(),
+  phone: z.string().min(10).max(14),
+  name: z.string().min(3).max(10),
+  relationship: z.string(),
+  avatar: z.instanceof(File).optional(),
+  student_id: z.string().cuid(),
+});
+
 export const formSchema = z.object({
   firstname: z
     .string({
@@ -37,8 +49,26 @@ export const formSchema = z.object({
   school: z.string().min(3),
   teacher_id: z.string().cuid(),
   avatar: z.instanceof(File),
+  contact_email: z.string().email(),
+  contact_phone: z.string().min(10).max(14),
+  contact_name: z.string().min(3).max(10),
+  contact_relationship: z.string(),
+  contact_avatar: z.instanceof(File).optional(),
 });
 export type FormSchema = z.infer<typeof formSchema>;
+
+export const contactSchema = z.object({
+  id: z.string().cuid().optional(),
+  created_at: z.date().nullable().optional(),
+  updated_at: z.date().nullable().optional(),
+  email: z.string().email(),
+  phone: z.string().min(10).max(14),
+  name: z.string().min(3).max(10),
+  relationship: z.string(),
+  avatar: z.string(),
+  student_id: z.string().cuid().optional(),
+});
+export type Contact = z.infer<typeof contactSchema>;
 
 export const studentSchema = z.object({
   id: z.string().cuid().optional(),
@@ -75,33 +105,9 @@ export const studentSchema = z.object({
   }),
   user_id: z.string().cuid(),
   teacher_id: z.string().cuid(),
+  contact: contactSchema,
 });
 export type Student = z.infer<typeof studentSchema>;
-
-export const contactFormSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.date().nullable(),
-  updated_at: z.date().nullable(),
-  email: z.string().email(),
-  phone: z.string().min(10).max(14),
-  name: z.string().min(3).max(10),
-  relationship: z.string(),
-  avatar: z.instanceof(File).optional(),
-  student_id: z.string().cuid(),
-});
-
-export const contactSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.date().nullable(),
-  updated_at: z.date().nullable(),
-  email: z.string().email(),
-  phone: z.string().min(10).max(14),
-  name: z.string().min(3).max(10),
-  relationship: z.string(),
-  avatar: z.string(),
-  student_id: z.string().cuid(),
-});
-export type Contact = z.infer<typeof contactSchema>;
 
 export const teacherFormSchema = z.object({
   email: z.string().email(),

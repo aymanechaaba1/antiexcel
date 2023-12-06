@@ -300,6 +300,52 @@ function RegistrationForm({
                 </FormItem>
               )}
             />
+            <Button
+              type="button"
+              onClick={() => {
+                const inputs = [
+                  'firstname',
+                  'lastname',
+                  'birthdate',
+                  'gender',
+                  'grade',
+                  'school',
+                  'teacher_id',
+                  'avatar',
+                ];
+
+                form.trigger(inputs);
+                const [
+                  firstnameState,
+                  lastnameState,
+                  birthdateState,
+                  genderState,
+                  gradeState,
+                  ,
+                  ,
+                  avatarState,
+                ] = inputs.map((input) => form.getFieldState(input));
+
+                const [school, teacher_id] = form.getValues([
+                  'school',
+                  'teacher_id',
+                ]);
+
+                console.log(school, teacher_id);
+
+                if (!firstnameState.isDirty || firstnameState.invalid) return;
+                if (!lastnameState.isDirty || lastnameState.invalid) return;
+                if (!birthdateState.isDirty || birthdateState.invalid) return;
+                if (!genderState.isDirty || genderState.invalid) return;
+                if (!gradeState.isDirty || gradeState.invalid) return;
+                if (!avatarState.isDirty || avatarState.invalid) return;
+                if (!school || !teacher_id) return;
+
+                setFormStep((prev) => prev + 1);
+              }}
+            >
+              Next
+            </Button>
           </>
         )}
         {formStep === 2 && (
@@ -307,7 +353,7 @@ function RegistrationForm({
             <h1 className="text-2xl font-medium">Contact</h1>
             <FormField
               control={form.control}
-              name="email"
+              name="contact_email"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Email</FormLabel>
@@ -320,7 +366,7 @@ function RegistrationForm({
             />
             <FormField
               control={form.control}
-              name="phone"
+              name="contact_phone"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Phone</FormLabel>
@@ -337,7 +383,7 @@ function RegistrationForm({
             />
             <FormField
               control={form.control}
-              name="name"
+              name="contact_name"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Name</FormLabel>
@@ -350,7 +396,7 @@ function RegistrationForm({
             />
             <FormField
               control={form.control}
-              name="relationship"
+              name="contact_relationship"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Relationship</FormLabel>
@@ -379,7 +425,7 @@ function RegistrationForm({
             />
             <FormField
               control={form.control}
-              name="avatar"
+              name="contact_avatar"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Avatar</FormLabel>
@@ -405,28 +451,18 @@ function RegistrationForm({
                 </FormItem>
               )}
             />
+            <div className="flex items-center gap-3">
+              <Button
+                variant={'secondary'}
+                onClick={() => {
+                  setFormStep(1);
+                }}
+              >
+                Go Back
+              </Button>
+              <Button type="submit">{buttonLabel}</Button>
+            </div>
           </>
-        )}
-        {formStep === 1 ? (
-          <Button
-            onClick={() => {
-              setFormStep(2);
-            }}
-          >
-            Next
-          </Button>
-        ) : (
-          <div className="flex items-center gap-3">
-            <Button
-              variant={'secondary'}
-              onClick={() => {
-                setFormStep(1);
-              }}
-            >
-              Go Back
-            </Button>
-            <Button type="submit">{buttonLabel}</Button>
-          </div>
         )}
       </form>
     </Form>

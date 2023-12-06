@@ -1,18 +1,35 @@
 'use client';
 
 import PaypalButtons from '@/providers/PaypalButtons';
-import { useSession } from 'next-auth/react';
 import { trpc } from '@/app/_trpc/client';
 import { useToast } from './ui/use-toast';
-import { useSubscriptionsStore } from '@/store/store';
+import { Session } from 'next-auth';
+import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
+import { useEffect } from 'react';
 
-function PaypalButtonsWrapper({ plan_id }: { plan_id: string }) {
-  const { data: session } = useSession();
-  if (!session) return;
-
+function PaypalButtonsWrapper({
+  session,
+  plan_id,
+  type,
+}: {
+  session: Session | null;
+  plan_id: string;
+  type: string;
+}) {
   const { toast } = useToast();
-
   const utils = trpc.useContext();
+
+  const [{ options }, dispatch] = usePayPalScriptReducer();
+
+  useEffect(() => {
+    dispatch({
+      type: 'resetOptions',
+      value: {
+        ...options,
+        intent: 'subscription',
+      },
+    });
+  }, [type]);
 
   const {
     mutate: updateUser,
@@ -46,10 +63,11 @@ function PaypalButtonsWrapper({ plan_id }: { plan_id: string }) {
       onApprove={async (data) => {
         if (!data.subscriptionID) return;
 
-        updateUser({
-          id: session.user.id,
-          subscription_id: data.subscriptionID,
-        });
+        if (session)
+          updateUser({
+            id: session.user.id,
+            subscription_id: data.subscriptionID,
+          });
 
         if (isLoading)
           toast({

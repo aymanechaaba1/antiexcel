@@ -16,7 +16,12 @@ import { useState } from 'react';
 import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
 import { useSession } from 'next-auth/react';
-import { getFilename, getUploadTask, uploadFile } from '@/lib/utils';
+import {
+  getFilename,
+  getUploadTask,
+  uploadContactAvatar,
+  uploadFile,
+} from '@/lib/utils';
 import {
   StorageError,
   UploadTaskSnapshot,
@@ -32,7 +37,8 @@ function CreateButton() {
   const utils = trpc.useContext();
 
   const [open, setOpen] = useState(false);
-  const [_, setDownloadUrl] = useState('');
+  const [studentAvatar, setStudentAvatar] = useState('');
+  const [contactAvatar, setContactAvatar] = useState('');
   const [progress, setProgress] = useState(0);
 
   const { data: session } = useSession();
@@ -40,14 +46,13 @@ function CreateButton() {
   const { subscription } = useSubscriptionsStore((state) => state);
 
   if (!session) return;
-  const { data: user, isLoading: loadingUser } = trpc.getUser.useQuery({
+  const { data: user } = trpc.getUser.useQuery({
     id: session.user.id,
   });
 
-  const { data: teachers, isLoading: loadingTeachers } =
-    trpc.getTeachers.useQuery({
-      user_id: session.user.id,
-    });
+  const { data: teachers } = trpc.getTeachers.useQuery({
+    user_id: session.user.id,
+  });
 
   const addStudent = trpc.addStudent.useMutation({
     onSuccess: () => {
@@ -89,7 +94,7 @@ function CreateButton() {
 
     const fileName = getFilename(values.avatar.name);
 
-    const uploadTask = getUploadTask(`avatars/${fileName}`, values.avatar);
+    const uploadTask = getUploadTask(`students/${fileName}`, values.avatar);
 
     const onSnapshot = (snapshot: UploadTaskSnapshot) => {
       const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
@@ -105,19 +110,31 @@ function CreateButton() {
       // Handle successful uploads on complete
       // For instance, get the download URL:
       const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-      setDownloadUrl(downloadURL);
-
-      addStudent.mutate({
-        ...values,
-        birthdate: values.birthdate.toISOString(),
-        avatar: downloadURL,
-        user_id: session.user.id,
-      });
-
-      setOpen(false);
+      if (downloadURL) setStudentAvatar(downloadURL);
     };
 
-    uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
+    // upload contact
+    uploadContactAvatar(values, setProgress, setContactAvatar, () => {
+      // upload student
+      uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
+
+      if (studentAvatar && contactAvatar)
+        addStudent.mutate({
+          ...values,
+          birthdate: values.birthdate.toISOString(),
+          avatar: studentAvatar,
+          user_id: session.user.id,
+          contact: {
+            email: values.contact_email,
+            phone: values.contact_phone,
+            name: values.contact_name,
+            relationship: values.contact_relationship,
+            avatar: contactAvatar,
+          },
+        });
+
+      // setOpen(false);
+    });
   };
 
   return (

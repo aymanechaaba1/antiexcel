@@ -6,7 +6,7 @@ import { Separator } from './ui/separator';
 import { Button } from './ui/button';
 import { useSubscriptionsStore } from '@/store/store';
 import Link from 'next/link';
-import { plans, product } from '@/plans';
+import { plans } from '@/plans';
 import { signIn, useSession } from 'next-auth/react';
 import Section from './Section';
 import CheckoutButton from './CheckoutButton';
@@ -90,7 +90,7 @@ function Pricing() {
               Sign In
             </Button>
           ) : session && !subscription ? (
-            <CheckoutButton />
+            <CheckoutButton session={session} />
           ) : (
             <Button asChild>
               <Link href={`/dashboard`}>Dashboard</Link>

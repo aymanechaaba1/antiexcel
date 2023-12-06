@@ -128,6 +128,11 @@ export const appRouter = router({
           grade: input.grade,
           school: input.school,
           avatar: input.avatar,
+          contact: {
+            create: {
+              ...input.contact,
+            },
+          },
           teacher: {
             connect: {
               id: input.teacher_id,

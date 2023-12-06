@@ -1,12 +1,12 @@
 'use client';
 
-import { useSubscriptionsStore } from '@/store/store';
-import { formatDate } from '@/lib/utils';
+import { useAccessToken, useSubscriptionsStore } from '@/store/store';
+import { fetchNewAccessToken, formatDate } from '@/lib/utils';
 import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import Link from 'next/link';
+import { useEffect } from 'react';
 
 function SubscriptionDetails() {
+  const { setAccessToken } = useAccessToken((state) => state);
   const subscription = useSubscriptionsStore((state) => state.subscription);
 
   if (subscription)

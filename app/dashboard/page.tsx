@@ -36,8 +36,10 @@ async function DashboardPage() {
         <SubjectsDonutChart session={session} teachers={teachers} />
       </div>
       <div className="flex flex-col md:flex-row gap-4 md:items-center">
-        <LatestStudents students={students} />
-        <LatestTeachers session={session} teachers={teachers} />
+        {students.length !== 0 && <LatestStudents students={students} />}
+        {teachers.length !== 0 && (
+          <LatestTeachers session={session} teachers={teachers} />
+        )}
       </div>
     </div>
   );

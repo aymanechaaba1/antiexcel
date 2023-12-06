@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { Button } from './ui/button';
 import PaypalButtonsWrapper from './PaypalButtonsWrapper';
+import { Session } from 'next-auth';
 
-function CheckoutButton() {
+function CheckoutButton({ session }: { session: Session | null }) {
   const [showPaypalButtons, setShowPaypalButtons] = useState(false);
 
   return (
@@ -19,7 +20,11 @@ function CheckoutButton() {
         </Button>
       )}
       {showPaypalButtons && (
-        <PaypalButtonsWrapper plan_id="P-15386790JC4273459MVVQI6A" />
+        <PaypalButtonsWrapper
+          session={session}
+          plan_id="P-15386790JC4273459MVVQI6A"
+          type="subscription"
+        />
       )}
     </>
   );

@@ -2,6 +2,7 @@ import { type ClassValue, clsx } from 'clsx';
 import {
   StorageError,
   UploadTaskSnapshot,
+  getDownloadURL,
   uploadBytesResumable,
 } from 'firebase/storage';
 import { twMerge } from 'tailwind-merge';
@@ -9,6 +10,9 @@ import { ref } from 'firebase/storage';
 import { storage } from './firebase';
 import { serverClient } from '@/app/_trpc/serverClient';
 import { PayPalAccessTokenResponse } from '@/types/paypal-accesstoken-response';
+import { contactFormSchema, formSchema } from '@/zod/schemas';
+import { z } from 'zod';
+import { Dispatch, SetStateAction } from 'react';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -103,4 +107,43 @@ export const fetchNewAccessToken = async () => {
   const data: PayPalAccessTokenResponse = await res.json();
 
   return data;
+};
+
+export const uploadContactAvatar = (
+  values: z.infer<typeof formSchema>,
+  setProgress: Dispatch<SetStateAction<number>>,
+  setContactAvatar: Dispatch<SetStateAction<string>>,
+  fn: () => void
+) => {
+  if (values.contact_avatar) {
+    // upload file
+    const fileName = getFilename(values.contact_avatar.name);
+
+    const uploadTask = getUploadTask(
+      `contacts/${fileName}`,
+      values.contact_avatar
+    );
+
+    const onSnapshot = (snapshot: UploadTaskSnapshot) => {
+      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+      setProgress(progress);
+    };
+
+    const onError = (error: StorageError) => {
+      // Handle unsuccessful uploads
+      console.error(`Upload was unsuccessful. ${error.message}`);
+    };
+
+    const onSuccess = async () => {
+      // Handle successful uploads on complete
+      // For instance, get the download URL:
+      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+      if (downloadURL) setContactAvatar(downloadURL);
+
+      // mutate
+      fn();
+    };
+
+    uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
+  }
 };

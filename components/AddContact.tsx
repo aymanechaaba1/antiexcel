@@ -58,41 +58,6 @@ function AddContactForm({ student_id }: { student_id: string }) {
 
   async function onSubmit(values: z.infer<typeof contactFormSchema>) {
     console.log(values);
-
-    // if (values.avatar) {
-    //   // upload file
-    //   const fileName = getFilename(values.avatar.name);
-
-    //   const uploadTask = getUploadTask(`avatars/${fileName}`, values.avatar);
-
-    //   const onSnapshot = (snapshot: UploadTaskSnapshot) => {
-    //     const progress =
-    //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-    //     setProgress(progress);
-    //   };
-
-    //   const onError = (error: StorageError) => {
-    //     // Handle unsuccessful uploads
-    //     console.error(`Upload was unsuccessful. ${error.message}`);
-    //   };
-
-    //   const onSuccess = async () => {
-    //     // Handle successful uploads on complete
-    //     // For instance, get the download URL:
-    //     const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-
-    // add contact
-    // addContact.mutate({
-    //   ...values,
-    //   avatar: downloadURL,
-    //   student_id,
-    // });
-
-    // setOpen(false);
-    // };
-
-    // uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
-    // }
   }
 
   return (

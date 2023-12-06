@@ -28,7 +28,7 @@ async function StudentsOverview({
 
   const popularGrade = Object.entries(gradesCount)
     .find(([grade, count]) => count === maxCount)
-    ?.at(0) as number;
+    ?.at(0) as string;
 
   return (
     <Section className="space-y-4" title="Students Overview">
@@ -64,10 +64,12 @@ async function StudentsOverview({
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Popular Grade</CardTitle>
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{popularGrade}</div>
-            <p className="text-xs text-muted-foreground"></p>
-          </CardContent>
+          {popularGrade && (
+            <CardContent>
+              <div className="text-2xl font-bold">{popularGrade}</div>
+              <p className="text-xs text-muted-foreground"></p>
+            </CardContent>
+          )}
         </Card>
       </div>
     </Section>
