@@ -19,14 +19,16 @@ async function StudentDetails({ student_id }: { student_id: string }) {
   if (student)
     return (
       <div className="py-4 flex flex-col md:flex-row items-start gap-10">
-        <Image
-          src={student.avatar}
-          alt={student.firstname}
-          width={200}
-          height={200}
-          className="rounded-lg w-96 h-96 object-cover"
-          priority={true}
-        />
+        {student.avatar && (
+          <Image
+            src={student.avatar}
+            alt={student.firstname}
+            width={200}
+            height={200}
+            className="rounded-lg w-96 h-96 object-cover"
+            priority={true}
+          />
+        )}
         <div className="grid grid-cols-2 gap-x-10 gap-y-4 border p-5 rounded-lg">
           <p className="text-gray-500">Firstname</p>
           <p>{upperFirst(student.firstname)}</p>
@@ -51,7 +53,10 @@ async function StudentDetails({ student_id }: { student_id: string }) {
             href={`/teachers/${student.teacher_id}`}
             className="text-blue-500 flex items-center gap-2"
           >
-            <span>{student.teacher?.name}</span>
+            <span>
+              {student.teacher?.gender === 'female' ? 'Ms ' : 'Mr '}
+              {student.teacher?.name}
+            </span>
             <ArrowUpRight className="w-4 h-4" />
           </Link>
           <p className="text-gray-500">Created At</p>
@@ -74,8 +79,13 @@ async function StudentDetails({ student_id }: { student_id: string }) {
           </p>
           <p className="text-gray-500">Contact</p>
           {student.contact ? (
-            <Link prefetch={false} href={`/contact/${student.contact.id}`}>
-              {student.contact.name}
+            <Link
+              prefetch={false}
+              href={`/contacts/${student.contact.id}`}
+              className="text-blue-500 flex items-center gap-2"
+            >
+              <span>{student.contact.name}</span>
+              <ArrowUpRight className="w-4 h-4" />
             </Link>
           ) : (
             <AddContactForm student_id={student_id} />

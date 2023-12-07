@@ -21,7 +21,7 @@ import {
   CommandItem,
 } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { cn, getFilename, getUploadTask, uploadFile } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Select,
@@ -41,6 +41,11 @@ import useCustomForm from '@/hooks/useCustomForm';
 import ProgressBar from './ProgressBar';
 import { FormSchema, formSchema } from '@/zod/schemas';
 import { SelectTeacher } from './SelectTeacher';
+import {
+  StorageError,
+  UploadTaskSnapshot,
+  getDownloadURL,
+} from 'firebase/storage';
 
 export const schools = [
   { label: 'Chkail', value: 'chkail' },
@@ -59,6 +64,7 @@ function RegistrationForm({
   onSubmit,
   progress,
   setProgress,
+  setStudentAvatar,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -67,6 +73,7 @@ function RegistrationForm({
   onSubmit: (values: z.infer<typeof formSchema>) => void;
   progress: number;
   setProgress: Dispatch<SetStateAction<number>>;
+  setStudentAvatar: Dispatch<SetStateAction<string>>;
 }) {
   const [formStep, setFormStep] = useState(1);
 
@@ -331,8 +338,6 @@ function RegistrationForm({
                   'teacher_id',
                 ]);
 
-                console.log(school, teacher_id);
-
                 if (!firstnameState.isDirty || firstnameState.invalid) return;
                 if (!lastnameState.isDirty || lastnameState.invalid) return;
                 if (!birthdateState.isDirty || birthdateState.invalid) return;
@@ -341,7 +346,38 @@ function RegistrationForm({
                 if (!avatarState.isDirty || avatarState.invalid) return;
                 if (!school || !teacher_id) return;
 
-                setFormStep((prev) => prev + 1);
+                // upload student image
+                const avatar: File | Blob = form.getValues('avatar');
+                const fileName = getFilename(avatar.name);
+                const uploadTask = getUploadTask(
+                  `students/${fileName}`,
+                  avatar
+                );
+
+                const onSnapshot = (snapshot: UploadTaskSnapshot) => {
+                  const progress =
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                  setProgress(progress);
+                };
+
+                const onError = (error: StorageError) => {
+                  // Handle unsuccessful uploads
+                  console.error(`Upload was unsuccessful. ${error.message}`);
+                };
+
+                const onSuccess = async () => {
+                  // Handle successful uploads on complete
+                  // For instance, get the download URL:
+                  const downloadURL = await getDownloadURL(
+                    uploadTask.snapshot.ref
+                  );
+                  setStudentAvatar(downloadURL);
+                  setFormStep((prev) => prev + 1);
+                  setProgress(0);
+                };
+
+                // upload student
+                uploadFile(fileName, avatar, onSnapshot, onError, onSuccess);
               }}
             >
               Next

@@ -1,6 +1,6 @@
 import { contactSchema, teacherSchema } from './../zod/schemas';
 import { z } from 'zod';
-import { publicProcedure, router } from './trpc';
+import { privateProcedure, publicProcedure, router } from './trpc';
 import prisma from '@/prisma/prismaClient';
 import { studentSchema } from '@/zod/schemas';
 import { TRPCClientError } from '@trpc/client';
@@ -114,11 +114,14 @@ export const appRouter = router({
         where: {
           user_id: input.user_id,
         },
+        include: {
+          teacher: true,
+        },
       });
     }),
-  addStudent: publicProcedure
+  addStudent: privateProcedure
     .input(studentSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await prisma.student.create({
         data: {
           firstname: input.firstname,
@@ -131,6 +134,11 @@ export const appRouter = router({
           contact: {
             create: {
               ...input.contact,
+              user: {
+                connect: {
+                  id: ctx.user_id,
+                },
+              },
             },
           },
           teacher: {
@@ -140,7 +148,7 @@ export const appRouter = router({
           },
           admin: {
             connect: {
-              id: input.user_id,
+              id: ctx.user_id,
             },
           },
         },
@@ -171,9 +179,9 @@ export const appRouter = router({
         },
       });
     }),
-  addContact: publicProcedure
+  addContact: privateProcedure
     .input(contactSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       await prisma.contact.create({
         data: {
           email: input.email,
@@ -181,17 +189,20 @@ export const appRouter = router({
           name: input.name,
           relationship: input.relationship,
           avatar: input.avatar,
-          student: {
+          user: {
             connect: {
-              id: input.student_id,
+              id: ctx.user_id,
             },
           },
         },
+        include: {
+          students: true,
+        },
       });
     }),
-  addTeacher: publicProcedure
+  addTeacher: privateProcedure
     .input(teacherSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       await prisma.teacher.create({
         data: {
           email: input.email,
@@ -199,30 +210,25 @@ export const appRouter = router({
           name: input.name,
           subject: input.subject,
           avatar: input.avatar,
+          gender: input.gender,
           user: {
             connect: {
-              id: input.user_id,
+              id: ctx.user_id,
             },
           },
         },
       });
     }),
-  getTeachers: publicProcedure
-    .input(
-      z.object({
-        user_id: z.string().cuid(),
-      })
-    )
-    .query(async ({ input }) => {
-      return await prisma.teacher.findMany({
-        where: {
-          user_id: input.user_id,
-        },
-        include: {
-          students: true,
-        },
-      });
-    }),
+  getTeachers: privateProcedure.query(async ({ ctx }) => {
+    return await prisma.teacher.findMany({
+      where: {
+        user_id: ctx.user_id,
+      },
+      include: {
+        students: true,
+      },
+    });
+  }),
   getTeacher: publicProcedure
     .input(
       z.object({
@@ -293,6 +299,29 @@ export const appRouter = router({
         );
       const subscription: Subscription = await res.json();
       return subscription;
+    }),
+  getContacts: privateProcedure.query(async ({ ctx }) => {
+    return await prisma.contact.findMany({
+      where: {
+        user_id: ctx.user_id,
+      },
+    });
+  }),
+  getContact: privateProcedure
+    .input(
+      z.object({
+        id: z.string().cuid(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await prisma.contact.findFirst({
+        where: {
+          id: input.id,
+        },
+        include: {
+          students: true,
+        },
+      });
     }),
 });
 

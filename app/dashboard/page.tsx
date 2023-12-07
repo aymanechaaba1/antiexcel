@@ -18,9 +18,7 @@ async function DashboardPage() {
     user_id: session.user.id,
   });
 
-  const teachers = await serverClient.getTeachers({
-    user_id: session.user.id,
-  });
+  const teachers = await serverClient.getTeachers();
 
   return (
     <div className="space-y-4">

@@ -44,6 +44,7 @@ model User {
   sessions        Session[]
   students        Student[]
   teachers        Teacher[]
+  contacts        Contact[]
   subscription_id String?   @unique
 }
 
@@ -68,9 +69,10 @@ model Student {
   avatar     String
   admin      User      @relation(fields: [user_id], references: [id])
   user_id    String
-  teacher    Teacher?   @relation(fields: [teacher_id], references: [id])
+  teacher    Teacher?  @relation(fields: [teacher_id], references: [id])
   teacher_id String
-  contact    Contact?
+  contact    Contact   @relation(fields: [contact_id], references: [id])
+  contact_id String
 }
 
 model Contact {
@@ -82,8 +84,9 @@ model Contact {
   name         String
   relationship String
   avatar       String?
-  student      Student   @relation(fields: [student_id], references: [id])
-  student_id   String    @unique
+  students     Student[]
+  user         User      @relation(fields: [user_id], references: [id])
+  user_id      String
 }
 
 model Teacher {
@@ -93,6 +96,7 @@ model Teacher {
   email      String    @unique
   phone      String?   @unique
   name       String
+  gender     String
   avatar     String?
   subject    String
   students   Student[]

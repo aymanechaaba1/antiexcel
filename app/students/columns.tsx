@@ -122,9 +122,7 @@ export const columns: ColumnDef<
     cell: ({ row }) => {
       const { data: session } = useSession();
       if (!session) return;
-      const { data: teachers } = trpc.getTeachers.useQuery({
-        user_id: session.user.id,
-      });
+      const { data: teachers } = trpc.getTeachers.useQuery();
       if (!teachers) return;
 
       const teachersCombo = [
@@ -231,6 +229,14 @@ export const columns: ColumnDef<
               <DropdownMenuItem>
                 <Link prefetch={false} href={`/students/${student?.id}`}>
                   View student
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link
+                  prefetch={false}
+                  href={`/contacts/${student?.contact_id}`}
+                >
+                  View contact
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem

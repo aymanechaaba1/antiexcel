@@ -10,7 +10,7 @@ import { ref } from 'firebase/storage';
 import { storage } from './firebase';
 import { serverClient } from '@/app/_trpc/serverClient';
 import { PayPalAccessTokenResponse } from '@/types/paypal-accesstoken-response';
-import { contactFormSchema, formSchema } from '@/zod/schemas';
+import { formSchema } from '@/zod/schemas';
 import { z } from 'zod';
 import { Dispatch, SetStateAction } from 'react';
 
@@ -114,36 +114,28 @@ export const uploadContactAvatar = (
   setProgress: Dispatch<SetStateAction<number>>,
   setContactAvatar: Dispatch<SetStateAction<string>>,
   fn: () => void
-) => {
-  if (values.contact_avatar) {
-    // upload file
-    const fileName = getFilename(values.contact_avatar.name);
+) => {};
 
-    const uploadTask = getUploadTask(
-      `contacts/${fileName}`,
-      values.contact_avatar
-    );
+export const hideId = (id: string) => id.slice(0, 4).padEnd(id.length, '*');
 
-    const onSnapshot = (snapshot: UploadTaskSnapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      setProgress(progress);
-    };
+// upload contact
+// uploadContactAvatar(values, setProgress, setContactAvatar, () => {
+//   console.log(studentAvatar);
+//   console.log(contactAvatar);
 
-    const onError = (error: StorageError) => {
-      // Handle unsuccessful uploads
-      console.error(`Upload was unsuccessful. ${error.message}`);
-    };
-
-    const onSuccess = async () => {
-      // Handle successful uploads on complete
-      // For instance, get the download URL:
-      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-      if (downloadURL) setContactAvatar(downloadURL);
-
-      // mutate
-      fn();
-    };
-
-    uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
-  }
-};
+//   if (studentAvatar && contactAvatar) {
+//     addStudent.mutate({
+//       ...values,
+//       birthdate: values.birthdate.toISOString(),
+//       avatar: studentAvatar,
+//       contact: {
+//         email: values.contact_email,
+//         phone: values.contact_phone,
+//         name: values.contact_name,
+//         relationship: values.contact_relationship,
+//         avatar: contactAvatar,
+//       },
+//     });
+//     // setOpen(false);
+//   }
+// });

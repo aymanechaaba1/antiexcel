@@ -33,7 +33,7 @@ function TeacherDetails({ teacher_id }: { teacher_id: string }) {
           className="rounded-lg w-full md:w-auto"
         />
         <div className="space-y-4 w-full">
-          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 border p-5 rounded-lg ">
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 border p-5 rounded-lg">
             <p className="text-gray-500">Name</p>
             <p>{upperFirst(teacher.name)}</p>
             <p className="text-gray-500">Email</p>

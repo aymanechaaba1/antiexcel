@@ -65,7 +65,7 @@ export const contactSchema = z.object({
   phone: z.string().min(10).max(14),
   name: z.string().min(3).max(10),
   relationship: z.string(),
-  avatar: z.string(),
+  avatar: z.string().optional(),
   student_id: z.string().cuid().optional(),
 });
 export type Contact = z.infer<typeof contactSchema>;
@@ -103,7 +103,6 @@ export const studentSchema = z.object({
   avatar: z.string({
     invalid_type_error: 'avatar/picture must be a string.',
   }),
-  user_id: z.string().cuid(),
   teacher_id: z.string().cuid(),
   contact: contactSchema,
 });
@@ -113,6 +112,7 @@ export const teacherFormSchema = z.object({
   email: z.string().email(),
   phone: z.string().min(10).max(14),
   name: z.string().min(3),
+  gender: z.string(),
   avatar: z.instanceof(File).optional(),
   subject: z.string().min(3),
 });
@@ -124,9 +124,9 @@ export const teacherSchema = z.object({
   email: z.string().email(),
   phone: z.string().min(10).max(14).optional(),
   name: z.string().min(3),
+  gender: z.string(),
   avatar: z.string().optional(),
   subject: z.string(),
-  user_id: z.string().cuid(),
 });
 export type Teacher = z.infer<typeof teacherSchema>;
 

@@ -1,17 +1,21 @@
 import CreateButton from '@/components/CreateButton';
-
-import { serverClient } from '../_trpc/serverClient';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { DataTable } from './data-table';
-import { columns } from './columns';
 import StudentsTable from '@/components/StudentsTable';
+import { serverClient } from '../_trpc/serverClient';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
-function StudentsPage() {
+async function StudentsPage() {
+  const teachers = await serverClient.getTeachers();
+
   return (
     <>
-      <CreateButton />
+      {teachers.length !== 0 ? (
+        <CreateButton />
+      ) : (
+        <Button asChild>
+          <Link href={`/teachers`}>Add a Teacher</Link>
+        </Button>
+      )}
       <StudentsTable />
     </>
   );

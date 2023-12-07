@@ -50,9 +50,7 @@ function CreateButton() {
     id: session.user.id,
   });
 
-  const { data: teachers } = trpc.getTeachers.useQuery({
-    user_id: session.user.id,
-  });
+  const { data: teachers } = trpc.getTeachers.useQuery();
 
   const addStudent = trpc.addStudent.useMutation({
     onSuccess: () => {
@@ -92,49 +90,38 @@ function CreateButton() {
       });
     }
 
-    const fileName = getFilename(values.avatar.name);
+    if (values.contact_avatar) {
+      // upload file
+      const fileName = getFilename(values.contact_avatar.name);
 
-    const uploadTask = getUploadTask(`students/${fileName}`, values.avatar);
+      const uploadTask = getUploadTask(
+        `contacts/${fileName}`,
+        values.contact_avatar
+      );
 
-    const onSnapshot = (snapshot: UploadTaskSnapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      setProgress(progress);
-    };
+      const onSnapshot = (snapshot: UploadTaskSnapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setProgress(progress);
+      };
 
-    const onError = (error: StorageError) => {
-      // Handle unsuccessful uploads
-      console.error(`Upload was unsuccessful. ${error.message}`);
-    };
+      const onError = (error: StorageError) => {
+        // Handle unsuccessful uploads
+        console.error(`Upload was unsuccessful. ${error.message}`);
+      };
 
-    const onSuccess = async () => {
-      // Handle successful uploads on complete
-      // For instance, get the download URL:
-      const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-      if (downloadURL) setStudentAvatar(downloadURL);
-    };
+      const onSuccess = async () => {
+        // Handle successful uploads on complete
+        // For instance, get the download URL:
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        setContactAvatar(downloadURL);
 
-    // upload contact
-    uploadContactAvatar(values, setProgress, setContactAvatar, () => {
-      // upload student
+        // mutate or console log values
+        console.log(studentAvatar, contactAvatar);
+      };
+
       uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
-
-      if (studentAvatar && contactAvatar)
-        addStudent.mutate({
-          ...values,
-          birthdate: values.birthdate.toISOString(),
-          avatar: studentAvatar,
-          user_id: session.user.id,
-          contact: {
-            email: values.contact_email,
-            phone: values.contact_phone,
-            name: values.contact_name,
-            relationship: values.contact_relationship,
-            avatar: contactAvatar,
-          },
-        });
-
-      // setOpen(false);
-    });
+    }
   };
 
   return (
@@ -157,6 +144,7 @@ function CreateButton() {
             setOpen={setOpen}
             progress={progress}
             setProgress={setProgress}
+            setStudentAvatar={setStudentAvatar}
           />
         </DialogContent>
       </Dialog>

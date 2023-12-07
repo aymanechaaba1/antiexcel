@@ -50,6 +50,13 @@ import { useSubscriptionsStore } from '@/store/store';
 import { useToast } from './ui/use-toast';
 import { ToastAction } from './ui/toast';
 import Link from 'next/link';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
 export const subjects = [
   { label: 'English', value: 'english' },
@@ -93,7 +100,7 @@ function AddTeacher() {
   const { subscription } = useSubscriptionsStore((state) => state);
 
   if (!session) return;
-  const { data: user, isLoading: loadingUser } = trpc.getUser.useQuery({
+  const { data: user } = trpc.getUser.useQuery({
     id: session.user.id,
   });
 
@@ -140,7 +147,6 @@ function AddTeacher() {
       addTeacher.mutate({
         ...values,
         avatar: url,
-        user_id: session.user.id,
       });
 
       form.reset();
@@ -189,6 +195,33 @@ function AddTeacher() {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Gender</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {['Male', 'Female'].map((gender) => (
+                          <SelectItem value={gender.toLowerCase()}>
+                            {gender}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

@@ -1,5 +1,6 @@
 'use client';
 
+import { hideId } from '@/lib/utils';
 import { Badge } from './ui/badge';
 
 function Plan({ plan }: { plan: Plan }) {
@@ -25,7 +26,7 @@ function Plan({ plan }: { plan: Plan }) {
         <p className="text-gray-400">Plan Description</p>
         <p>{plan.description}</p>
         <p className="text-gray-400">Plan ID</p>
-        <p>{plan.id}</p>
+        <p>{hideId(plan.id)}</p>
       </div>
     </>
   );
