@@ -1,8 +1,5 @@
 import SignInButton from '@/components/SignInButton';
-import { Button } from '@/components/ui/button';
-import { Github } from 'lucide-react';
-import { getProviders, signIn } from 'next-auth/react';
-import { useState } from 'react';
+import { getProviders } from 'next-auth/react';
 
 async function SignInPage() {
   const providers = await getProviders();

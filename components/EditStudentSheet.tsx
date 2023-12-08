@@ -12,7 +12,6 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import NativeForm from './NativeForm';
-import { Student } from '@/zod/schemas';
 import { serverClient } from '@/app/_trpc/serverClient';
 
 function EditStudentSheet({

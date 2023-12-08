@@ -57,6 +57,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
+import { serverClient } from '@/app/_trpc/serverClient';
 
 export const subjects = [
   { label: 'English', value: 'english' },
@@ -70,11 +71,12 @@ export const subjects = [
   { label: 'Geography', value: 'geography' },
 ] as const;
 
-type Checked = DropdownMenuCheckboxItemProps['checked'];
-
-function AddTeacher() {
+function AddTeacher({
+  user,
+}: {
+  user: Awaited<ReturnType<(typeof serverClient)['getUser']>>;
+}) {
   const utils = trpc.useContext();
-  const { data: session } = useSession();
 
   const [form] = useCustomForm({
     formSchema: teacherFormSchema,
@@ -98,11 +100,6 @@ function AddTeacher() {
   const { toast } = useToast();
 
   const { subscription } = useSubscriptionsStore((state) => state);
-
-  if (!session) return;
-  const { data: user } = trpc.getUser.useQuery({
-    id: session.user.id,
-  });
 
   function onSubmit(values: z.infer<typeof teacherFormSchema>) {
     // !subscription && user.students === 3 => return toast notification
@@ -143,7 +140,6 @@ function AddTeacher() {
       // For instance, get the download URL:
       const url = await getDownloadURL(uploadTask.snapshot.ref);
 
-      if (!session) return;
       addTeacher.mutate({
         ...values,
         avatar: url,

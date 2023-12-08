@@ -50,36 +50,29 @@ export const updateStudentSchema = z.object({
 });
 
 export const appRouter = router({
-  getUser: publicProcedure
+  getUser: privateProcedure.query(async ({ ctx }) => {
+    return await prisma.user.findUnique({
+      where: {
+        id: ctx.user_id,
+      },
+      include: {
+        accounts: true,
+        sessions: true,
+        students: true,
+        teachers: true,
+      },
+    });
+  }),
+  updateUser: privateProcedure
     .input(
       z.object({
-        id: z.string().cuid(),
-      })
-    )
-    .query(async ({ input }) => {
-      return await prisma.user.findUnique({
-        where: {
-          id: input.id,
-        },
-        include: {
-          accounts: true,
-          sessions: true,
-          students: true,
-          teachers: true,
-        },
-      });
-    }),
-  updateUser: publicProcedure
-    .input(
-      z.object({
-        id: z.string().cuid(),
         subscription_id: z.string().startsWith('I-').nullable(),
       })
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       await prisma.user.update({
         where: {
-          id: input.id,
+          id: ctx.user_id,
         },
         data: {
           subscription_id: input.subscription_id,
@@ -103,22 +96,16 @@ export const appRouter = router({
         },
       });
     }),
-  getStudents: publicProcedure
-    .input(
-      z.object({
-        user_id: z.string().cuid(),
-      })
-    )
-    .query(async ({ input }) => {
-      return await prisma.student.findMany({
-        where: {
-          user_id: input.user_id,
-        },
-        include: {
-          teacher: true,
-        },
-      });
-    }),
+  getStudents: privateProcedure.query(async ({ ctx }) => {
+    return await prisma.student.findMany({
+      where: {
+        user_id: ctx.user_id,
+      },
+      include: {
+        teacher: true,
+      },
+    });
+  }),
   addStudent: privateProcedure
     .input(studentSchema)
     .mutation(async ({ ctx, input }) => {
@@ -304,6 +291,9 @@ export const appRouter = router({
     return await prisma.contact.findMany({
       where: {
         user_id: ctx.user_id,
+      },
+      include: {
+        students: true,
       },
     });
   }),

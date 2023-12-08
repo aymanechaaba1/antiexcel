@@ -2,7 +2,6 @@ import { type ClassValue, clsx } from 'clsx';
 import {
   StorageError,
   UploadTaskSnapshot,
-  getDownloadURL,
   uploadBytesResumable,
 } from 'firebase/storage';
 import { twMerge } from 'tailwind-merge';
@@ -117,25 +116,3 @@ export const uploadContactAvatar = (
 ) => {};
 
 export const hideId = (id: string) => id.slice(0, 4).padEnd(id.length, '*');
-
-// upload contact
-// uploadContactAvatar(values, setProgress, setContactAvatar, () => {
-//   console.log(studentAvatar);
-//   console.log(contactAvatar);
-
-//   if (studentAvatar && contactAvatar) {
-//     addStudent.mutate({
-//       ...values,
-//       birthdate: values.birthdate.toISOString(),
-//       avatar: studentAvatar,
-//       contact: {
-//         email: values.contact_email,
-//         phone: values.contact_phone,
-//         name: values.contact_name,
-//         relationship: values.contact_relationship,
-//         avatar: contactAvatar,
-//       },
-//     });
-//     // setOpen(false);
-//   }
-// });

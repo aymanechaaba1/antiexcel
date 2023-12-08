@@ -13,12 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  formatDate,
-  formatUnderscore,
-  getAvatarName,
-  upperFirst,
-} from '@/lib/utils';
+import { formatDate, getAvatarName, upperFirst } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';

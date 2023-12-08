@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 async function StudentsPage() {
+  const user = await serverClient.getUser();
   const teachers = await serverClient.getTeachers();
 
   return (
     <>
       {teachers.length !== 0 ? (
-        <CreateButton />
+        <CreateButton user={user} teachers={teachers} />
       ) : (
         <Button asChild>
           <Link href={`/teachers`}>Add a Teacher</Link>

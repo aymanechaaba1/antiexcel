@@ -16,12 +16,8 @@ import {
 import { useToast } from './ui/use-toast';
 import Link from 'next/link';
 import { trpc } from '@/app/_trpc/client';
-import { useSession } from 'next-auth/react';
 
 function SubscriptionActions() {
-  const { data: session } = useSession();
-  if (!session) return;
-
   const { subscription } = useSubscriptionsStore((state) => state);
 
   const { toast } = useToast();
@@ -61,7 +57,6 @@ function SubscriptionActions() {
     }
 
     updateUser({
-      id: session.user.id,
       subscription_id: null,
     });
 
@@ -97,7 +92,6 @@ function SubscriptionActions() {
       });
 
     updateUser({
-      id: session.user.id,
       subscription_id: null,
     });
 

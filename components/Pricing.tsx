@@ -7,13 +7,12 @@ import { Button } from './ui/button';
 import { useSubscriptionsStore } from '@/store/store';
 import Link from 'next/link';
 import { plans } from '@/plans';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import Section from './Section';
 import CheckoutButton from './CheckoutButton';
+import { Session } from 'next-auth';
 
-function Pricing() {
-  const { data: session } = useSession();
-
+function Pricing({ session }: { session: Session | null }) {
   const { subscription } = useSubscriptionsStore((state) => state);
 
   return (
@@ -92,9 +91,12 @@ function Pricing() {
           ) : session && !subscription ? (
             <CheckoutButton session={session} />
           ) : (
-            <Button asChild>
-              <Link href={`/dashboard`}>Dashboard</Link>
-            </Button>
+            <>
+              <p className="text-gray-500 text-xs">You're a PRO memeber!</p>
+              <Button asChild>
+                <Link href={`/dashboard`}>Dashboard</Link>
+              </Button>
+            </>
           )}
         </Card>
       </div>

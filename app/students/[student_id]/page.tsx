@@ -10,17 +10,12 @@ async function StudentPage({
   const student = await serverClient.getStudent({
     id: student_id,
   });
-
   if (!student) return;
-
-  const defaultValues = {
-    ...student,
-  };
 
   return (
     <>
-      <EditSheet id={student_id} defaultValues={defaultValues} />
-      <StudentDetails student_id={student_id} />
+      <EditSheet id={student_id} defaultValues={student} />
+      <StudentDetails student={student} />
     </>
   );
 }

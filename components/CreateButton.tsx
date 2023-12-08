@@ -26,39 +26,48 @@ import {
   StorageError,
   UploadTaskSnapshot,
   getDownloadURL,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
 } from 'firebase/storage';
 import { formSchema } from '@/zod/schemas';
 import { useSubscriptionsStore } from '@/store/store';
 import { useToast } from './ui/use-toast';
 import { ToastAction } from './ui/toast';
 import Link from 'next/link';
+import { storage } from '@/lib/firebase';
+import { Session } from 'next-auth';
+import { serverClient } from '@/app/_trpc/serverClient';
 
-function CreateButton() {
+function CreateButton({
+  user,
+  teachers,
+}: {
+  user: Awaited<ReturnType<(typeof serverClient)['getUser']>>;
+  teachers: Awaited<ReturnType<(typeof serverClient)['getTeachers']>>;
+}) {
   const utils = trpc.useContext();
+  const { toast } = useToast();
 
   const [open, setOpen] = useState(false);
   const [studentAvatar, setStudentAvatar] = useState('');
-  const [contactAvatar, setContactAvatar] = useState('');
   const [progress, setProgress] = useState(0);
 
-  const { data: session } = useSession();
-
   const { subscription } = useSubscriptionsStore((state) => state);
-
-  if (!session) return;
-  const { data: user } = trpc.getUser.useQuery({
-    id: session.user.id,
-  });
-
-  const { data: teachers } = trpc.getTeachers.useQuery();
 
   const addStudent = trpc.addStudent.useMutation({
     onSuccess: () => {
       utils.getStudents.invalidate();
+      return toast({
+        title: 'Student uploaded successfully.',
+      });
+    },
+    onMutate: () => {
+      return toast({
+        title: `Adding student...`,
+      });
     },
   });
-
-  const { toast } = useToast();
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     // !subscription && user.students === 3 => return toast notification
@@ -92,35 +101,48 @@ function CreateButton() {
 
     if (values.contact_avatar) {
       // upload file
-      const fileName = getFilename(values.contact_avatar.name);
+      const storageRef = ref(storage);
+      const imagesRef = ref(storage, 'images');
+      const imageRef = ref(storage, `images/${values.contact_avatar.name}`);
 
-      const uploadTask = getUploadTask(
-        `contacts/${fileName}`,
-        values.contact_avatar
+      const uploadTask = uploadBytesResumable(imageRef, values.contact_avatar);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setProgress(progress);
+        },
+        (error) => {
+          return toast({
+            title: 'Upload was unsuccessful.',
+            description: `${error.message}`,
+          });
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            toast({
+              title: 'Image uploaded successfuly.',
+              description: `Url: ${downloadURL}`,
+            });
+            addStudent.mutate({
+              ...values,
+              birthdate: values.birthdate.toISOString(),
+              avatar: studentAvatar,
+              contact: {
+                email: values.contact_email,
+                phone: values.contact_phone,
+                name: values.contact_name,
+                relationship: values.contact_relationship,
+                avatar: downloadURL,
+              },
+            });
+          });
+          setOpen(false);
+          setProgress(0);
+        }
       );
-
-      const onSnapshot = (snapshot: UploadTaskSnapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(progress);
-      };
-
-      const onError = (error: StorageError) => {
-        // Handle unsuccessful uploads
-        console.error(`Upload was unsuccessful. ${error.message}`);
-      };
-
-      const onSuccess = async () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL:
-        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-        setContactAvatar(downloadURL);
-
-        // mutate or console log values
-        console.log(studentAvatar, contactAvatar);
-      };
-
-      uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
     }
   };
 

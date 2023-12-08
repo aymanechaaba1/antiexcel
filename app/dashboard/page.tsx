@@ -14,10 +14,7 @@ async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const students = await serverClient.getStudents({
-    user_id: session.user.id,
-  });
-
+  const students = await serverClient.getStudents();
   const teachers = await serverClient.getTeachers();
 
   return (
@@ -29,11 +26,11 @@ async function DashboardPage() {
         students={students}
         teachers={teachers}
       />
-      <div className="flex flex-col md:flex-row gap-4 md:items-center">
+      <div className="flex flex-col md:flex-row gap-4">
         <GradesDonutChart session={session} students={students} />
         <SubjectsDonutChart session={session} teachers={teachers} />
       </div>
-      <div className="flex flex-col md:flex-row gap-4 md:items-center">
+      <div className="flex flex-col md:flex-row gap-4">
         {students.length !== 0 && <LatestStudents students={students} />}
         {teachers.length !== 0 && (
           <LatestTeachers session={session} teachers={teachers} />

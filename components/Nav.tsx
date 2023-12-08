@@ -1,17 +1,28 @@
+'use client';
+
+import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 function Nav() {
+  const pathname = usePathname();
+
   return (
     <div className="flex items-center gap-3">
-      <Link href={'/dashboard'} className="text-sm dark:text-gray-300">
-        Dashboard
-      </Link>
-      <Link href={'/students'} className="text-sm dark:text-gray-300">
-        Students
-      </Link>
-      <Link href={'/teachers'} className="text-sm dark:text-gray-300">
-        Teachers
-      </Link>
+      {['Dashboard', 'Students', 'Teachers', 'Contacts'].map((link) => {
+        return (
+          <Link
+            href={`/${link.toLowerCase()}`}
+            className={cn('text-sm text-gray-500', {
+              'text-blue-500 font-medium': pathname.includes(
+                `/${link.toLowerCase()}`
+              ),
+            })}
+          >
+            {link}
+          </Link>
+        );
+      })}
     </div>
   );
 }

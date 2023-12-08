@@ -1,5 +1,9 @@
 import Pricing from '@/components/Pricing';
+import { authOptions } from '@/lib/auth';
+import { getServerSession } from 'next-auth';
 
 export default async function Home() {
-  return <Pricing />;
+  const session = await getServerSession(authOptions);
+
+  return <Pricing session={session} />;
 }

@@ -15,10 +15,16 @@ async function LatestStudents({
   );
 
   return (
-    <Section className="p-4 border rounded-lg" title="Latest Students">
-      <div className="space-y-4 max-h-72 overflow-y-scroll">
+    <Section
+      className="p-4 border rounded-lg w-full md:w-2/3"
+      title="Latest Students"
+    >
+      <div className="space-y-4 overflow-y-scroll">
         {studentsSorted.map((student) => (
-          <div key={student.id} className="grid grid-cols-4 items-center gap-4">
+          <div
+            key={student.id}
+            className="flex items-center justify-between gap-4"
+          >
             <Avatar>
               <div className="rounded-full">
                 <AvatarImage
@@ -33,20 +39,20 @@ async function LatestStudents({
                 {getAvatarName(student.firstname, student.lastname)}
               </AvatarFallback>
             </Avatar>
-            <p className="">
+            <p className="flex-1">
               {student.firstname} {student.lastname}
             </p>
             <Link
               href={`/teachers/${student.teacher_id}`}
-              className="text-blue-500 flex items-center gap-2"
+              className="text-blue-500 flex items-center gap-2 flex-1"
             >
-              <span>
+              <span className="">
                 {student.teacher?.gender === 'female' ? 'Ms ' : 'Mr '}
               </span>
               <span>{student.teacher?.name}</span>
               <ArrowUpRight className="w-4 h-4" />
             </Link>
-            <p className="text-gray-500">{upperFirst(student.school)}</p>
+            <p className="text-gray-500 flex-1">{upperFirst(student.school)}</p>
           </div>
         ))}
       </div>

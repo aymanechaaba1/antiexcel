@@ -349,10 +349,7 @@ function RegistrationForm({
                 // upload student image
                 const avatar: File | Blob = form.getValues('avatar');
                 const fileName = getFilename(avatar.name);
-                const uploadTask = getUploadTask(
-                  `students/${fileName}`,
-                  avatar
-                );
+                const uploadTask = getUploadTask(`images/${fileName}`, avatar);
 
                 const onSnapshot = (snapshot: UploadTaskSnapshot) => {
                   const progress =
