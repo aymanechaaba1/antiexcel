@@ -28,7 +28,7 @@ async function TeacherDetailsPage({ params: { teacher_id } }: Params) {
         <div className="my-5 flex items-center justify-end gap-5 rounded-lg py-3 px-2 ">
           <EditTeacher teacher_id={teacher_id} defaultValues={teacher} />
         </div>
-        <TeacherDetails teacher_id={teacher_id} />
+        <TeacherDetails teacher={teacher} />
       </div>
       {teacher.students && teacher.students.length !== 0 && (
         <Suspense fallback={<StudentsListSkeleton />}>

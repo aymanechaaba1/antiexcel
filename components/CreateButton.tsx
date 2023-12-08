@@ -15,28 +15,13 @@ import { useState } from 'react';
 
 import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
-import { useSession } from 'next-auth/react';
-import {
-  getFilename,
-  getUploadTask,
-  uploadContactAvatar,
-  uploadFile,
-} from '@/lib/utils';
-import {
-  StorageError,
-  UploadTaskSnapshot,
-  getDownloadURL,
-  ref,
-  uploadBytes,
-  uploadBytesResumable,
-} from 'firebase/storage';
+import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { formSchema } from '@/zod/schemas';
 import { useSubscriptionsStore } from '@/store/store';
 import { useToast } from './ui/use-toast';
 import { ToastAction } from './ui/toast';
 import Link from 'next/link';
 import { storage } from '@/lib/firebase';
-import { Session } from 'next-auth';
 import { serverClient } from '@/app/_trpc/serverClient';
 
 function CreateButton({

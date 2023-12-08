@@ -65,7 +65,6 @@ function PaypalButtonsWrapper({
 
         if (session)
           updateUser({
-            id: session.user.id,
             subscription_id: data.subscriptionID,
           });
 

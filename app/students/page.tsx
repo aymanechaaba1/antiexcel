@@ -6,6 +6,7 @@ import Link from 'next/link';
 
 async function StudentsPage() {
   const user = await serverClient.getUser();
+  const students = await serverClient.getStudents();
   const teachers = await serverClient.getTeachers();
 
   return (
@@ -17,7 +18,7 @@ async function StudentsPage() {
           <Link href={`/teachers`}>Add a Teacher</Link>
         </Button>
       )}
-      <StudentsTable />
+      <StudentsTable students={students} />
     </>
   );
 }

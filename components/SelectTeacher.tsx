@@ -46,9 +46,7 @@ export function SelectTeacher({
   const { data: session } = useSession();
   if (!session) return;
 
-  const { data: teachers } = trpc.getTeachers.useQuery({
-    user_id: session.user.id,
-  });
+  const { data: teachers } = trpc.getTeachers.useQuery();
   if (!teachers || teachers.length === 0) return;
 
   const teachersCombo = [
