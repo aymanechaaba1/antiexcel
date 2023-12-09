@@ -18,7 +18,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { schools } from './RegistrationForm';
-import { z } from 'zod';
 
 export function ComboboxDemo({
   open,

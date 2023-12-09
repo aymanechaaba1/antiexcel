@@ -8,6 +8,49 @@ export const schoolsEnum = z.enum(
 );
 export type SchoolsEnum = z.infer<typeof schoolsEnum>;
 
+export const updateStudentSchema = z.object({
+  id: z.string().cuid().optional(),
+  created_at: z.date().optional(),
+  updated_at: z.date().optional(),
+  firstname: z
+    .string({
+      invalid_type_error: 'firstname must be a string.',
+    })
+    .min(2, {
+      message: 'firstname must be at least 2 characters.',
+    })
+    .max(50, {
+      message: 'firstname must be 50 characters max.',
+    })
+    .optional(),
+  lastname: z
+    .string({
+      invalid_type_error: 'lastname must be a string.',
+    })
+    .min(2, {
+      message: 'lastname must be at least 2 characters.',
+    })
+    .max(50, {
+      message: 'lastname must be 50 characters max.',
+    })
+    .optional(),
+  birthdate: z.date().optional(),
+  gender: z.string().min(4).max(6).optional(),
+  grade: z
+    .string()
+    .max(1, {
+      message: 'grade must be a number between 1 and 6.',
+    })
+    .optional(),
+  school: z.string().optional(),
+  avatar: z
+    .string({
+      invalid_type_error: 'avatar/picture must be a string.',
+    })
+    .optional(),
+  subscription_id: z.string().optional(),
+});
+
 export const contactFormSchema = z.object({
   id: z.string().cuid().optional(),
   created_at: z.date().nullable(),
@@ -101,7 +144,7 @@ export const studentSchema = z.object({
   birthdate: z.string(),
   school: z.string(),
   avatar: z.string({
-    invalid_type_error: 'avatar/picture must be a string.',
+    invalid_type_error: 'avatar/picture must be a string as url.',
   }),
   teacher_id: z.string().cuid(),
   contact: contactSchema,
@@ -113,7 +156,7 @@ export const teacherFormSchema = z.object({
   phone: z.string().min(10).max(14),
   name: z.string().min(3),
   gender: z.string(),
-  avatar: z.instanceof(File).optional(),
+  avatar: z.instanceof(File),
   subject: z.string().min(3),
 });
 
@@ -125,7 +168,7 @@ export const teacherSchema = z.object({
   phone: z.string().min(10).max(14).optional(),
   name: z.string().min(3),
   gender: z.string(),
-  avatar: z.string().optional(),
+  avatar: z.string(),
   subject: z.string(),
 });
 export type Teacher = z.infer<typeof teacherSchema>;

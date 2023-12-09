@@ -42,9 +42,6 @@ function NativeForm({
 
   const [school, setSchool] = React.useState(defaultValues.school); // school
 
-  const { data: session } = useSession();
-  if (!session) return;
-
   const updateStudentFn = async (
     formData: FormData,
     birthdate: Date,
@@ -60,7 +57,6 @@ function NativeForm({
       school,
       avatar: downloadUrl!,
       id,
-      user_id: session.user.id,
     });
 
     setOpen(false);
@@ -109,8 +105,11 @@ function NativeForm({
               school,
               avatar: downloadUrl!,
               id,
-              user_id: session.user.id,
             });
+
+            setOpen(false);
+            setOpenSheet(false);
+            setProgress(0);
           };
 
           uploadFile(

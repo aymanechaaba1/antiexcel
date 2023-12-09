@@ -1,53 +1,13 @@
-import { contactSchema, teacherSchema } from './../zod/schemas';
+import {
+  contactSchema,
+  teacherSchema,
+  updateStudentSchema,
+} from './../zod/schemas';
 import { z } from 'zod';
 import { privateProcedure, publicProcedure, router } from './trpc';
 import prisma from '@/prisma/prismaClient';
 import { studentSchema } from '@/zod/schemas';
 import { TRPCClientError } from '@trpc/client';
-
-export const updateStudentSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.date().optional(),
-  updated_at: z.date().optional(),
-  firstname: z
-    .string({
-      invalid_type_error: 'firstname must be a string.',
-    })
-    .min(2, {
-      message: 'firstname must be at least 2 characters.',
-    })
-    .max(50, {
-      message: 'firstname must be 50 characters max.',
-    })
-    .optional(),
-  lastname: z
-    .string({
-      invalid_type_error: 'lastname must be a string.',
-    })
-    .min(2, {
-      message: 'lastname must be at least 2 characters.',
-    })
-    .max(50, {
-      message: 'lastname must be 50 characters max.',
-    })
-    .optional(),
-  birthdate: z.date().optional(),
-  gender: z.string().min(4).max(6).optional(),
-  grade: z
-    .string()
-    .max(1, {
-      message: 'grade must be a number between 1 and 6.',
-    })
-    .optional(),
-  school: z.string().optional(),
-  avatar: z
-    .string({
-      invalid_type_error: 'avatar/picture must be a string.',
-    })
-    .optional(),
-  user_id: z.string().cuid(),
-  subscription_id: z.string().optional(),
-});
 
 export const appRouter = router({
   getUser: privateProcedure.query(async ({ ctx }) => {
@@ -106,41 +66,43 @@ export const appRouter = router({
       },
     });
   }),
-  addStudent: privateProcedure
-    .input(studentSchema)
-    .mutation(async ({ ctx, input }) => {
-      return await prisma.student.create({
-        data: {
-          firstname: input.firstname,
-          lastname: input.lastname,
-          birthdate: input.birthdate,
-          gender: input.gender,
-          grade: input.grade,
-          school: input.school,
-          avatar: input.avatar,
-          contact: {
-            create: {
-              ...input.contact,
-              user: {
-                connect: {
-                  id: ctx.user_id,
+  student: router({
+    add: privateProcedure
+      .input(studentSchema)
+      .mutation(async ({ ctx, input }) => {
+        await prisma.student.create({
+          data: {
+            firstname: input.firstname,
+            lastname: input.lastname,
+            birthdate: input.birthdate,
+            gender: input.gender,
+            grade: input.grade,
+            school: input.school,
+            avatar: input.avatar,
+            contact: {
+              create: {
+                ...input.contact,
+                user: {
+                  connect: {
+                    id: ctx.user_id,
+                  },
                 },
               },
             },
-          },
-          teacher: {
-            connect: {
-              id: input.teacher_id,
+            teacher: {
+              connect: {
+                id: input.teacher_id,
+              },
+            },
+            admin: {
+              connect: {
+                id: ctx.user_id,
+              },
             },
           },
-          admin: {
-            connect: {
-              id: ctx.user_id,
-            },
-          },
-        },
-      });
-    }),
+        });
+      }),
+  }),
   deleteStudent: publicProcedure
     .input(
       z.object({
@@ -154,15 +116,15 @@ export const appRouter = router({
         },
       });
     }),
-  updateStudent: publicProcedure
+  updateStudent: privateProcedure
     .input(updateStudentSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ ctx, input }) => {
       return await prisma.student.update({
         data: {
           ...input,
         },
         where: {
-          id: input.id,
+          id: ctx.user_id,
         },
       });
     }),

@@ -1,6 +1,6 @@
 'use client';
 
-import { CreditCard, LogOut, Settings, User } from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -39,11 +39,6 @@ export function UserDropdown() {
         )}
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <User className="mr-2 h-4 w-4" />
-            <Link href={`/profile`}>Profile</Link>
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
           <DropdownMenuItem>
             <Settings className="mr-2 h-4 w-4" />
             <Link

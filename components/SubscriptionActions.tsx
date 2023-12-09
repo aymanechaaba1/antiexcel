@@ -1,6 +1,6 @@
 'use client';
 
-import { useSubscriptionsStore } from '@/store/store';
+import { useAccessTokenStore, useSubscriptionsStore } from '@/store/store';
 import { Button } from './ui/button';
 import {
   AlertDialog,
@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { trpc } from '@/app/_trpc/client';
 
 function SubscriptionActions() {
+  const { access_token } = useAccessTokenStore((state) => state);
   const { subscription } = useSubscriptionsStore((state) => state);
 
   const { toast } = useToast();
@@ -44,7 +45,7 @@ function SubscriptionActions() {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_PAYPAL_TOKEN}`,
+          Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify({ reason: 'No reason.' }),
       }
@@ -78,7 +79,7 @@ function SubscriptionActions() {
         headers: {
           'Content-Type': 'application/json',
           Accept: 'application/json',
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_PAYPAL_TOKEN}`,
+          Authorization: `Bearer ${access_token}`,
         },
         body: JSON.stringify({ reason: 'Not satisfied with the service' }),
       }

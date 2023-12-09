@@ -43,7 +43,6 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
   const utils = trpc.useContext();
   const [rowSelection, setRowSelection] = React.useState({});
-  const [showToast, setShowToast] = React.useState(false);
 
   const table = useReactTable({
     data,
@@ -54,8 +53,6 @@ export function DataTable<TData, TValue>({
       rowSelection,
     },
   });
-
-  const { toast } = useToast();
 
   const deleteTeacher = trpc.deleteTeacher.useMutation({
     onSuccess() {
@@ -151,7 +148,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex-1 text-sm text-muted-foreground mt-5">
+      <div className="flex-1 text-sm text-muted-foreground">
         {table.getFilteredSelectedRowModel().rows.length} of{' '}
         {table.getFilteredRowModel().rows.length} row(s) selected.
       </div>

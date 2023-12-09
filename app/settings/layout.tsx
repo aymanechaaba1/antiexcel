@@ -5,6 +5,10 @@ import React from 'react';
 function SettingsLayout({ children }: { children: React.ReactNode }) {
   const sideBarNavItems = [
     {
+      title: 'Account',
+      link: '/settings/account',
+    },
+    {
       title: 'Plan',
       link: '/settings/plan',
     },

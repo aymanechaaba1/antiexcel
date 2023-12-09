@@ -16,7 +16,7 @@ function Pricing({ session }: { session: Session | null }) {
   const { subscription } = useSubscriptionsStore((state) => state);
 
   return (
-    <Section title="Pricing" className="my-5">
+    <Section title="Pricing" className="my-5 mx-auto max-w-3xl">
       <div className="flex flex-col md:flex-row gap-3 py-4">
         <Card className="border rounded-lg p-4 space-y-3">
           <div>

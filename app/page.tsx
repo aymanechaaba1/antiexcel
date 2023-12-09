@@ -1,9 +1,16 @@
+import Hero from '@/components/Hero';
 import Pricing from '@/components/Pricing';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
+  if (!session || !session.user) return;
 
-  return <Pricing session={session} />;
+  return (
+    <>
+      <Hero />
+      <Pricing session={session} />
+    </>
+  );
 }

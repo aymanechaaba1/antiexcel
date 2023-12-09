@@ -1,11 +1,8 @@
 'use client';
 
-import { trpc } from '@/app/_trpc/client';
 import { serverClient } from '@/app/_trpc/serverClient';
 import { upperFirst } from '@/lib/utils';
-import { useSession } from 'next-auth/react';
 import Image from 'next/image';
-import { redirect } from 'next/navigation';
 
 function TeacherDetails({
   teacher,

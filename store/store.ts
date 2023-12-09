@@ -27,7 +27,7 @@ interface AccessTokenState {
   setAccessToken: (access_token: string | null | undefined) => void;
 }
 
-export const useAccessToken = create<AccessTokenState>((set) => ({
+export const useAccessTokenStore = create<AccessTokenState>((set) => ({
   access_token: undefined,
   setAccessToken: (access_token: string | null | undefined) =>
     set({ access_token }),

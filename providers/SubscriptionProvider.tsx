@@ -4,7 +4,7 @@ import { trpc } from '@/app/_trpc/client';
 import { useToast } from '@/components/ui/use-toast';
 import { fetchNewAccessToken } from '@/lib/utils';
 import {
-  useAccessToken,
+  useAccessTokenStore,
   useSubscriptionsStore,
   useTransactionsStore,
 } from '@/store/store';
@@ -17,16 +17,20 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
 
   const { toast } = useToast();
 
-  const { data: user } = trpc.getUser.useQuery({
-    id: session.user.id,
-  });
+  const { data: user } = trpc.getUser.useQuery();
 
-  const { access_token, setAccessToken } = useAccessToken((state) => state);
+  const { access_token, setAccessToken } = useAccessTokenStore(
+    (state) => state
+  );
   const { setSubscription } = useSubscriptionsStore((state) => state);
   const { setTransactions } = useTransactionsStore((state) => state);
 
   useEffect(() => {
     if (!user || !user.subscription_id) return;
+
+    fetchNewAccessToken().then((result) => {
+      if (result.access_token) setAccessToken(result.access_token);
+    });
 
     const intervalId = setInterval(async () => {
       const { access_token } = await fetchNewAccessToken();
@@ -44,15 +48,7 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
         cache: 'no-store',
       }
     )
-      .then((res) => {
-        if (!res.ok) {
-          toast({
-            title: 'Failed fetching subscription details',
-          });
-        }
-
-        return res.json();
-      })
+      .then((res) => res.json())
       .then((subscription: Subscription) => {
         setSubscription(subscription);
 

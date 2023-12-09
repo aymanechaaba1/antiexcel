@@ -40,9 +40,10 @@ function CreateButton({
 
   const { subscription } = useSubscriptionsStore((state) => state);
 
-  const addStudent = trpc.addStudent.useMutation({
+  const addStudent = trpc.student.add.useMutation({
     onSuccess: () => {
       utils.getStudents.invalidate();
+      utils.getStudents.refetch();
       return toast({
         title: 'Student uploaded successfully.',
       });
@@ -86,8 +87,6 @@ function CreateButton({
 
     if (values.contact_avatar) {
       // upload file
-      const storageRef = ref(storage);
-      const imagesRef = ref(storage, 'images');
       const imageRef = ref(storage, `images/${values.contact_avatar.name}`);
 
       const uploadTask = uploadBytesResumable(imageRef, values.contact_avatar);

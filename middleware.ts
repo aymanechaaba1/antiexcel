@@ -6,5 +6,6 @@ export const config = {
     '/students/:path*',
     '/teachers/:path*',
     '/settings/:path*',
+    '/contacts/:path*',
   ],
 };
