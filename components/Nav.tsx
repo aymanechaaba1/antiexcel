@@ -8,7 +8,7 @@ function Nav() {
   const pathname = usePathname();
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="hidden md:flex items-center gap-3">
       {['Dashboard', 'Students', 'Teachers', 'Contacts'].map((link) => {
         return (
           <Link
