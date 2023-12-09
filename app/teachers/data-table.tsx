@@ -42,6 +42,7 @@ export function DataTable<TData, TValue>({
   data,
 }: DataTableProps<TData, TValue>) {
   const utils = trpc.useContext();
+  const { toast } = useToast();
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
@@ -57,6 +58,9 @@ export function DataTable<TData, TValue>({
   const deleteTeacher = trpc.deleteTeacher.useMutation({
     onSuccess() {
       utils.getTeachers.invalidate();
+      toast({
+        title: 'Teacher deleted successfully.',
+      });
     },
     onMutate() {},
   });
@@ -66,7 +70,7 @@ export function DataTable<TData, TValue>({
   ) => {
     table.getFilteredSelectedRowModel().rows.forEach((row) => {
       deleteTeacher.mutate({
-        // @ts-ignore
+        //FIXME:
         id: row.original.id,
       });
     });

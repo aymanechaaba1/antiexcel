@@ -29,6 +29,7 @@ function SubscriptionActions() {
     trpc.updateUser.useMutation({
       onSuccess: () => {
         utils.getUser.invalidate();
+        utils.getUser.refetch();
         toast({
           title: 'Subscription Canceled!',
         });
@@ -58,7 +59,7 @@ function SubscriptionActions() {
     }
 
     updateUser({
-      subscription_id: null,
+      subscription_id: undefined,
     });
 
     if (updatingUser) {
@@ -93,12 +94,12 @@ function SubscriptionActions() {
       });
 
     updateUser({
-      subscription_id: null,
+      subscription_id: undefined,
     });
 
     if (updatingUser) {
       toast({
-        title: 'Updating user subscription id...',
+        title: 'Updating subscription id...',
         className: 'animate-pulse',
       });
     }

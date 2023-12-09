@@ -4,7 +4,7 @@ import {
   updateStudentSchema,
 } from './../zod/schemas';
 import { z } from 'zod';
-import { privateProcedure, publicProcedure, router } from './trpc';
+import { privateProcedure, router } from './trpc';
 import prisma from '@/prisma/prismaClient';
 import { studentSchema } from '@/zod/schemas';
 import { TRPCClientError } from '@trpc/client';
@@ -26,7 +26,7 @@ export const appRouter = router({
   updateUser: privateProcedure
     .input(
       z.object({
-        subscription_id: z.string().startsWith('I-').nullable(),
+        subscription_id: z.string().startsWith('I-').optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -39,23 +39,17 @@ export const appRouter = router({
         },
       });
     }),
-  getStudent: publicProcedure
-    .input(
-      z.object({
-        id: z.string().cuid(),
-      })
-    )
-    .query(async ({ input }) => {
-      return await prisma.student.findUnique({
-        where: {
-          id: input.id,
-        },
-        include: {
-          contact: true,
-          teacher: true,
-        },
-      });
-    }),
+  getStudent: privateProcedure.query(async ({ ctx, input }) => {
+    return await prisma.student.findUnique({
+      where: {
+        id: ctx.user_id,
+      },
+      include: {
+        contact: true,
+        teacher: true,
+      },
+    });
+  }),
   getStudents: privateProcedure.query(async ({ ctx }) => {
     return await prisma.student.findMany({
       where: {
@@ -103,19 +97,13 @@ export const appRouter = router({
         });
       }),
   }),
-  deleteStudent: publicProcedure
-    .input(
-      z.object({
-        id: z.string().cuid(),
-      })
-    )
-    .mutation(async ({ input }) => {
-      await prisma.student.delete({
-        where: {
-          id: input.id,
-        },
-      });
-    }),
+  deleteStudent: privateProcedure.mutation(async ({ ctx }) => {
+    await prisma.student.delete({
+      where: {
+        id: ctx.user_id,
+      },
+    });
+  }),
   updateStudent: privateProcedure
     .input(updateStudentSchema)
     .mutation(async ({ ctx, input }) => {
@@ -178,23 +166,17 @@ export const appRouter = router({
       },
     });
   }),
-  getTeacher: publicProcedure
-    .input(
-      z.object({
-        id: z.string().cuid(),
-      })
-    )
-    .query(async ({ input }) => {
-      return await prisma.teacher.findUnique({
-        where: {
-          id: input.id,
-        },
-        include: {
-          students: true,
-        },
-      });
-    }),
-  deleteTeacher: publicProcedure
+  getTeacher: privateProcedure.query(async ({ ctx }) => {
+    return await prisma.teacher.findUnique({
+      where: {
+        id: ctx.user_id,
+      },
+      include: {
+        students: true,
+      },
+    });
+  }),
+  deleteTeacher: privateProcedure
     .input(
       z.object({
         id: z.string().cuid(),
@@ -207,7 +189,7 @@ export const appRouter = router({
         },
       });
     }),
-  updateTeacher: publicProcedure
+  updateTeacher: privateProcedure
     .input(
       z.object({
         id: z.string().cuid(),
@@ -232,7 +214,7 @@ export const appRouter = router({
         },
       });
     }),
-  getSubscriptionDetails: publicProcedure
+  getSubscriptionDetails: privateProcedure
     .input(
       z.object({
         id: z.string().startsWith('I-'),
@@ -265,7 +247,7 @@ export const appRouter = router({
         id: z.string().cuid(),
       })
     )
-    .query(async ({ ctx, input }) => {
+    .query(async ({ input }) => {
       return await prisma.contact.findFirst({
         where: {
           id: input.id,
