@@ -18,6 +18,7 @@ import { useSession } from 'next-auth/react';
 import { updateStudent } from '@/actions';
 import { Student } from '@/zod/schemas';
 import { serverClient } from '@/app/_trpc/serverClient';
+import { useToast } from './ui/use-toast';
 
 function NativeForm({
   id,
@@ -32,14 +33,14 @@ function NativeForm({
 
   const avatarInput = useRef<HTMLInputElement>(null);
 
+  const { toast } = useToast();
+
   const [birthdate, setBirthdate] = React.useState<Date | undefined>(
     new Date(defaultValues.birthdate)
   ); // birthdate
 
   const [progress, setProgress] = useState(0);
-
   const [open, setOpen] = React.useState(false);
-
   const [school, setSchool] = React.useState(defaultValues.school); // school
 
   const updateStudentFn = async (
@@ -63,6 +64,9 @@ function NativeForm({
 
     // close sheet
     setOpenSheet(false);
+    toast({
+      title: 'Student was edited successfully.',
+    });
   };
 
   return (

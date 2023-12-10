@@ -39,17 +39,23 @@ export const appRouter = router({
         },
       });
     }),
-  getStudent: privateProcedure.query(async ({ ctx, input }) => {
-    return await prisma.student.findUnique({
-      where: {
-        id: ctx.user_id,
-      },
-      include: {
-        contact: true,
-        teacher: true,
-      },
-    });
-  }),
+  getStudent: privateProcedure
+    .input(
+      z.object({
+        student_id: z.string().cuid(),
+      })
+    )
+    .query(async ({ input }) => {
+      return await prisma.student.findUnique({
+        where: {
+          id: input.student_id,
+        },
+        include: {
+          contact: true,
+          teacher: true,
+        },
+      });
+    }),
   getStudents: privateProcedure.query(async ({ ctx }) => {
     return await prisma.student.findMany({
       where: {
@@ -97,13 +103,19 @@ export const appRouter = router({
         });
       }),
   }),
-  deleteStudent: privateProcedure.mutation(async ({ ctx }) => {
-    await prisma.student.delete({
-      where: {
-        id: ctx.user_id,
-      },
-    });
-  }),
+  deleteStudent: privateProcedure
+    .input(
+      z.object({
+        student_id: z.string().cuid(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      await prisma.student.delete({
+        where: {
+          id: input.student_id,
+        },
+      });
+    }),
   updateStudent: privateProcedure
     .input(updateStudentSchema)
     .mutation(async ({ ctx, input }) => {
@@ -112,7 +124,7 @@ export const appRouter = router({
           ...input,
         },
         where: {
-          id: ctx.user_id,
+          id: input.id,
         },
       });
     }),

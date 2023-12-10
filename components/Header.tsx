@@ -4,7 +4,6 @@ import Nav from './Nav';
 import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { AspectRatio } from './ui/aspect-ratio';
 import Image from 'next/image';
 
 async function Header() {

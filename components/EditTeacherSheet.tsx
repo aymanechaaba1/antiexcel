@@ -40,6 +40,7 @@ import {
   UploadTaskSnapshot,
   getDownloadURL,
 } from 'firebase/storage';
+import { useToast } from './ui/use-toast';
 
 function EditTeacherSheet({
   defaultValues,
@@ -66,6 +67,8 @@ function EditTeacherSheet({
     },
   });
 
+  const { toast } = useToast();
+
   const [progress, setProgress] = React.useState(0);
   const [open, setOpen] = React.useState(false);
 
@@ -75,6 +78,9 @@ function EditTeacherSheet({
     onSuccess() {
       utils.getTeacher.invalidate();
       utils.getTeachers.invalidate();
+      toast({
+        title: 'Teacher was edited successfully.',
+      });
     },
   });
 

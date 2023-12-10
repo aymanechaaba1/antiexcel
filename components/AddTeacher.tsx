@@ -91,13 +91,16 @@ function AddTeacher({
   const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
 
+  const { toast } = useToast();
+
   const addTeacher = trpc.addTeacher.useMutation({
     onSuccess() {
       utils.getTeachers.invalidate();
+      toast({
+        title: 'Teacher added successfully.',
+      });
     },
   });
-
-  const { toast } = useToast();
 
   const { subscription } = useSubscriptionsStore((state) => state);
 

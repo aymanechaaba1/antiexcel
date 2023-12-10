@@ -8,7 +8,7 @@ async function StudentPage({
   params: { student_id: string };
 }) {
   const student = await serverClient.getStudent({
-    id: student_id,
+    student_id,
   });
   if (!student) return;
 

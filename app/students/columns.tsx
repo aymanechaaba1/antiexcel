@@ -20,6 +20,7 @@ import Link from 'next/link';
 import { trpc } from '../_trpc/client';
 import { serverClient } from '../_trpc/serverClient';
 import { useSession } from 'next-auth/react';
+import { useToast } from '@/components/ui/use-toast';
 
 export const columns: ColumnDef<
   Awaited<ReturnType<(typeof serverClient)['getStudent']>>
@@ -194,14 +195,22 @@ export const columns: ColumnDef<
     cell: ({ row }) => {
       const student = row.original;
 
-      const deleteStudent = trpc.deleteStudent.useMutation();
+      const { toast } = useToast();
+
+      const deleteStudent = trpc.deleteStudent.useMutation({
+        onSuccess: () => {
+          toast({
+            title: 'Student removed successfully.',
+          });
+        },
+      });
 
       const deleteStudentHandler = async () => {
         if (!student?.id) return;
         // delete student logic
 
         deleteStudent.mutate({
-          id: student.id,
+          student_id: student.id,
         });
       };
 
