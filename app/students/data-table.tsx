@@ -31,7 +31,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import React from 'react';
-import { trpc } from '../_trpc/client';
 import { SlidersHorizontal } from 'lucide-react';
 
 interface DataTableProps<TData, TValue> {

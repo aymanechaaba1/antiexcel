@@ -30,7 +30,7 @@ async function TeacherDetailsPage({ params: { teacher_id } }: Params) {
       </div>
       {teacher.students && teacher.students.length !== 0 && (
         <Suspense fallback={<StudentsListSkeleton />}>
-          <StudentsList students={teacher.students} />
+          <StudentsList teacher={teacher} />
         </Suspense>
       )}
     </>

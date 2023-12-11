@@ -5,9 +5,6 @@ import { getServerSession } from 'next-auth';
 
 export default async function Home() {
   const session = await getServerSession(authOptions);
-  if (!session || !session.user) return;
-
-  console.log(process.env.NEXT_PUBLIC_VERCEL_ENV);
 
   return (
     <>

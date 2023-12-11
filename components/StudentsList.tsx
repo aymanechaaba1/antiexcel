@@ -4,14 +4,14 @@ import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 function StudentsList({
-  students,
+  teacher,
 }: {
-  students: Awaited<ReturnType<(typeof serverClient)['getStudents']>>;
+  teacher: Awaited<ReturnType<(typeof serverClient)['getTeacher']>>;
 }) {
   return (
     <div className="space-y-3 mt-5">
       <h1 className="text-3xl">Students</h1>
-      {students.map((student) => (
+      {teacher?.students.map((student) => (
         <div
           key={student.id}
           className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg border"

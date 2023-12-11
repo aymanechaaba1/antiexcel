@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import Image from 'next/image';
+import MenuBar from './MenuBar';
 
 async function Header() {
   const session = await getServerSession(authOptions);
@@ -24,6 +25,7 @@ async function Header() {
       </Link>
       {session && session.user && <Nav />}
       <div className="flex items-center gap-2">
+        <MenuBar />
         <ToggleDarkMode />
         <UserDropdown />
       </div>

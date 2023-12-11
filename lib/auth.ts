@@ -3,6 +3,8 @@ import { NextAuthOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import prisma from '@/prisma/prismaClient';
+import { Resend } from 'resend';
+import WelcomeEmail from '@/components/emails/WelcomeEmail';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -35,6 +37,23 @@ export const authOptions: NextAuthOptions = {
       if (token.access_token) session.access_token = token.access_token;
 
       return session;
+    },
+  },
+  events: {
+    signIn: async ({ user, isNewUser }) => {
+      console.log(isNewUser);
+      if (isNewUser) {
+        // send custom welcome email
+        const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
+        const { data, error } = await resend.emails.send({
+          from: 'onboarding@resend.dev', // custom email
+          to: `aymanechaaba1@gmail.com`, // to new user
+          subject: `${user.name}, Welcome to AntiExcel!`,
+          react: WelcomeEmail({ user }) as React.ReactElement,
+        });
+        if (error) console.error(error);
+        if (data) console.log(data);
+      }
     },
   },
   pages: {
