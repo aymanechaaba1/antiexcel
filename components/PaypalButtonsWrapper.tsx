@@ -6,6 +6,10 @@ import { useToast } from './ui/use-toast';
 import { Session } from 'next-auth';
 import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useEffect } from 'react';
+import { Resend } from 'resend';
+import NewSubscriptionEmail from './emails/NewSubscriptionEmail';
+import { serverClient } from '@/app/_trpc/serverClient';
+import { sendEmail } from '@/actions';
 
 function PaypalButtonsWrapper({
   session,
@@ -31,11 +35,7 @@ function PaypalButtonsWrapper({
     });
   }, [type]);
 
-  const {
-    mutate: updateUser,
-    isLoading,
-    data: newUser,
-  } = trpc.updateUser.useMutation({
+  const { mutate: updateUser } = trpc.updateUser.useMutation({
     onSuccess: () => {
       utils.getUser.invalidate();
       toast({
@@ -63,23 +63,11 @@ function PaypalButtonsWrapper({
       onApprove={async (data) => {
         if (!data.subscriptionID) return;
 
-        if (session)
-          updateUser({
-            subscription_id: data.subscriptionID,
-          });
+        updateUser({
+          subscription_id: data.subscriptionID,
+        });
 
-        if (isLoading)
-          toast({
-            title: 'Subscribing in the process...',
-            className: 'animate pulse',
-          });
-
-        if (newUser) {
-          toast({
-            title: 'Subscribed to PRO Plan!',
-            description: 'Discover all features!',
-          });
-        }
+        await sendEmail();
       }}
     />
   );

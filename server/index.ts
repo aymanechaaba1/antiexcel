@@ -26,7 +26,7 @@ export const appRouter = router({
   updateUser: privateProcedure
     .input(
       z.object({
-        subscription_id: z.string().startsWith('I-').optional(),
+        subscription_id: z.string().startsWith('I-').optional().nullable(),
       })
     )
     .mutation(async ({ ctx, input }) => {

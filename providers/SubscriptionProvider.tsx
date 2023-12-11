@@ -26,7 +26,7 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
   const { setTransactions } = useTransactionsStore((state) => state);
 
   useEffect(() => {
-    if (!user || !user.subscription_id) return;
+    if (!user) return;
 
     fetchNewAccessToken().then((result) => {
       if (result.access_token) setAccessToken(result.access_token);
@@ -37,6 +37,7 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
       if (access_token) setAccessToken(access_token);
     }, 32400);
 
+    if (!user.subscription_id) return setSubscription(undefined);
     fetch(
       `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${user.subscription_id}`,
       {
@@ -48,7 +49,10 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
         cache: 'no-store',
       }
     )
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed fetching subscription.`);
+        return res.json();
+      })
       .then((subscription: Subscription) => {
         setSubscription(subscription);
 
@@ -67,9 +71,18 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
           }
         );
       })
-      .then((transactionsRes) => transactionsRes.json())
+      .then((transactionsRes) => {
+        if (!transactionsRes.ok)
+          throw new Error(`Failed fetching subscription transactions.`);
+        return transactionsRes.json();
+      })
       .then((transactions) => {
         setTransactions(transactions.transactions);
+      })
+      .catch((error: Error) => {
+        toast({
+          title: `${error.message}`,
+        });
       });
 
     return () => {

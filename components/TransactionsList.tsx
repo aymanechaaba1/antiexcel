@@ -15,7 +15,7 @@ function TransactionsList() {
             className="flex items-center justify-between overflow-x-scroll gap-4 border rounded-lg px-4 py-2 w-full flex-1 shadow-md"
           >
             <p className="text-xs">{transaction.id}</p>
-            {transaction.amount_with_breakdown.gross_amount && (
+            {transaction.status === 'COMPLETED' && (
               <p className="text-xs text-purple-500">
                 {`${transaction.amount_with_breakdown.gross_amount.currency_code} ${transaction.amount_with_breakdown.gross_amount.value}`}
               </p>
@@ -25,8 +25,9 @@ function TransactionsList() {
               className={`text-xs ${
                 transaction.status === 'COMPLETED'
                   ? 'text-green-500'
-                  : transaction.status === 'PENDING'
-                  ? 'text-purple-500'
+                  : transaction.status === 'PENDING' ||
+                    transaction.status === 'CREATED'
+                  ? 'text-gray-500'
                   : 'text-red-500'
               }`}
             >

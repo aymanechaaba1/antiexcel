@@ -25,16 +25,14 @@ function SubscriptionActions() {
 
   const utils = trpc.useContext();
 
-  const { mutate: updateUser, isLoading: updatingUser } =
-    trpc.updateUser.useMutation({
-      onSuccess: () => {
-        utils.getUser.invalidate();
-        utils.getUser.refetch();
-        toast({
-          title: 'Subscription Canceled!',
-        });
-      },
-    });
+  const { mutate: updateUser } = trpc.updateUser.useMutation({
+    onSuccess: () => {
+      utils.getUser.refetch();
+      toast({
+        title: 'Subscription Canceled!',
+      });
+    },
+  });
 
   const handleSuspendSubscription = async () => {
     if (!subscription) return;
@@ -52,29 +50,16 @@ function SubscriptionActions() {
       }
     );
 
-    if (!res.ok) {
-      toast({
-        title: `Suspension of Subscription with id ${subscription.id} Failed.`,
-      });
-    }
+    if (!res.ok) throw new Error(`Subscription Suspension Failed.`);
 
     updateUser({
       subscription_id: undefined,
     });
-
-    if (updatingUser) {
-      toast({
-        title: 'Updating user subscription id...',
-        className: 'animate-pulse',
-      });
-    }
   };
 
   const handleCancelSubscription = async () => {
-    if (!subscription) return;
-
     const res = await fetch(
-      `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${subscription.id}/cancel`,
+      `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${subscription?.id}/cancel`,
       {
         method: 'POST',
         headers: {
@@ -86,23 +71,11 @@ function SubscriptionActions() {
       }
     );
 
-    if (!res.ok)
-      toast({
-        title: 'Cancelation Failed!',
-        description: `Cancelation of Subscription with id ${subscription.id} Failed!`,
-        variant: 'destructive',
-      });
+    if (!res.ok) throw new Error(`Subscription Cancelation Failed.`);
 
     updateUser({
-      subscription_id: undefined,
+      subscription_id: null,
     });
-
-    if (updatingUser) {
-      toast({
-        title: 'Updating subscription id...',
-        className: 'animate-pulse',
-      });
-    }
   };
 
   if (subscription) {
