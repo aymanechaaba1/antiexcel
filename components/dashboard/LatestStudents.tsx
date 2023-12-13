@@ -1,4 +1,4 @@
-import { getAvatarName, upperFirst } from '@/lib/utils';
+import { formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
 import Section from '../Section';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { serverClient } from '@/app/_trpc/serverClient';
@@ -52,7 +52,9 @@ async function LatestStudents({
               <span>{student.teacher?.name}</span>
               <ArrowUpRight className="w-4 h-4" />
             </Link>
-            <p className="text-gray-500 flex-1">{upperFirst(student.school)}</p>
+            <p className="text-gray-500 flex-1">
+              {formatSchool(student.school)}
+            </p>
           </div>
         ))}
       </div>

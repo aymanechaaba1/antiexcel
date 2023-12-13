@@ -178,16 +178,22 @@ export const appRouter = router({
       },
     });
   }),
-  getTeacher: privateProcedure.query(async ({ ctx }) => {
-    return await prisma.teacher.findUnique({
-      where: {
-        id: ctx.user_id,
-      },
-      include: {
-        students: true,
-      },
-    });
-  }),
+  getTeacher: privateProcedure
+    .input(
+      z.object({
+        teacher_id: z.string().cuid(),
+      })
+    )
+    .query(async ({ input }) => {
+      return await prisma.teacher.findUnique({
+        where: {
+          id: input.teacher_id,
+        },
+        include: {
+          students: true,
+        },
+      });
+    }),
   deleteTeacher: privateProcedure
     .input(
       z.object({

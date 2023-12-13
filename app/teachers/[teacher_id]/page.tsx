@@ -17,7 +17,10 @@ async function TeacherDetailsPage({ params: { teacher_id } }: Params) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const teacher = await serverClient.getTeacher();
+  const teacher = await serverClient.getTeacher({
+    teacher_id,
+  });
+  console.log(teacher);
   if (!teacher) return;
 
   return (
