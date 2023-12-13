@@ -16,8 +16,11 @@ import {
 import { useToast } from './ui/use-toast';
 import Link from 'next/link';
 import { trpc } from '@/app/_trpc/client';
+import { sendCanceledSubEmail, sendSuspendedSubEmail } from '@/actions';
+import { useSession } from 'next-auth/react';
 
 function SubscriptionActions() {
+  const { data: session } = useSession();
   const { access_token } = useAccessTokenStore((state) => state);
   const { subscription } = useSubscriptionsStore((state) => state);
 
@@ -53,8 +56,10 @@ function SubscriptionActions() {
     if (!res.ok) throw new Error(`Subscription Suspension Failed.`);
 
     updateUser({
-      subscription_id: undefined,
+      subscription_id: null,
     });
+
+    await sendSuspendedSubEmail();
   };
 
   const handleCancelSubscription = async () => {
@@ -76,6 +81,8 @@ function SubscriptionActions() {
     updateUser({
       subscription_id: null,
     });
+
+    await sendCanceledSubEmail();
   };
 
   if (subscription) {

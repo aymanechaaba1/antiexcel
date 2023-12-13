@@ -20,9 +20,9 @@ function MenuBar() {
       <SheetContent>
         <SheetHeader></SheetHeader>
         <div className="flex flex-col gap-4 mt-10">
-          {['Dashboard', 'Students', 'Teachers', 'Contacts'].map((link) => {
+          {['Dashboard', 'Students', 'Teachers', 'Contacts'].map((link, i) => {
             return (
-              <Button asChild variant={'ghost'} className="border">
+              <Button asChild key={i} variant={'ghost'} className="border">
                 <Link
                   href={`/${link.toLowerCase()}`}
                   className={cn('text-sm text-gray-500', {

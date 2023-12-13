@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { Resend } from 'resend';
 import NewSubscriptionEmail from './emails/NewSubscriptionEmail';
 import { serverClient } from '@/app/_trpc/serverClient';
-import { sendEmail } from '@/actions';
+import { sendNewSubEmail } from '@/actions';
 
 function PaypalButtonsWrapper({
   session,
@@ -67,7 +67,7 @@ function PaypalButtonsWrapper({
           subscription_id: data.subscriptionID,
         });
 
-        await sendEmail();
+        await sendNewSubEmail();
       }}
     />
   );

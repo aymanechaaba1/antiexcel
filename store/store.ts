@@ -32,3 +32,12 @@ export const useAccessTokenStore = create<AccessTokenState>((set) => ({
   setAccessToken: (access_token: string | null | undefined) =>
     set({ access_token }),
 }));
+
+interface LimitStore {
+  reachedLimit: boolean;
+  setReachedLimit: (reachedLimit: boolean) => void;
+}
+export const userLimitStore = create<LimitStore>((set) => ({
+  reachedLimit: false,
+  setReachedLimit: (reachedLimit: boolean) => set({ reachedLimit }),
+}));

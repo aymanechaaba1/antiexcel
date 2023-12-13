@@ -5,9 +5,12 @@ import { serverClient } from './app/_trpc/serverClient';
 import { z } from 'zod';
 import { updateStudentSchema } from './zod/schemas';
 import { Resend } from 'resend';
+import NewSubscriptionEmail from './components/emails/NewSubscriptionEmail';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './lib/auth';
-import NewSubscriptionEmail from './components/emails/NewSubscriptionEmail';
+import CanceledSubscriptionEmail from './components/emails/CanceledSubscriptionEmail';
+import SuspendedSubscriptionEmail from './components/emails/SuspendedSubscriptionEmail';
+import BecomeProEmail from './components/emails/BecomeProEmail';
 
 export const updateStudent = async (
   values: z.infer<typeof updateStudentSchema>
@@ -19,18 +22,62 @@ export const updateStudent = async (
   revalidatePath(`/students/${values?.id}`);
 };
 
-export const sendEmail = async () => {
+const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
+const sendEmail = async ({
+  subject,
+  to,
+  react,
+}: {
+  subject: string;
+  to: string[];
+  react: any;
+}) => {
   const session = await getServerSession(authOptions);
-  if (!session) return;
-
-  // send new subscription email
-  const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
-  const { data, error } = await resend.emails.send({
-    from: 'Acme <onboarding@resend.dev>',
-    to: ['aymanechaaba1@gmail.com'],
-    subject: "You're a PRO Member",
-    react: NewSubscriptionEmail({ user: session.user }),
+  await resend.emails.send({
+    from: 'AntiExcel <onboarding@resend.dev>',
+    to,
+    subject,
+    react: react({ session }),
   });
-  if (data) console.log(data);
-  if (error) console.error(error);
+};
+
+export const sendNewSubEmail = async () => {
+  await sendEmail({
+    subject: "You're a PRO, Yepee 🎉",
+    to: ['aymanechaaba1@gmail.com'],
+    react: NewSubscriptionEmail,
+  });
+};
+
+export const sendCanceledSubEmail = async () => {
+  await sendEmail({
+    subject: "We're sorry to hear your cancelation 😢",
+    to: ['aymanechaaba1@gmail.com'],
+    react: CanceledSubscriptionEmail,
+  });
+};
+
+export const sendSuspendedSubEmail = async () => {
+  await sendEmail({
+    subject: 'Suspended Subscription',
+    to: ['aymanechaaba1@gmail.com'],
+    react: SuspendedSubscriptionEmail,
+  });
+};
+
+export const sendBecomeProEmail = async (
+  subscription: Subscription | null | undefined
+) => {
+  // subscription
+  const students = await serverClient.getStudents();
+  const teachers = await serverClient.getTeachers();
+  const reachedLimit =
+    !subscription && students.length === 3 && teachers.length === 3;
+
+  if (reachedLimit)
+    await sendEmail({
+      subject: "It's maybe time to become a PRO",
+      to: ['aymanechaaba1@gmail.com'],
+      react: BecomeProEmail,
+    });
 };

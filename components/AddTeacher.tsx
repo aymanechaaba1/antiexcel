@@ -83,6 +83,7 @@ function AddTeacher({
     defaultValues: {
       email: '',
       phone: '',
+      gender: 'female',
       name: '',
       avatar: null,
     },
@@ -98,6 +99,12 @@ function AddTeacher({
       utils.getTeachers.invalidate();
       toast({
         title: 'Teacher added successfully.',
+      });
+    },
+    onError(error) {
+      toast({
+        title: error.message,
+        variant: 'destructive',
       });
     },
   });

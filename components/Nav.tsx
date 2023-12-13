@@ -9,9 +9,10 @@ function Nav() {
 
   return (
     <div className="hidden md:flex items-center gap-3">
-      {['Dashboard', 'Students', 'Teachers', 'Contacts'].map((link) => {
+      {['Dashboard', 'Students', 'Teachers', 'Contacts'].map((link, i) => {
         return (
           <Link
+            key={i}
             href={`/${link.toLowerCase()}`}
             className={cn('text-sm text-gray-500', {
               'text-blue-500 font-medium': pathname.includes(

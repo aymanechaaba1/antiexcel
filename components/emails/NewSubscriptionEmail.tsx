@@ -1,9 +1,10 @@
 import { Heading, Img, Text } from '@react-email/components';
 import Email from './Email';
-import { User } from 'next-auth';
+import { Session, User, getServerSession } from 'next-auth';
 import { LOGO_URL } from '@/lib/config';
+import { authOptions } from '@/lib/auth';
 
-function NewSubscriptionEmail({ user }: { user: User }) {
+function NewSubscriptionEmail({ session }: { session: Session | null }) {
   return (
     <Email>
       <Img
@@ -13,7 +14,7 @@ function NewSubscriptionEmail({ user }: { user: User }) {
         alt="AntiExcel"
         className="mx-auto my-5"
       />
-      <Heading as="h1">Dear {user.name},</Heading>
+      <Heading as="h1">Dear {session?.user.name},</Heading>
       <Text>
         Welcome to AntiExcel! Now that you're a new subscriber, we're thrilled
         to tell you what to expect from our platform.
