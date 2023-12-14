@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { Button } from './ui/button';
+
 function Hero() {
   return (
     <div className="">
@@ -5,6 +8,17 @@ function Hero() {
       <p className="text-center text-gray-500 text-md">
         Store your school data on the web
       </p>
+      <div className="flex items-center gap-3 max-2xl justify-center my-3">
+        <Button
+          className="bg-purple-500 py-2 px-5 rounded-lg font-medium text-center text-white hover:bg-purple-600"
+          asChild
+        >
+          <Link href={`/#pricing`}>Get Started</Link>
+        </Button>
+        <Button className="" variant={'secondary'} asChild>
+          <Link href={`/dashboard`}>Dashboard</Link>
+        </Button>
+      </div>
     </div>
   );
 }
