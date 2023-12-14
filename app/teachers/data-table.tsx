@@ -57,9 +57,15 @@ export function DataTable<TData extends object, TValue>({
 
   const deleteTeacher = trpc.deleteTeacher.useMutation({
     onSuccess() {
-      utils.getTeachers.invalidate();
+      utils.getTeachers.refetch();
       toast({
         title: 'Teacher deleted successfully.',
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: `You can\'t delete teachers that have students.`,
+        variant: 'destructive',
       });
     },
   });
