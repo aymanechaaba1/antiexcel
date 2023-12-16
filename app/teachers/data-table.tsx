@@ -75,7 +75,11 @@ export function DataTable<TData, TValue>({
   ) => {
     table.getFilteredSelectedRowModel().rows.forEach((row) => {
       deleteTeacher.mutate({
-        id: row.original.id as string,
+        id: (
+          row.original as TData & {
+            id: string;
+          }
+        ).id as string,
       });
     });
   };
