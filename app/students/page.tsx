@@ -13,7 +13,9 @@ import { HelpCircle } from 'lucide-react';
 
 async function StudentsPage() {
   const user = await serverClient.getUser();
-  const students = await serverClient.getStudents();
+  const students = (await serverClient.getStudents()) as Awaited<
+    ReturnType<(typeof serverClient)['getStudent']>
+  >[];
   const teachers = await serverClient.getTeachers();
 
   return (
