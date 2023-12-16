@@ -36,6 +36,7 @@
     "@tanstack/react-table": "^8.10.7",
     "@tremor/react": "^3.9.2",
     "@trpc/client": "^10.40.0",
+    "@trpc/next": "^10.44.1",
     "@trpc/react-query": "^10.40.0",
     "@trpc/server": "^10.40.0",
     "body-parser": "^1.20.2",
