@@ -48,6 +48,7 @@ function ContactsList({
                 <div className="space-y-2 justify-self-end">
                   {contact.students.map((student) => (
                     <Link
+                      key={student.id}
                       href={`/students/${student.id}`}
                       className="text-blue-500 flex items-center gap-2"
                     >

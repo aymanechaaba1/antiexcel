@@ -9,7 +9,7 @@ async function SignInPage() {
       <h1 className="text-3xl mb-3">Sign In</h1>
       <div className="flex items-center gap-3">
         {Object.values(providers!).map((provider) => (
-          <SignInButton provider={provider} />
+          <SignInButton key={provider.id} provider={provider} />
         ))}
       </div>
     </div>

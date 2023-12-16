@@ -31,7 +31,7 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!user) return;
 
-    // const three_m = 3 * 60 * 1000;
+    // const three_min = 3 * 60 * 1000;
     const one_week = 7 * 24 * 60 * 60 * 1000;
     const limitIntervalId = setInterval(async () => {
       await sendBecomeProEmail(subscription);
@@ -76,7 +76,7 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
         );
       })
       .then((transactionsRes) => {
-        if (!transactionsRes.ok)
+        if (!transactionsRes?.ok)
           throw new Error(`Failed fetching subscription transactions.`);
         return transactionsRes.json();
       })
@@ -86,6 +86,7 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
       .catch((error: Error) => {
         toast({
           title: `${error.message}`,
+          variant: 'destructive',
         });
       });
 

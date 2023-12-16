@@ -104,7 +104,6 @@ export const fetchNewAccessToken = async () => {
   if (!res.ok) throw new Error(`Invalid response format!`);
 
   const data: PayPalAccessTokenResponse = await res.json();
-
   return data;
 };
 

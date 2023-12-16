@@ -44,7 +44,7 @@ async function StudentContactPage({
           <p className="text-blue-500 flex items-center gap-2">
             <span>
               {contact.students.map((student) => (
-                <Link href={`/students/${student.id}`}>
+                <Link key={student.id} href={`/students/${student.id}`}>
                   {student.firstname}
                 </Link>
               ))}

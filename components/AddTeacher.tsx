@@ -221,8 +221,8 @@ function AddTeacher({
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {['Male', 'Female'].map((gender) => (
-                          <SelectItem value={gender.toLowerCase()}>
+                        {['Male', 'Female'].map((gender, i) => (
+                          <SelectItem key={i} value={gender.toLowerCase()}>
                             {gender}
                           </SelectItem>
                         ))}
