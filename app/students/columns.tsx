@@ -173,25 +173,6 @@ export const columns: ColumnDef<
     cell: ({ row }) => {
       const student = row.original;
 
-      const { toast } = useToast();
-
-      const deleteStudent = trpc.deleteStudent.useMutation({
-        onSuccess: () => {
-          toast({
-            title: 'Student removed successfully.',
-          });
-        },
-      });
-
-      const deleteStudentHandler = async () => {
-        if (!student?.id) return;
-        // delete student logic
-
-        deleteStudent.mutate({
-          student_id: student.id,
-        });
-      };
-
       return (
         <Dialog>
           <DropdownMenu>
@@ -220,12 +201,6 @@ export const columns: ColumnDef<
                 >
                   View contact
                 </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => deleteStudentHandler()}
-                className="text-red-500"
-              >
-                Delete student
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -8,7 +8,10 @@ function StudentsListSkeleton() {
           className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg border"
         >
           {[...Array(5).keys()].map((i) => (
-            <div className="w-20 h-20 rounded-lg bg-gray-900 animate-pulse" />
+            <div
+              key={i}
+              className="w-20 h-20 rounded-lg bg-gray-900 animate-pulse"
+            />
           ))}
         </div>
       ))}
