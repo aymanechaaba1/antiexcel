@@ -17,7 +17,10 @@ function LoadingContacts() {
         </div>
         <div className="grid grid-cols-4 md:grid-cols-6 gap-4">
           {[...Array(24).keys()].map((i) => (
-            <div className="w-20 h-5 rounded-lg dark:bg-gray-900 bg-gray-300 animate-pulse" />
+            <div
+              key={i}
+              className="w-20 h-5 rounded-lg dark:bg-gray-900 bg-gray-300 animate-pulse"
+            />
           ))}
         </div>
       </div>

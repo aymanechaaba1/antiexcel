@@ -16,8 +16,8 @@ function NewSubscriptionEmail({ session }: { session: Session | null }) {
       />
       <Heading as="h1">Dear {session?.user.name},</Heading>
       <Text>
-        Welcome to AntiExcel! Now that you're a new subscriber, we're thrilled
-        to tell you what to expect from our platform.
+        Welcome to AntiExcel! Now that you&apos;re a new subscriber, we&apos;re
+        thrilled to tell you what to expect from our platform.
       </Text>
       <Text>As a PRO Member, you have no limit.</Text>
       <Text>
@@ -33,7 +33,7 @@ function NewSubscriptionEmail({ session }: { session: Session | null }) {
         More features are coming in! Stay tuned! Enjoy the freedom and the
         flexibility of management.
       </Text>
-      <Text>We're ready to answer any of your questions.</Text>
+      <Text>We&apos;re ready to answer any of your questions.</Text>
       <Text>--- AntiExcel Team.</Text>
     </Email>
   );

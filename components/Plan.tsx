@@ -7,7 +7,7 @@ function Plan({ plan }: { plan: Plan }) {
   return (
     <>
       <div className="flex items-center gap-3">
-        <h1 className="text-3xl">You're on the {plan.name}</h1>
+        <h1 className="text-3xl">You&apos;re on the {plan.name}</h1>
         <Badge
           className={`${
             plan.status === 'ACTIVE'

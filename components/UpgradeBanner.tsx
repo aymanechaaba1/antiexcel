@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 function UpgradeBanner() {
   const { data: session } = useSession();
-  if (!session) return;
 
   const { subscription } = useSubscriptionsStore((state) => state);
 

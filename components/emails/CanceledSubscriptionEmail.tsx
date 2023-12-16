@@ -14,8 +14,8 @@ function CanceledSubscriptionEmail({ session }: { session: Session | null }) {
         className="mx-auto my-5"
       />
       <Heading>
-        {session?.user.name?.split(' ')[0]}, We're sorry to hear you canceled
-        your subscription.
+        {session?.user.name?.split(' ')[0]}, We&apos;re sorry to hear you
+        canceled your subscription.
       </Heading>
       <Text>
         We hope this message finds you well. We would like to acknowledge that
@@ -27,8 +27,9 @@ function CanceledSubscriptionEmail({ session }: { session: Session | null }) {
         want.
       </Text>
       <Text>
-        We genuinely value your feedback, and if there's anything specific that
-        led to your decision to cancel, we would appreciate hearing about it.
+        We genuinely value your feedback, and if there&apos;s anything specific
+        that led to your decision to cancel, we would appreciate hearing about
+        it.
       </Text>
       <Text>
         Your input helps us improve our services for the benefit of all our
@@ -37,7 +38,7 @@ function CanceledSubscriptionEmail({ session }: { session: Session | null }) {
       <Text>
         Once again, we thank you for choosing AntiExcel. If your circumstances
         change, and you find yourself in need of our an unlimited plan again,
-        we'd be more than happy to welcome you back.
+        we&apos;d be more than happy to welcome you back.
       </Text>
       <Text>Best regards,</Text>
       <Text>Customer Support Team, AntiExcel</Text>

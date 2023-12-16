@@ -15,8 +15,8 @@ function BecomeProEmail({ session }: { session: Session | null }) {
         className="mx-auto my-5"
       />
       <Text>
-        {session?.user.name?.split(' ')[0]}, You've reached the limit, expand
-        your membership and become a PRO.
+        {session?.user.name?.split(' ')[0]}, You&apos;ve reached the limit,
+        expand your membership and become a PRO.
       </Text>
       <Text>You will have unlimited students.</Text>
       <Text>You will have unlimited teachers.</Text>

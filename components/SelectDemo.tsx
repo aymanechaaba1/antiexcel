@@ -32,8 +32,10 @@ export function SelectDemo({
         <SelectContent>
           <SelectGroup>
             <SelectLabel>{label}</SelectLabel>
-            {values.map((val) => (
-              <SelectItem value={val.toLowerCase()}>{val}</SelectItem>
+            {values.map((val, i) => (
+              <SelectItem key={i} value={val.toLowerCase()}>
+                {val}
+              </SelectItem>
             ))}
           </SelectGroup>
         </SelectContent>

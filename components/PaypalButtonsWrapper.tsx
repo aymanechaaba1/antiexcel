@@ -33,7 +33,7 @@ function PaypalButtonsWrapper({
         intent: 'subscription',
       },
     });
-  }, [type]);
+  }, [type, dispatch, options]);
 
   const { mutate: updateUser } = trpc.updateUser.useMutation({
     onSuccess: () => {

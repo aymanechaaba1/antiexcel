@@ -14,9 +14,7 @@ import {
   UploadTaskSnapshot,
   getDownloadURL,
 } from 'firebase/storage';
-import { useSession } from 'next-auth/react';
 import { updateStudent } from '@/actions';
-import { Student } from '@/zod/schemas';
 import { serverClient } from '@/app/_trpc/serverClient';
 import { useToast } from './ui/use-toast';
 
@@ -29,19 +27,17 @@ function NativeForm({
   defaultValues: Awaited<ReturnType<(typeof serverClient)['getStudent']>>;
   setOpenSheet: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  if (!defaultValues) return;
-
   const avatarInput = useRef<HTMLInputElement>(null);
 
   const { toast } = useToast();
 
   const [birthdate, setBirthdate] = React.useState<Date | undefined>(
-    new Date(defaultValues.birthdate)
+    new Date(defaultValues!.birthdate)
   ); // birthdate
 
   const [progress, setProgress] = useState(0);
   const [open, setOpen] = React.useState(false);
-  const [school, setSchool] = React.useState(defaultValues.school); // school
+  const [school, setSchool] = React.useState(defaultValues!.school); // school
 
   const updateStudentFn = async (
     formData: FormData,

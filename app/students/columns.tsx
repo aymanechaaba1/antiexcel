@@ -113,28 +113,6 @@ export const columns: ColumnDef<
     },
   },
   {
-    accessorKey: 'teacher_id',
-    header: () => <div className="text-left">Teacher</div>,
-    cell: ({ row }) => {
-      const { data: session } = useSession();
-      if (!session) return;
-      const { data: teachers } = trpc.getTeachers.useQuery();
-      if (!teachers) return;
-
-      const teachersCombo = [
-        ...teachers.map((teacher) => ({
-          value: teacher.id,
-          label: teacher.name,
-        })),
-      ] as const;
-
-      const teacher = teachersCombo.find(
-        (teacher) => teacher.value === row.getValue('teacher_id')
-      )?.label;
-      return <div className="text-left font-medium">{teacher}</div>;
-    },
-  },
-  {
     accessorKey: 'gender',
     header: () => <div className="text-left">Gender</div>,
     cell: ({ row }) => {

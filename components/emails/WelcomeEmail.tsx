@@ -25,11 +25,11 @@ export const WelcomeEmail: React.FC<Readonly<EmailTemplateProps>> = ({
         {user.name}, Welcome to AntiExcel 👋!
       </Heading>
       <Text>
-        We're happy to use this amazing tool to manage your school data.
+        We&apos;re happy to use this amazing tool to manage your school data.
       </Text>
       <Text>
-        You're on the FREE Plan now, enjoy the free version and you can upgrade
-        whenever you need it.
+        You&apos;re on the FREE Plan now, enjoy the free version and you can
+        upgrade whenever you need it.
       </Text>
       <Text className="">— AntiExcel team</Text>
       <Hr className="border border-[#e6ebf1] my-5 mx-0" />

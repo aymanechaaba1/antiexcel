@@ -95,8 +95,8 @@ function CreateService() {
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    {['Physical', 'Digital', 'Service'].map((val) => (
-                      <SelectItem value={val.toLowerCase()}>
+                    {['Physical', 'Digital', 'Service'].map((val, i) => (
+                      <SelectItem key={i} value={val.toLowerCase()}>
                         {val.toUpperCase()}
                       </SelectItem>
                     ))}

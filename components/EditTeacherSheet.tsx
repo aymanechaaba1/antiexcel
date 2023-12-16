@@ -49,11 +49,9 @@ function EditTeacherSheet({
   defaultValues: Awaited<ReturnType<(typeof serverClient)['getTeacher']>>;
   teacher_id: string;
 }) {
-  if (!defaultValues) return;
-
   const formattedAvatar = new File(
-    [getFilename(defaultValues.avatar!)],
-    defaultValues.avatar!,
+    [getFilename(defaultValues?.avatar!)],
+    defaultValues?.avatar!,
     {
       type: 'text/plain',
     }

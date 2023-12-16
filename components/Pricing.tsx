@@ -92,7 +92,9 @@ function Pricing({ session }: { session: Session | null }) {
             <CheckoutButton session={session} />
           ) : (
             <>
-              <p className="text-gray-500 text-xs">You're a PRO memeber!</p>
+              <p className="text-gray-500 text-xs">
+                You&apos;re a PRO memeber!
+              </p>
               <Button asChild>
                 <Link href={`/dashboard`}>Dashboard</Link>
               </Button>

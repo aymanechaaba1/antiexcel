@@ -16,8 +16,8 @@ function SuspendedSubscriptionEmail() {
         This email is a confirmation of suspension of your subscription.
       </Text>
       <Text>
-        We're sorry to hear that but you still have the basic version to still
-        explore and take advantage of our services.
+        We&apos;re sorry to hear that but you still have the basic version to
+        still explore and take advantage of our services.
       </Text>
       <Text>You can get back to PRO anytime you want.</Text>
       <Text>--- AntiExcel Team</Text>
