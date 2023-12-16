@@ -17,8 +17,9 @@ import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
 
-type Teacher = Awaited<ReturnType<(typeof serverClient)['getTeacher']>>;
-export const columns: ColumnDef<Teacher>[] = [
+export const columns: ColumnDef<
+  Awaited<ReturnType<(typeof serverClient)['getTeacher']>>
+>[] = [
   {
     id: 'select',
     header: ({ table }) => (

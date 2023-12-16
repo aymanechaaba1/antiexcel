@@ -37,7 +37,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData extends object, TValue>({
+export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -74,10 +74,9 @@ export function DataTable<TData extends object, TValue>({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     table.getFilteredSelectedRowModel().rows.forEach((row) => {
-      if ('id' in row.original)
-        deleteTeacher.mutate({
-          id: row.original.id as string,
-        });
+      deleteTeacher.mutate({
+        id: row.original.id as string,
+      });
     });
   };
 
