@@ -13,7 +13,7 @@ function ProgressBar({
   useEffect(() => {
     const timer = setTimeout(() => setProgress(progress), 500);
     return () => clearTimeout(timer);
-  }, []);
+  }, [progress, setProgress]);
 
   return <Progress value={progress} className="h-2" />;
 }
