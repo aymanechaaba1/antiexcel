@@ -17,10 +17,7 @@ import { formatDate, getAvatarName, upperFirst } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
-import { trpc } from '../_trpc/client';
 import { serverClient } from '../_trpc/serverClient';
-import { useSession } from 'next-auth/react';
-import { useToast } from '@/components/ui/use-toast';
 
 export const columns: ColumnDef<
   Awaited<ReturnType<(typeof serverClient)['getStudent']>>

@@ -7,7 +7,7 @@ import { DataTable } from '@/app/students/data-table';
 function StudentsTable({
   students,
 }: {
-  students: Awaited<ReturnType<(typeof serverClient)['getStudents']>>;
+  students: Awaited<ReturnType<(typeof serverClient)['getStudent']>>[];
 }) {
   return <DataTable columns={columns} data={students} />;
 }
