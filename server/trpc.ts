@@ -5,9 +5,7 @@ import { getServerSession } from 'next-auth';
  * Initialization of tRPC backend
  * Should be done only once per backend!
  */
-const t = initTRPC.create({
-  isServer: true,
-});
+const t = initTRPC.create();
 const middleware = t.middleware;
 
 const isAuth = middleware(async (opts) => {
