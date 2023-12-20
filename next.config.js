@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: true,
     serverComponentsExternalPackages: [
       '@react-email/components',
       '@react-email/render',
@@ -9,7 +8,14 @@ const nextConfig = {
     ],
   },
   images: {
-    domains: ['cloudflare-ipfs.com', 'firebasestorage.googleapis.com'],
+    remotePatterns: [
+      {
+        hostname: 'cloudflare-ipfs.com',
+      },
+      {
+        hostname: 'firebasestorage.googleapis.com',
+      },
+    ],
   },
 };
 
