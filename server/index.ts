@@ -4,10 +4,10 @@ import {
   updateStudentSchema,
 } from './../zod/schemas';
 import { z } from 'zod';
-import { privateProcedure, router } from './trpc';
 import prisma from '@/prisma/prismaClient';
 import { studentSchema } from '@/zod/schemas';
 import { TRPCClientError } from '@trpc/client';
+import { privateProcedure, router } from '@/app/api/trpc/trpc-config';
 
 export const appRouter = router({
   getUser: privateProcedure.query(async ({ ctx }) => {

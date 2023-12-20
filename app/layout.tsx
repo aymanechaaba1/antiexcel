@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import Provider from './_trpc/Provider';
+import { TrpcProvider } from './_trpc/trpc-provider';
 import './globals.css';
 import SessionProvider from '../components/SessionProvider';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -18,7 +18,7 @@ export default async function RootLayout({
 
   return (
     <SessionProvider session={session}>
-      <Provider>
+      <TrpcProvider>
         <html lang="en">
           <body className="">
             <ThemeProvider
@@ -38,7 +38,7 @@ export default async function RootLayout({
             </ThemeProvider>
           </body>
         </html>
-      </Provider>
+      </TrpcProvider>
     </SessionProvider>
   );
 }
