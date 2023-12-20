@@ -15,8 +15,8 @@ import {
   getDownloadURL,
 } from 'firebase/storage';
 import { updateStudent } from '@/actions';
-import { serverClient } from '@/app/_trpc/serverClient';
 import { useToast } from './ui/use-toast';
+import { caller } from '@/server';
 
 function NativeForm({
   id,
@@ -24,7 +24,7 @@ function NativeForm({
   setOpenSheet,
 }: {
   id: string;
-  defaultValues: Awaited<ReturnType<(typeof serverClient)['getStudent']>>;
+  defaultValues: Awaited<ReturnType<(typeof caller)['getStudent']>>;
   setOpenSheet: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const avatarInput = useRef<HTMLInputElement>(null);
