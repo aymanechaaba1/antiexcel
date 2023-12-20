@@ -3,12 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { updateStudentSchema } from './zod/schemas';
-import NewSubscriptionEmail from './components/emails/NewSubscriptionEmail';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './lib/auth';
-import CanceledSubscriptionEmail from './components/emails/CanceledSubscriptionEmail';
-import SuspendedSubscriptionEmail from './components/emails/SuspendedSubscriptionEmail';
-import BecomeProEmail from './components/emails/BecomeProEmail';
+
 import { caller } from './server';
 
 export const updateStudent = async (
@@ -40,43 +37,43 @@ const sendEmail = async ({
   // });
 };
 
-export const sendNewSubEmail = async () => {
-  await sendEmail({
-    subject: "You're a PRO, Yepee 🎉",
-    to: ['aymanechaaba1@gmail.com'],
-    react: NewSubscriptionEmail,
-  });
-};
+// export const sendNewSubEmail = async () => {
+//   await sendEmail({
+//     subject: "You're a PRO, Yepee 🎉",
+//     to: ['aymanechaaba1@gmail.com'],
+//     react: NewSubscriptionEmail,
+//   });
+// };
 
-export const sendCanceledSubEmail = async () => {
-  await sendEmail({
-    subject: "We're sorry to hear your cancelation 😢",
-    to: ['aymanechaaba1@gmail.com'],
-    react: CanceledSubscriptionEmail,
-  });
-};
+// export const sendCanceledSubEmail = async () => {
+//   await sendEmail({
+//     subject: "We're sorry to hear your cancelation 😢",
+//     to: ['aymanechaaba1@gmail.com'],
+//     react: CanceledSubscriptionEmail,
+//   });
+// };
 
-export const sendSuspendedSubEmail = async () => {
-  await sendEmail({
-    subject: 'Suspended Subscription',
-    to: ['aymanechaaba1@gmail.com'],
-    react: SuspendedSubscriptionEmail,
-  });
-};
+// export const sendSuspendedSubEmail = async () => {
+//   await sendEmail({
+//     subject: 'Suspended Subscription',
+//     to: ['aymanechaaba1@gmail.com'],
+//     react: SuspendedSubscriptionEmail,
+//   });
+// };
 
-export const sendBecomeProEmail = async (
-  subscription: Subscription | null | undefined
-) => {
-  // subscription
-  const students = await caller.getStudents();
-  const teachers = await caller.getTeachers();
-  const reachedLimit =
-    !subscription && students.length === 3 && teachers.length === 3;
+// export const sendBecomeProEmail = async (
+//   subscription: Subscription | null | undefined
+// ) => {
+//   // subscription
+//   const students = await caller.getStudents();
+//   const teachers = await caller.getTeachers();
+//   const reachedLimit =
+//     !subscription && students.length === 3 && teachers.length === 3;
 
-  if (reachedLimit)
-    await sendEmail({
-      subject: "It's maybe time to become a PRO",
-      to: ['aymanechaaba1@gmail.com'],
-      react: BecomeProEmail,
-    });
-};
+//   if (reachedLimit)
+//     await sendEmail({
+//       subject: "It's maybe time to become a PRO",
+//       to: ['aymanechaaba1@gmail.com'],
+//       react: BecomeProEmail,
+//     });
+// };
