@@ -1,13 +1,13 @@
 import EditSheet from '@/components/EditStudentSheet';
-import { serverClient } from '@/app/_trpc/serverClient';
 import StudentDetails from '@/components/StudentDetails';
+import { caller } from '@/server';
 
 async function StudentPage({
   params: { student_id },
 }: {
   params: { student_id: string };
 }) {
-  const student = await serverClient.getStudent({
+  const student = await caller.getStudent({
     student_id,
   });
   if (!student) return;

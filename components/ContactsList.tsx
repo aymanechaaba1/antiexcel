@@ -1,15 +1,15 @@
-import { serverClient } from '@/app/_trpc/serverClient';
 import Section from './Section';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { getAvatarName, upperFirst } from '@/lib/utils';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { Separator } from './ui/separator';
+import { caller } from '@/server';
 
 function ContactsList({
   contacts,
 }: {
-  contacts: Awaited<ReturnType<(typeof serverClient)['getContacts']>>;
+  contacts: Awaited<ReturnType<(typeof caller)['getContacts']>>;
 }) {
   return (
     <Section title="Contacts List">

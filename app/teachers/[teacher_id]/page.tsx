@@ -1,9 +1,9 @@
-import { serverClient } from '@/app/_trpc/serverClient';
 import EditTeacher from '@/components/EditTeacherSheet';
 import StudentsList from '@/components/StudentsList';
 import TeacherDetails from '@/components/TeacherDetails';
 import StudentsListSkeleton from '@/components/skeletons/StudentsListSkeleton';
 import { authOptions } from '@/lib/auth';
+import { caller } from '@/server';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import React, { Suspense } from 'react';
@@ -17,7 +17,7 @@ async function TeacherDetailsPage({ params: { teacher_id } }: Params) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const teacher = await serverClient.getTeacher({
+  const teacher = await caller.getTeacher({
     teacher_id,
   });
   console.log(teacher);

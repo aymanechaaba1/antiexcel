@@ -1,9 +1,9 @@
 'use client';
 
 import { sendBecomeProEmail } from '@/actions';
-import { trpc } from '@/app/_trpc/client';
 import { useToast } from '@/components/ui/use-toast';
 import { fetchNewAccessToken } from '@/lib/utils';
+import { trpc } from '@/server/trpc';
 import {
   useAccessTokenStore,
   useSubscriptionsStore,

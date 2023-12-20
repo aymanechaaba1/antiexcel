@@ -1,11 +1,11 @@
 import AddTeacher from '@/components/AddTeacher';
 import React from 'react';
 import TeachersTable from '@/components/TeachersTable';
-import { serverClient } from '../_trpc/serverClient';
+import { caller } from '@/server';
 
 async function TeachersPage() {
-  const user = await serverClient.getUser();
-  const teachers = await serverClient.getTeachers();
+  const user = await caller.getUser();
+  const teachers = await caller.getTeachers();
 
   return (
     <>

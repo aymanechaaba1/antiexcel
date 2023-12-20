@@ -12,14 +12,14 @@ import {
 } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import NativeForm from './NativeForm';
-import { serverClient } from '@/app/_trpc/serverClient';
+import { caller } from '@/server';
 
 function EditStudentSheet({
   id,
   defaultValues,
 }: {
   id: string;
-  defaultValues: Awaited<ReturnType<(typeof serverClient)['getStudent']>>;
+  defaultValues: Awaited<ReturnType<(typeof caller)['getStudent']>>;
 }) {
   const [openSheet, setOpenSheet] = React.useState(false);
 

@@ -15,9 +15,9 @@ import {
 } from './ui/alert-dialog';
 import { useToast } from './ui/use-toast';
 import Link from 'next/link';
-import { trpc } from '@/app/_trpc/client';
 import { sendCanceledSubEmail, sendSuspendedSubEmail } from '@/actions';
 import { useSession } from 'next-auth/react';
+import { trpc } from '@/server/trpc';
 
 function SubscriptionActions() {
   const { data: session } = useSession();

@@ -1,9 +1,9 @@
 'use client';
 
-import { serverClient } from '@/app/_trpc/serverClient';
 import Section from './Section';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { upperFirst } from '@/lib/utils';
+import { caller } from '@/server';
 import { useSubscriptionsStore } from '@/store/store';
 import { Session } from 'next-auth';
 
@@ -12,7 +12,7 @@ function TeachersOverview({
   teachers,
 }: {
   session: Session | null;
-  teachers: Awaited<ReturnType<(typeof serverClient)['getTeachers']>>;
+  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
 }) {
   const { subscription } = useSubscriptionsStore((state) => state);
 

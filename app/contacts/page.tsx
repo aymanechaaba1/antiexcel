@@ -1,10 +1,10 @@
 import ContactsList from '@/components/ContactsList';
-import { serverClient } from '../_trpc/serverClient';
 import { Suspense } from 'react';
 import LoadingContacts from '@/components/skeletons/LoadingContacts';
+import { caller } from '@/server';
 
 async function ContactsPage() {
-  const contacts = await serverClient.getContacts();
+  const contacts = await caller.getContacts();
 
   return (
     <>

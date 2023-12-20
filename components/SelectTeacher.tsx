@@ -17,7 +17,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { trpc } from '@/app/_trpc/client';
 import { useSession } from 'next-auth/react';
 import {
   FormControl,
@@ -29,6 +28,7 @@ import {
 import { UseFormReturn } from 'react-hook-form';
 import { Avatar } from './ui/avatar';
 import { AvatarImage } from '@radix-ui/react-avatar';
+import { trpc } from '@/server/trpc';
 
 export function SelectTeacher({
   openComboTeacher,

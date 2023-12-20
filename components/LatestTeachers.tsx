@@ -1,18 +1,18 @@
 'use client';
 
-import { serverClient } from '@/app/_trpc/serverClient';
 import Section from './Section';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { getAvatarName } from '@/lib/utils';
 import { Session } from 'next-auth';
 import { useSubscriptionsStore } from '@/store/store';
+import { caller } from '@/server';
 
 function LatestTeachers({
   session,
   teachers,
 }: {
   session: Session | null;
-  teachers: Awaited<ReturnType<(typeof serverClient)['getTeachers']>>;
+  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
 }) {
   const { subscription } = useSubscriptionsStore((state) => state);
   const isPro = session && subscription;

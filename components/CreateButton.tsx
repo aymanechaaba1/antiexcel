@@ -13,7 +13,6 @@ import {
 import RegistrationForm from './RegistrationForm';
 import { useState } from 'react';
 
-import { trpc } from '@/app/_trpc/client';
 import { z } from 'zod';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { formSchema } from '@/zod/schemas';
@@ -22,14 +21,15 @@ import { useToast } from './ui/use-toast';
 import { ToastAction } from './ui/toast';
 import Link from 'next/link';
 import { storage } from '@/lib/firebase';
-import { serverClient } from '@/app/_trpc/serverClient';
+import { caller } from '@/server';
+import { trpc } from '@/server/trpc';
 
 function CreateButton({
   user,
   teachers,
 }: {
-  user: Awaited<ReturnType<(typeof serverClient)['getUser']>>;
-  teachers: Awaited<ReturnType<(typeof serverClient)['getTeachers']>>;
+  user: Awaited<ReturnType<(typeof caller)['getUser']>>;
+  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
 }) {
   const utils = trpc.useContext();
   const { toast } = useToast();

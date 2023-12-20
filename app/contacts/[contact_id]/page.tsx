@@ -1,5 +1,5 @@
-import { serverClient } from '@/app/_trpc/serverClient';
 import { upperFirst } from '@/lib/utils';
+import { caller } from '@/server';
 import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,7 +10,7 @@ async function StudentContactPage({
 }: {
   params: { contact_id: string };
 }) {
-  const contact = await serverClient.getContact({
+  const contact = await caller.getContact({
     id: contact_id,
   });
   if (!contact) notFound();

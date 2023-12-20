@@ -17,7 +17,6 @@ import {
 } from '@/components/ui/table';
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { trpc } from '../_trpc/client';
 
 import {
   AlertDialog,
@@ -31,6 +30,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
+import { trpc } from '@/server/trpc';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,7 +41,7 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { toast } = useToast();
   const [rowSelection, setRowSelection] = React.useState({});
 

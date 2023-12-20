@@ -2,13 +2,13 @@ import { formatDate, formatSchool, upperFirst } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import AddContactForm from './AddContact';
-import { serverClient } from '@/app/_trpc/serverClient';
 import { ArrowUpRight } from 'lucide-react';
+import { caller } from '@/server';
 
 async function StudentDetails({
   student,
 }: {
-  student: Awaited<ReturnType<(typeof serverClient)['getStudent']>>;
+  student: Awaited<ReturnType<(typeof caller)['getStudent']>>;
 }) {
   if (!student) return;
 

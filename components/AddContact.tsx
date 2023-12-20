@@ -38,7 +38,7 @@ import {
   UploadTaskSnapshot,
   getDownloadURL,
 } from 'firebase/storage';
-import { trpc } from '@/app/_trpc/client';
+import { trpc } from '@/server/trpc';
 
 function AddContactForm({ student_id }: { student_id: string }) {
   const [form] = useCustomForm({

@@ -1,6 +1,5 @@
 import CreateButton from '@/components/CreateButton';
 import StudentsTable from '@/components/StudentsTable';
-import { serverClient } from '../_trpc/serverClient';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import {
@@ -10,13 +9,14 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
+import { caller } from '@/server';
 
 async function StudentsPage() {
-  const user = await serverClient.getUser();
-  const students = (await serverClient.getStudents()) as Awaited<
-    ReturnType<(typeof serverClient)['getStudent']>
+  const user = await caller.getUser();
+  const students = (await caller.getStudents()) as Awaited<
+    ReturnType<(typeof caller)['getStudent']>
   >[];
-  const teachers = await serverClient.getTeachers();
+  const teachers = await caller.getTeachers();
 
   return (
     <>

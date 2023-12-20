@@ -1,13 +1,13 @@
 'use client';
 
-import { serverClient } from '@/app/_trpc/serverClient';
 import { upperFirst } from '@/lib/utils';
+import { caller } from '@/server';
 import Image from 'next/image';
 
 function TeacherDetails({
   teacher,
 }: {
-  teacher: Awaited<ReturnType<(typeof serverClient)['getTeacher']>>;
+  teacher: Awaited<ReturnType<(typeof caller)['getTeacher']>>;
 }) {
   if (!teacher) return;
 

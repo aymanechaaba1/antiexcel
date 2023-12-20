@@ -1,6 +1,6 @@
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { serverClient } from '@/app/_trpc/serverClient';
+import { caller } from '@/server';
 import { Session } from 'next-auth';
 
 async function StudentsOverview({
@@ -8,7 +8,7 @@ async function StudentsOverview({
   students,
 }: {
   session: Session | null;
-  students: Awaited<ReturnType<(typeof serverClient)['getStudents']>>;
+  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
 }) {
   if (!session) return;
 

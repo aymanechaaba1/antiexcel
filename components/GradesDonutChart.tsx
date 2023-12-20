@@ -1,6 +1,6 @@
 'use client';
 
-import { serverClient } from '@/app/_trpc/serverClient';
+import { caller } from '@/server';
 import { Card, DonutChart, Title } from '@tremor/react';
 import { Session } from 'next-auth';
 
@@ -16,7 +16,7 @@ function GradesDonutChart({
   students,
 }: {
   session: Session | null;
-  students: Awaited<ReturnType<(typeof serverClient)['getStudents']>>;
+  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
 }) {
   if (!session) return;
 

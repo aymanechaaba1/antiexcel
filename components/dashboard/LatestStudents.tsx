@@ -1,14 +1,14 @@
 import { formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
 import Section from '../Section';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
-import { serverClient } from '@/app/_trpc/serverClient';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
+import { caller } from '@/server';
 
 async function LatestStudents({
   students,
 }: {
-  students: Awaited<ReturnType<(typeof serverClient)['getStudents']>>;
+  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
 }) {
   const studentsSorted = students.sort(
     (a: any, b: any) => b.created_at - a.created_at

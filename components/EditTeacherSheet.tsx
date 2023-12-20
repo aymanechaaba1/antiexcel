@@ -33,20 +33,20 @@ import {
 } from './ui/command';
 import ProgressBar from './ProgressBar';
 import { subjects } from './AddTeacher';
-import { serverClient } from '@/app/_trpc/serverClient';
-import { trpc } from '@/app/_trpc/client';
 import {
   StorageError,
   UploadTaskSnapshot,
   getDownloadURL,
 } from 'firebase/storage';
 import { useToast } from './ui/use-toast';
+import { caller } from '@/server';
+import { trpc } from '@/server/trpc';
 
 function EditTeacherSheet({
   defaultValues,
   teacher_id,
 }: {
-  defaultValues: Awaited<ReturnType<(typeof serverClient)['getTeacher']>>;
+  defaultValues: Awaited<ReturnType<(typeof caller)['getTeacher']>>;
   teacher_id: string;
 }) {
   const formattedAvatar = new File(

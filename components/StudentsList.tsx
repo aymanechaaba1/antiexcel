@@ -1,12 +1,12 @@
-import { serverClient } from '@/app/_trpc/serverClient';
 import { formatSchool, getAvatarName } from '@/lib/utils';
 import React from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { caller } from '@/server';
 
 function StudentsList({
   teacher,
 }: {
-  teacher: Awaited<ReturnType<(typeof serverClient)['getTeacher']>>;
+  teacher: Awaited<ReturnType<(typeof caller)['getTeacher']>>;
 }) {
   return (
     <div className="space-y-3 mt-5">

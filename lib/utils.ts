@@ -7,11 +7,11 @@ import {
 import { twMerge } from 'tailwind-merge';
 import { ref } from 'firebase/storage';
 import { storage } from './firebase';
-import { serverClient } from '@/app/_trpc/serverClient';
 import { PayPalAccessTokenResponse } from '@/types/paypal-accesstoken-response';
 import { formSchema } from '@/zod/schemas';
 import { z } from 'zod';
 import { Dispatch, SetStateAction } from 'react';
+import { caller } from '@/server';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -72,15 +72,15 @@ export const formatSchool = (school: string) =>
 
 export const getNbStudentsByMonth = (
   data:
-    | Awaited<ReturnType<(typeof serverClient)['getStudents']>>
-    | Awaited<ReturnType<(typeof serverClient)['getTeachers']>>,
+    | Awaited<ReturnType<(typeof caller)['getStudents']>>
+    | Awaited<ReturnType<(typeof caller)['getTeachers']>>,
   month: number
 ) => {
   return data.filter((entry) => entry.created_at?.getMonth() === month).length;
 };
 
 export const getSubjectProportion = (
-  teachers: Awaited<ReturnType<(typeof serverClient)['getTeachers']>>,
+  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>,
   subject: string
 ) => {
   return (

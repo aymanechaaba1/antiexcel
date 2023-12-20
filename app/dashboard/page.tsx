@@ -2,20 +2,20 @@ import LatestStudents from '@/components/dashboard/LatestStudents';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
-import { serverClient } from '../_trpc/serverClient';
 import TeachersOverview from '@/components/TeachersOverview';
 import DashboardChart from '@/components/DashboardChart';
 import StudentsOverview from '@/components/dashboard/StudentsOverview';
 import SubjectsDonutChart from '@/components/SubjectsDonutChart';
 import GradesDonutChart from '@/components/GradesDonutChart';
 import LatestTeachers from '@/components/LatestTeachers';
+import { caller } from '@/server';
 
 async function DashboardPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const students = await serverClient.getStudents();
-  const teachers = await serverClient.getTeachers();
+  const students = await caller.getStudents();
+  const teachers = await caller.getTeachers();
 
   return (
     <div className="space-y-4">

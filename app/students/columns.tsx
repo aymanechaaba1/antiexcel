@@ -14,13 +14,13 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatDate, getAvatarName, upperFirst } from '@/lib/utils';
+import { caller } from '@/server';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
-import { serverClient } from '../_trpc/serverClient';
 
 export const columns: ColumnDef<
-  Awaited<ReturnType<(typeof serverClient)['getStudent']>>
+  Awaited<ReturnType<(typeof caller)['getStudent']>>
 >[] = [
   {
     id: 'select',

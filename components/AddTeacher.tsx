@@ -30,7 +30,6 @@ import {
   UploadTaskSnapshot,
   getDownloadURL,
 } from 'firebase/storage';
-import { trpc } from '@/app/_trpc/client';
 
 import React from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -57,7 +56,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { serverClient } from '@/app/_trpc/serverClient';
+import { caller } from '@/server';
+import { trpc } from '@/server/trpc';
 
 export const subjects = [
   { label: 'English', value: 'english' },
@@ -74,7 +74,7 @@ export const subjects = [
 function AddTeacher({
   user,
 }: {
-  user: Awaited<ReturnType<(typeof serverClient)['getUser']>>;
+  user: Awaited<ReturnType<(typeof caller)['getUser']>>;
 }) {
   const utils = trpc.useContext();
 

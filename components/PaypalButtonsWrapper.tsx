@@ -1,15 +1,14 @@
 'use client';
 
 import PaypalButtons from '@/providers/PaypalButtons';
-import { trpc } from '@/app/_trpc/client';
 import { useToast } from './ui/use-toast';
 import { Session } from 'next-auth';
 import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useEffect } from 'react';
 import { Resend } from 'resend';
 import NewSubscriptionEmail from './emails/NewSubscriptionEmail';
-import { serverClient } from '@/app/_trpc/serverClient';
 import { sendNewSubEmail } from '@/actions';
+import { trpc } from '@/server/trpc';
 
 function PaypalButtonsWrapper({
   session,
@@ -21,7 +20,7 @@ function PaypalButtonsWrapper({
   type: string;
 }) {
   const { toast } = useToast();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const [{ options }, dispatch] = usePayPalScriptReducer();
 
