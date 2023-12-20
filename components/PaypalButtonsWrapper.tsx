@@ -5,7 +5,6 @@ import { useToast } from './ui/use-toast';
 import { Session } from 'next-auth';
 import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useEffect } from 'react';
-import { Resend } from 'resend';
 import NewSubscriptionEmail from './emails/NewSubscriptionEmail';
 import { sendNewSubEmail } from '@/actions';
 import { trpc } from '@/server/trpc';

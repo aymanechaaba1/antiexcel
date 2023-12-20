@@ -3,7 +3,6 @@
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { updateStudentSchema } from './zod/schemas';
-import { Resend } from 'resend';
 import NewSubscriptionEmail from './components/emails/NewSubscriptionEmail';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './lib/auth';
@@ -22,7 +21,7 @@ export const updateStudent = async (
   revalidatePath(`/students/${values?.id}`);
 };
 
-const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
+// const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
 const sendEmail = async ({
   subject,
   to,
@@ -33,12 +32,12 @@ const sendEmail = async ({
   react: any;
 }) => {
   const session = await getServerSession(authOptions);
-  await resend.emails.send({
-    from: 'AntiExcel <onboarding@resend.dev>',
-    to,
-    subject,
-    react: react({ session }),
-  });
+  // await resend.emails.send({
+  //   from: 'AntiExcel <onboarding@resend.dev>',
+  //   to,
+  //   subject,
+  //   react: react({ session }),
+  // });
 };
 
 export const sendNewSubEmail = async () => {

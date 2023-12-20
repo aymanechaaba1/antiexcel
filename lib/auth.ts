@@ -3,8 +3,6 @@ import { NextAuthOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import prisma from '@/prisma/prismaClient';
-import { Resend } from 'resend';
-import WelcomeEmail from '@/components/emails/WelcomeEmail';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
