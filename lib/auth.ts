@@ -51,8 +51,6 @@ export const authOptions: NextAuthOptions = {
           subject: `${user.name}, Welcome to AntiExcel!`,
           react: WelcomeEmail({ user }) as React.ReactElement,
         });
-        if (error) console.error(error);
-        if (data) console.log(data);
       }
     },
   },
