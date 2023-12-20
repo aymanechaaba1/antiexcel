@@ -1,7 +1,6 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { serverClient } from './app/_trpc/serverClient';
 import { z } from 'zod';
 import { updateStudentSchema } from './zod/schemas';
 import { Resend } from 'resend';
@@ -11,11 +10,12 @@ import { authOptions } from './lib/auth';
 import CanceledSubscriptionEmail from './components/emails/CanceledSubscriptionEmail';
 import SuspendedSubscriptionEmail from './components/emails/SuspendedSubscriptionEmail';
 import BecomeProEmail from './components/emails/BecomeProEmail';
+import { caller } from './server';
 
 export const updateStudent = async (
   values: z.infer<typeof updateStudentSchema>
 ) => {
-  await serverClient.updateStudent({
+  await caller.updateStudent({
     ...values,
   });
 
@@ -69,8 +69,8 @@ export const sendBecomeProEmail = async (
   subscription: Subscription | null | undefined
 ) => {
   // subscription
-  const students = await serverClient.getStudents();
-  const teachers = await serverClient.getTeachers();
+  const students = await caller.getStudents();
+  const teachers = await caller.getTeachers();
   const reachedLimit =
     !subscription && students.length === 3 && teachers.length === 3;
 
