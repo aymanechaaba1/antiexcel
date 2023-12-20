@@ -44,13 +44,13 @@ export const authOptions: NextAuthOptions = {
       console.log(isNewUser);
       if (isNewUser) {
         // send custom welcome email
-        const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
-        const { data, error } = await resend.emails.send({
-          from: 'onboarding@resend.dev', // custom email
-          to: `aymanechaaba1@gmail.com`, // to new user
-          subject: `${user.name}, Welcome to AntiExcel!`,
-          react: WelcomeEmail({ user }) as React.ReactElement,
-        });
+        // const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
+        // const { data, error } = await resend.emails.send({
+        //   from: 'onboarding@resend.dev', // custom email
+        //   to: `aymanechaaba1@gmail.com`, // to new user
+        //   subject: `${user.name}, Welcome to AntiExcel!`,
+        //   react: WelcomeEmail({ user }) as React.ReactElement,
+        // });
       }
     },
   },

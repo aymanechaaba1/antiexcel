@@ -66,7 +66,7 @@ function PaypalButtonsWrapper({
           subscription_id: data.subscriptionID,
         });
 
-        await sendNewSubEmail();
+        // await sendNewSubEmail();
       }}
     />
   );

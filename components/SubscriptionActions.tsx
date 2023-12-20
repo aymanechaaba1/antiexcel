@@ -26,7 +26,7 @@ function SubscriptionActions() {
 
   const { toast } = useToast();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const { mutate: updateUser } = trpc.updateUser.useMutation({
     onSuccess: () => {
@@ -59,7 +59,7 @@ function SubscriptionActions() {
       subscription_id: null,
     });
 
-    await sendSuspendedSubEmail();
+    // await sendSuspendedSubEmail();
   };
 
   const handleCancelSubscription = async () => {
@@ -82,7 +82,7 @@ function SubscriptionActions() {
       subscription_id: null,
     });
 
-    await sendCanceledSubEmail();
+    // await sendCanceledSubEmail();
   };
 
   if (subscription) {
