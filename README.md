@@ -1,6 +1,8 @@
 ![AntiExcel](https://firebasestorage.googleapis.com/v0/b/school-manager-e26b7.appspot.com/o/Screenshot%202023-12-09%20at%204.33.43%20PM.png?alt=media&token=ced15002-f3f9-47c1-a77a-cb0e203dccb6)
 
-![Video](https://firebasestorage.googleapis.com/v0/b/school-manager-e26b7.appspot.com/o/edited-demo-antiexcel.mp4?alt=media&token=dfa44346-9bf5-4123-9072-f9cdda2a50a4)
+<video width="100%" height="auto" controls>
+  <source src="https://firebasestorage.googleapis.com/v0/b/school-manager-e26b7.appspot.com/o/edited-demo-antiexcel.mp4?alt=media&token=dfa44346-9bf5-4123-9072-f9cdda2a50a4" type="video/mp4">
+</video>
 
 It's a paid platform where you can manage students and teachers.
 
