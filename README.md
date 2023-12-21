@@ -34,4 +34,4 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ Light & Dark mode
 - ✔️ The Easiest state management in the world, Zustand
 - ✔️ Beautiful Emails sent with resend and react-email
-- ✔️ Welcome, Become a PRO, Canceled and Suspended Emails.
+- ✔️ Welcome, Become a PRO, Canceled and Suspended Subscriptions Emails.
