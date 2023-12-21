@@ -1,4 +1,5 @@
 'use client';
+import { VIDEO_URL } from '@/lib/config';
 import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';
 
@@ -13,7 +14,7 @@ function Video() {
     showVideo && (
       <div className="max-w-3xl mx-auto my-5 border rounded-lg shadow-md p-2">
         <ReactPlayer
-          url={`https://firebasestorage.googleapis.com/v0/b/school-manager-e26b7.appspot.com/o/edited-demo-antiexcel.mp4?alt=media&token=dfa44346-9bf5-4123-9072-f9cdda2a50a4`}
+          url={VIDEO_URL}
           loop={true}
           playing={true}
           muted={true}
