@@ -1,5 +1,5 @@
-// import { Resend } from 'resend';
+import { Resend } from 'resend';
 
-// const resend = Object.freeze(new Resend());
+const resend = Object.freeze(new Resend());
 
-// export default resend;
+export default resend;

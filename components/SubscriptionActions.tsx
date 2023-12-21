@@ -16,6 +16,7 @@ import {
 import { useToast } from './ui/use-toast';
 import Link from 'next/link';
 import { trpc } from '@/server/trpc';
+import { sendCanceledSubEmail, sendSuspendedSubEmail } from '@/actions';
 
 function SubscriptionActions() {
   const { access_token } = useAccessTokenStore((state) => state);
@@ -56,7 +57,7 @@ function SubscriptionActions() {
       subscription_id: null,
     });
 
-    // await sendSuspendedSubEmail();
+    await sendSuspendedSubEmail();
   };
 
   const handleCancelSubscription = async () => {
@@ -79,7 +80,7 @@ function SubscriptionActions() {
       subscription_id: null,
     });
 
-    // await sendCanceledSubEmail();
+    await sendCanceledSubEmail();
   };
 
   if (subscription) {

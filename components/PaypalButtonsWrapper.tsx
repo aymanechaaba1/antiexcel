@@ -7,6 +7,7 @@ import { usePayPalScriptReducer } from '@paypal/react-paypal-js';
 import { useEffect } from 'react';
 
 import { trpc } from '@/server/trpc';
+import { sendNewSubEmail } from '@/actions';
 
 function PaypalButtonsWrapper({
   session,
@@ -64,7 +65,7 @@ function PaypalButtonsWrapper({
           subscription_id: data.subscriptionID,
         });
 
-        // await sendNewSubEmail();
+        await sendNewSubEmail();
       }}
     />
   );
