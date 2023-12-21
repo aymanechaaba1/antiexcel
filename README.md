@@ -7,7 +7,7 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ Manage Up to 3 students and 3 teachers in the free tier.
 - ✔️ See real-time data about students in the free tier.
 - ✔️ Upgrade to PRO and unlock and expand your management to unlimited students and teachers.
-- ✔️ PRO memebers have access to real-time data about teachers.
+- ✔️ PRO members have access to real-time data about teachers.
 
 ## This is for Developers
 
