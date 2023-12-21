@@ -20,7 +20,6 @@ async function TeacherDetailsPage({ params: { teacher_id } }: Params) {
   const teacher = await caller.getTeacher({
     teacher_id,
   });
-  console.log(teacher);
   if (!teacher) return;
 
   return (
