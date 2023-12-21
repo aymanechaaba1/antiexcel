@@ -22,3 +22,10 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ Paypal Subscriptions API integration
 - ✔️ NextAuth Authentication
 - ✔️ Beautiful UI with the help of shadcn
+- ✔️ File upload to firebase storage
+- ✔️ Cool upload progress bars
+- ✔️ 2-step forms
+- ✔️ Beautiful charts with the help of tremor.so
+- ✔️ Robust Typesafe API
+- ✔️ Light & Dark mode
+- ✔️ The Easiest state management in the world, Zustand
