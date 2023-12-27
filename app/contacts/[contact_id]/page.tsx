@@ -42,14 +42,17 @@ async function StudentContactPage({
           <p>{contact.email}</p>
           <p className="text-gray-500">Students</p>
           <p className="text-blue-500 flex items-center gap-2">
-            <span>
+            <div className="flex items-center gap-3">
               {contact.students.map((student) => (
-                <Link key={student.id} href={`/students/${student.id}`}>
+                <Link
+                  key={student.id}
+                  href={`/students/${student.id}`}
+                  className="underline"
+                >
                   {student.firstname}
                 </Link>
               ))}
-            </span>
-            <ArrowUpRight className="w-4 h-4" />
+            </div>
           </p>
           <p className="text-gray-500">Created At</p>
           <p>

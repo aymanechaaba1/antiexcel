@@ -71,7 +71,7 @@ model Student {
   user_id    String
   teacher    Teacher?  @relation(fields: [teacher_id], references: [id])
   teacher_id String
-  contact    Contact   @relation(fields: [contact_id], references: [id])
+  contact    Contact   @relation(fields: [contact_id], references: [id], onDelete: Cascade)
   contact_id String
 }
 

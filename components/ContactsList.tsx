@@ -53,7 +53,7 @@ function ContactsList({
                       className="text-blue-500 flex items-center gap-2"
                     >
                       <span>{student.firstname}</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight size={14} />
                     </Link>
                   ))}
                 </div>

@@ -2,7 +2,13 @@
 
 import * as z from 'zod';
 import { format } from 'date-fns';
-import { CalendarIcon, Check, ChevronsUpDown } from 'lucide-react';
+import {
+  CalendarIcon,
+  Check,
+  ChevronsUpDown,
+  Loader,
+  Loader2,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -46,6 +52,10 @@ import {
   UploadTaskSnapshot,
   getDownloadURL,
 } from 'firebase/storage';
+import { trpc } from '@/server/trpc';
+import Image from 'next/image';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const schools = [
   { label: 'Chkail', value: 'chkail' },
@@ -59,7 +69,6 @@ export const schools = [
 function RegistrationForm({
   open,
   setOpen,
-  defaultValues,
   buttonLabel,
   onSubmit,
   progress,
@@ -68,7 +77,6 @@ function RegistrationForm({
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  defaultValues?: FormSchema;
   buttonLabel: string;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
   progress: number;
@@ -79,12 +87,35 @@ function RegistrationForm({
 
   const [openCombobox, setOpenCombobox] = useState(false);
 
-  const [form] = useCustomForm({
-    formSchema: formSchema,
+  const { data: teachers, isLoading: loadingTeachers } =
+    trpc.getTeachers.useQuery();
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstname: 'rayan',
+      lastname: 'hamdi',
+      birthdate: new Date(),
+      gender: 'male',
+      grade: '1',
+      school: 'chkail',
+      // ...(teachers && teachers.length && { teacher_id: teachers[0].id }),
+      teacher_id: 'clqmb3vho0003ie10gs2zvnfy',
+      contact_id: '',
+      contact_email: 'soumia@gmail.com',
+      contact_phone: '06 50 60 60 50',
+      contact_name: 'soumia',
+      contact_relationship: 'mother',
+    },
   });
 
   const [openComboTeacher, setOpenComboTeacher] = useState(false);
   const [selectedTeacher, setSelectedTeacher] = useState('');
+
+  const { data: contacts, isLoading: loadingContacts } =
+    trpc.getContacts.useQuery();
+
+  const contact_id = form.watch('contact_id');
 
   return (
     <Form {...form}>
@@ -98,7 +129,7 @@ function RegistrationForm({
                 <FormItem>
                   <FormLabel>Firstname</FormLabel>
                   <FormControl>
-                    <Input {...field} defaultValue={defaultValues?.firstname} />
+                    <Input {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -111,11 +142,7 @@ function RegistrationForm({
                 <FormItem>
                   <FormLabel>Lastname</FormLabel>
                   <FormControl>
-                    <Input
-                      {...field}
-                      defaultValue={defaultValues?.lastname}
-                      value={field.value}
-                    />
+                    <Input {...field} value={field.value} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -171,7 +198,7 @@ function RegistrationForm({
                   <FormControl>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value || defaultValues?.gender}
+                      defaultValue={field.value}
                     >
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select your gender" />
@@ -195,13 +222,7 @@ function RegistrationForm({
                 <FormItem>
                   <FormLabel>Grade</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      defaultValue={1}
-                      min={1}
-                      max={6}
-                      {...field}
-                    />
+                    <Input type="number" min={1} max={6} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -236,17 +257,13 @@ function RegistrationForm({
                       </PopoverTrigger>
                       <PopoverContent className="w-[200px] p-0">
                         <Command>
-                          <CommandInput
-                            placeholder="Search school..."
-                            defaultValue={defaultValues?.school}
-                          />
+                          <CommandInput placeholder="Search school..." />
                           <CommandEmpty>No school found.</CommandEmpty>
                           <CommandGroup>
                             {schools.map((school) => (
                               <CommandItem
                                 value={school.label}
                                 key={school.value}
-                                defaultValue={defaultValues?.school}
                                 onSelect={() => {
                                   form.setValue('school', school.value);
                                   setOpenCombobox(false);
@@ -317,37 +334,42 @@ function RegistrationForm({
                   'gender',
                   'grade',
                   'school',
-                  'teacher_id',
                   'avatar',
-                ];
+                ] as Array<
+                  | 'firstname'
+                  | 'lastname'
+                  | 'birthdate'
+                  | 'gender'
+                  | 'grade'
+                  | 'school'
+                  | 'avatar'
+                >;
+
+                // setFormStep((prev) => prev + 1); // pass directly to next step
 
                 form.trigger(inputs);
-                const [
-                  firstnameState,
-                  lastnameState,
-                  birthdateState,
-                  genderState,
-                  gradeState,
-                  ,
-                  ,
-                  avatarState,
-                ] = inputs.map((input) => form.getFieldState(input));
+                const inputStates = inputs.map((input) =>
+                  form.getFieldState(input)
+                );
 
                 const [school, teacher_id] = form.getValues([
                   'school',
                   'teacher_id',
                 ]);
 
-                if (!firstnameState.isDirty || firstnameState.invalid) return;
-                if (!lastnameState.isDirty || lastnameState.invalid) return;
-                if (!birthdateState.isDirty || birthdateState.invalid) return;
-                if (!genderState.isDirty || genderState.invalid) return;
-                if (!gradeState.isDirty || gradeState.invalid) return;
-                if (!avatarState.isDirty || avatarState.invalid) return;
+                inputStates.forEach((state) => {
+                  if (!state.isDirty || state.invalid) return;
+                });
+
                 if (!school || !teacher_id) return;
 
                 // upload student image
                 const avatar: File | Blob = form.getValues('avatar');
+                if (!avatar) {
+                  form.trigger('avatar');
+                  return;
+                }
+
                 const fileName = getFilename(avatar.name);
                 const uploadTask = getUploadTask(`images/${fileName}`, avatar);
 
@@ -383,107 +405,143 @@ function RegistrationForm({
         )}
         {formStep === 2 && (
           <>
-            <h1 className="text-2xl font-medium">Contact</h1>
-            <FormField
-              control={form.control}
-              name="contact_email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="contact_phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="tel"
-                      placeholder="eg: 06 28 29 59 30"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="contact_name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="contact_relationship"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Relationship</FormLabel>
-                  <Select
-                    onValueChange={field.onChange}
-                    defaultValue={field.value}
-                  >
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select relationship" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {['Mother', 'Father', 'Brother', 'Sister'].map(
-                        (cibling, i) => (
-                          <SelectItem key={i} value={cibling.toLowerCase()}>
-                            {cibling}
+            {loadingContacts && <Loader2 size={10} />}
+            {true && (
+              <FormField
+                control={form.control}
+                name="contact_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Existing Contact</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select contact" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {contacts?.map((contact) => (
+                          <SelectItem key={contact.id} value={contact.id}>
+                            {contact.name}
                           </SelectItem>
-                        )
-                      )}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="contact_avatar"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Avatar</FormLabel>
-                  <FormControl>
-                    <>
-                      <Input
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        name="avatar"
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            field.onChange(e.target.files[0]);
-                          }
-                        }}
-                      />
-                      <ProgressBar
-                        progress={progress}
-                        setProgress={setProgress}
-                      />
-                    </>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                        ))}
+                        <SelectItem value="none">Doesn't Exist</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            {(contacts?.length === 0 || contact_id === 'none') && (
+              <>
+                <h1 className="text-2xl font-medium">New Contact</h1>
+                <FormField
+                  control={form.control}
+                  name="contact_email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contact_phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type="tel"
+                          placeholder="eg: 06 28 29 59 30"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contact_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contact_relationship"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Relationship</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select relationship" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {['Mother', 'Father', 'Brother', 'Sister'].map(
+                            (cibling, i) => (
+                              <SelectItem key={i} value={cibling.toLowerCase()}>
+                                {cibling}
+                              </SelectItem>
+                            )
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="contact_avatar"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Avatar</FormLabel>
+                      <FormControl>
+                        <>
+                          <Input
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            name="avatar"
+                            onChange={(e) => {
+                              if (e.target.files) {
+                                field.onChange(e.target.files[0]);
+                              }
+                            }}
+                          />
+                          <ProgressBar
+                            progress={progress}
+                            setProgress={setProgress}
+                          />
+                        </>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+
             <div className="flex items-center gap-3">
               <Button
                 variant={'secondary'}

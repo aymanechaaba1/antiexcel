@@ -90,13 +90,19 @@ export const formSchema = z.object({
     message: 'grade must be a number between 1 and 6.',
   }),
   school: z.string().min(3),
-  teacher_id: z.string().cuid(),
   avatar: z.instanceof(File),
-  contact_email: z.string().email(),
-  contact_phone: z.string().min(10).max(14),
-  contact_name: z.string().min(3).max(10),
-  contact_relationship: z.string(),
+  teacher_id: z.string().cuid(),
+  contact_email: z
+    .string()
+    .regex(new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$'))
+    .optional(),
+  contact_phone: z.string().min(10).max(14).optional(),
+  contact_name: z.string().min(3).max(10).optional(),
+  contact_relationship: z.string().optional(),
   contact_avatar: z.instanceof(File).optional(),
+  contact_id: z
+    .union([z.string().cuid(), z.literal('none'), z.string().length(0)])
+    .default(''),
 });
 export type FormSchema = z.infer<typeof formSchema>;
 
@@ -147,6 +153,9 @@ export const studentSchema = z.object({
     invalid_type_error: 'avatar/picture must be a string as url.',
   }),
   teacher_id: z.string().cuid(),
+  contact_id: z
+    .union([z.string().cuid(), z.literal('none'), z.string().length(0)])
+    .default(''),
   contact: contactSchema,
 });
 export type Student = z.infer<typeof studentSchema>;

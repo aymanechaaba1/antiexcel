@@ -102,6 +102,40 @@ export const appRouter = router({
           },
         });
       }),
+    addToExistingContact: privateProcedure
+      .input(
+        studentSchema.omit({
+          contact: true,
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        await prisma.student.create({
+          data: {
+            firstname: input.firstname,
+            lastname: input.lastname,
+            birthdate: input.birthdate,
+            gender: input.gender,
+            grade: input.grade,
+            school: input.school,
+            avatar: input.avatar,
+            contact: {
+              connect: {
+                id: input.contact_id,
+              },
+            },
+            teacher: {
+              connect: {
+                id: input.teacher_id,
+              },
+            },
+            admin: {
+              connect: {
+                id: ctx.user_id,
+              },
+            },
+          },
+        });
+      }),
   }),
   deleteStudent: privateProcedure
     .input(
@@ -110,11 +144,40 @@ export const appRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      await prisma.student.delete({
+      const student = await prisma.student.findUnique({
         where: {
           id: input.student_id,
         },
+        include: {
+          contact: {
+            include: {
+              students: true,
+            },
+          },
+        },
       });
+      if (!student) throw new TRPCClientError(`No student found.`);
+
+      if (student.contact && student.contact.students.length === 1) {
+        // delete both student and its contact
+        await prisma.student.delete({
+          where: {
+            id: input.student_id,
+          },
+        });
+        await prisma.contact.delete({
+          where: {
+            id: student.contact.id,
+          },
+        });
+      } else {
+        // delete only the student
+        await prisma.student.delete({
+          where: {
+            id: input.student_id,
+          },
+        });
+      }
     }),
   updateStudent: privateProcedure
     .input(updateStudentSchema)

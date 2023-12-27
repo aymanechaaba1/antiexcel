@@ -32,6 +32,21 @@ import {
 } from '@/components/ui/table';
 import React from 'react';
 import { SlidersHorizontal } from 'lucide-react';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { trpc } from '@/server/trpc';
+import { useToast } from '@/components/ui/use-toast';
+import { useRouter } from 'next/navigation';
+import prisma from '@/prisma/prismaClient';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -77,6 +92,41 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const utils = trpc.useUtils();
+  const { toast } = useToast();
+  const router = useRouter();
+
+  const { mutate: deleteStudent } = trpc.deleteStudent.useMutation({
+    onSuccess() {
+      utils.getStudents.refetch();
+      toast({
+        title: 'Student deleted successfully.',
+      });
+      router.refresh();
+    },
+    onMutate: () => {
+      toast({
+        title: 'Deleting student...',
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: `Failed to deleted student.`,
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const deleteStudentHandler = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    table.getFilteredSelectedRowModel().rows.forEach(async (row) => {
+      deleteStudent({
+        student_id: row.original.id,
+      });
+    });
+  };
+
   return (
     <div>
       <div className="flex items-center gap-4 py-4">
@@ -118,6 +168,30 @@ export function DataTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+      {table.getFilteredSelectedRowModel().rows.length !== 0 && (
+        <div className="flex items-center gap-5 px-4 py-3 border rounded-lg mb-5 bg-gray-900">
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="destructive">Delete</Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this student and remove all of its data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={deleteStudentHandler}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
+      )}
       <div className="rounded-md border mt-5">
         <Table>
           <TableHeader>

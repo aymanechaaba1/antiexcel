@@ -2,7 +2,7 @@
 
 import { trpc } from '@/server/trpc';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpBatchLink, getFetch, loggerLink } from '@trpc/client';
+import { httpBatchLink, getFetch } from '@trpc/client';
 import { useState } from 'react';
 import superjson from 'superjson';
 
@@ -23,9 +23,6 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
   const [trpcClient] = useState(() =>
     trpc.createClient({
       links: [
-        loggerLink({
-          enabled: () => true,
-        }),
         httpBatchLink({
           url,
           fetch: async (input, init?) => {

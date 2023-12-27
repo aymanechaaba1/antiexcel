@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, Loader } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -46,7 +46,8 @@ export function SelectTeacher({
   const { data: session } = useSession();
   if (!session) return;
 
-  const { data: teachers } = trpc.getTeachers.useQuery();
+  const { data: teachers, isLoading: loadingTeachers } =
+    trpc.getTeachers.useQuery();
   if (!teachers || teachers.length === 0) return;
 
   const teachersCombo = [
@@ -56,6 +57,8 @@ export function SelectTeacher({
       avatar: teacher.avatar,
     })),
   ] as const;
+
+  if (loadingTeachers) return <Loader className="animate-rotate w-4" />;
 
   return (
     <FormField
@@ -94,6 +97,7 @@ export function SelectTeacher({
                       <CommandItem
                         value={teacher.label}
                         key={teacher.value}
+                        defaultValue={field.value}
                         onSelect={() => {
                           form.setValue('teacher_id', teacher.value);
                           setOpenComboTeacher(false);
