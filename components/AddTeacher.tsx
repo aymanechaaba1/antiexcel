@@ -42,9 +42,6 @@ import {
   CommandItem,
 } from './ui/command';
 import Section from './Section';
-import { useSession } from 'next-auth/react';
-import { redirect } from 'next/navigation';
-import { DropdownMenuCheckboxItemProps } from '@radix-ui/react-dropdown-menu';
 import { useSubscriptionsStore } from '@/store/store';
 import { useToast } from './ui/use-toast';
 import { ToastAction } from './ui/toast';
@@ -58,6 +55,7 @@ import {
 } from './ui/select';
 import { caller } from '@/server';
 import { trpc } from '@/server/trpc';
+import { useRouter } from 'next/navigation';
 
 export const subjects = [
   { label: 'English', value: 'english' },
@@ -76,7 +74,7 @@ function AddTeacher({
 }: {
   user: Awaited<ReturnType<(typeof caller)['getUser']>>;
 }) {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
 
   const [form] = useCustomForm({
     formSchema: teacherFormSchema,
@@ -93,10 +91,12 @@ function AddTeacher({
   const [open, setOpen] = useState(false);
 
   const { toast } = useToast();
+  const router = useRouter();
 
   const addTeacher = trpc.addTeacher.useMutation({
     onSuccess() {
       utils.getTeachers.invalidate();
+      router.refresh();
       toast({
         title: 'Teacher added successfully.',
       });

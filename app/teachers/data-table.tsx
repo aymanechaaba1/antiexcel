@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { trpc } from '@/server/trpc';
+import { useRouter } from 'next/navigation';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -55,9 +56,12 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const router = useRouter();
+
   const deleteTeacher = trpc.deleteTeacher.useMutation({
     onSuccess() {
       utils.getTeachers.refetch();
+      router.refresh();
       toast({
         title: 'Teacher deleted successfully.',
       });
