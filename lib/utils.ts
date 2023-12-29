@@ -120,3 +120,12 @@ export const getUrl = () =>
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
     : `http://localhost:443`;
+
+export const compare = (
+  nbs_currMonth: number,
+  nbs_prevMonth: number
+): 'trending' | 'deviating' | 'nothing' => {
+  if (nbs_currMonth > nbs_prevMonth) return 'trending';
+  if (nbs_currMonth < nbs_prevMonth) return 'deviating';
+  return 'nothing';
+};

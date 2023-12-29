@@ -428,7 +428,7 @@ function RegistrationForm({
                             {contact.name}
                           </SelectItem>
                         ))}
-                        <SelectItem value="none">Doesn't Exist</SelectItem>
+                        <SelectItem value="none">Doesn&apos;t Exist</SelectItem>
                       </SelectContent>
                     </Select>
                     <FormMessage />
