@@ -43,3 +43,5 @@ It's a paid platform where you can manage students and teachers.
 3. `npm run dev`
 
 This will run the development server on <mark>http://localhost:443</mark> (443 and not 3000 because Paypal requires that).
+
+📍 For Paypal API, make sure you add a webhook url using ngrok, I've tried the new NextJS feature to use https localhost but Paypal didn't accept that.
