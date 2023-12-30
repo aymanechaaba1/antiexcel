@@ -8,8 +8,6 @@
 
 It's a paid platform where you can manage students and teachers.
 
-⚠️ I didn't provide any url yet because there is a bug either in shadcn or nextjs or both that caused the deployment to fail, all my code is working fine on the development but the file upload triggers a bug and that's something that needs to be fixed, once it gets fixed, my project will be live on the internet.
-
 ## Features
 
 - ✔️ Manage Up to 3 students and 3 teachers in the free tier.
@@ -39,6 +37,9 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ The Easiest state management in the world, Zustand
 - ✔️ Beautiful Emails sent with resend and react-email
 - ✔️ Welcome, Become a PRO, Canceled and Suspended Subscriptions Emails.
+
+> [!IMPORTANT]
+> I didn't provide any url yet because there is a bug either in shadcn or nextjs or both that caused the deployment to fail, all my code is working fine on the development but the file upload triggers a bug and that's something that needs to be fixed, once it gets fixed, my project will be live on the internet.
 
 1. `npm i`
 2. Setup your env variables
