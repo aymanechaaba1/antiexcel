@@ -312,16 +312,25 @@ export const appRouter = router({
       const subscription: Subscription = await res.json();
       return subscription;
     }),
-  getContacts: privateProcedure.query(async ({ ctx }) => {
-    return await prisma.contact.findMany({
-      where: {
-        user_id: ctx.user_id,
-      },
-      include: {
-        students: true,
-      },
-    });
-  }),
+  getContacts: privateProcedure
+    .input(
+      z.object({
+        page: z.number().default(1),
+        per_page: z.number().default(10),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      return await prisma.contact.findMany({
+        where: {
+          user_id: ctx.user_id,
+        },
+        include: {
+          students: true,
+        },
+        skip: input.page * input.per_page,
+        take: input.per_page,
+      });
+    }),
   getContact: privateProcedure
     .input(
       z.object({

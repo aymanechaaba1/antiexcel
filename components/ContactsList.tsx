@@ -6,13 +6,20 @@ import { ArrowRight } from 'lucide-react';
 import { Separator } from './ui/separator';
 import { caller } from '@/server';
 
-function ContactsList({
-  contacts,
+async function ContactsList({
+  page,
+  per_page,
 }: {
-  contacts: Awaited<ReturnType<(typeof caller)['getContacts']>>;
+  page: number | 1;
+  per_page: number | 5;
 }) {
+  const contacts = await caller.getContacts({
+    page,
+    per_page,
+  });
+
   return (
-    <Section title="Contacts List">
+    <Section title="Contacts List" className="min-h-screen">
       <div className="space-y-4">
         <div className="grid grid-cols-4 md:grid-cols-6">
           <p className="font-bold text-gray-500">Avatar</p>
