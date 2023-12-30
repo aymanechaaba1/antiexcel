@@ -37,3 +37,9 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ The Easiest state management in the world, Zustand
 - ✔️ Beautiful Emails sent with resend and react-email
 - ✔️ Welcome, Become a PRO, Canceled and Suspended Subscriptions Emails.
+
+1. `npm i`
+2. Setup your env variables
+3. `npm run dev`
+
+This will run the development server on <mark>http://localhost:443</mark> (443 and not 3000 because Paypal requires that).
