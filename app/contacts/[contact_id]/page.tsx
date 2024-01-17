@@ -17,17 +17,6 @@ async function StudentContactPage({
 
   return (
     <div className="flex flex-col md:flex-row gap-4">
-      {contact.avatar && (
-        <div className="w-full md:w-1/2">
-          <Image
-            src={contact.avatar}
-            width={200}
-            height={200}
-            alt={contact.name}
-            className="w-full object-cover rounded-lg"
-          />
-        </div>
-      )}
       <div className="space-y-4 w-full">
         <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-3 border p-5 rounded-lg">
           <p className="text-gray-500">Name</p>

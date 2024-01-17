@@ -14,16 +14,6 @@ async function StudentDetails({
 
   return (
     <div className="py-4 flex flex-col md:flex-row items-start gap-10">
-      {student.avatar && (
-        <Image
-          src={student.avatar}
-          alt={student.firstname}
-          width={200}
-          height={200}
-          className="rounded-lg w-96 h-96 object-cover"
-          priority={true}
-        />
-      )}
       <div className="grid grid-cols-2 gap-x-10 gap-y-4 border p-5 rounded-lg">
         <p className="text-gray-500">Firstname</p>
         <p>{upperFirst(student.firstname)}</p>

@@ -24,12 +24,7 @@ import {
 
 import ProgressBar from './ProgressBar';
 import { useState } from 'react';
-import { cn, getFilename, getUploadTask, uploadFile } from '@/lib/utils';
-import {
-  StorageError,
-  UploadTaskSnapshot,
-  getDownloadURL,
-} from 'firebase/storage';
+import { cn } from '@/lib/utils';
 
 import React from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
@@ -79,21 +74,20 @@ function AddTeacher({
   const [form] = useCustomForm({
     formSchema: teacherFormSchema,
     defaultValues: {
-      email: '',
-      phone: '',
+      email: 'aziza@gmail.com',
+      phone: '06 59 69 59 60',
       gender: 'female',
-      name: '',
-      avatar: null,
+      name: 'Aziza',
+      subject: 'science',
     },
   });
 
-  const [progress, setProgress] = useState(0);
   const [open, setOpen] = useState(false);
 
   const { toast } = useToast();
   const router = useRouter();
 
-  const addTeacher = trpc.addTeacher.useMutation({
+  const { mutate: addTeacher } = trpc.addTeacher.useMutation({
     onSuccess() {
       utils.getTeachers.invalidate();
       router.refresh();
@@ -129,38 +123,9 @@ function AddTeacher({
       });
     }
 
-    if (!values.avatar) return;
-
-    const fileName = getFilename(values.avatar.name);
-
-    const uploadTask = getUploadTask(`teachers/${fileName}`, values.avatar);
-
-    const onSnapshot = (snapshot: UploadTaskSnapshot) => {
-      const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      setProgress(progress);
-    };
-
-    const onError = (error: StorageError) => {
-      // Handle unsuccessful uploads
-      console.error(`Upload was unsuccessful. ${error.message}`);
-    };
-
-    const onSuccess = async () => {
-      // Handle successful uploads on complete
-      // For instance, get the download URL:
-      const url = await getDownloadURL(uploadTask.snapshot.ref);
-
-      addTeacher.mutate({
-        ...values,
-        avatar: url,
-      });
-
-      form.reset();
-      setProgress(0);
-      setOpen(false);
-    };
-
-    uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
+    addTeacher({
+      ...values,
+    });
   }
 
   return (
@@ -240,33 +205,6 @@ function AddTeacher({
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="avatar"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Avatar</FormLabel>
-                    <FormControl>
-                      <>
-                        <Input
-                          type="file"
-                          accept="image/png, image/jpeg"
-                          onChange={(e) => {
-                            if (e.target.files) {
-                              field.onChange(e.target.files[0]);
-                            }
-                          }}
-                        />
-                        <ProgressBar
-                          progress={progress}
-                          setProgress={setProgress}
-                        />
-                      </>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

@@ -43,11 +43,6 @@ export const updateStudentSchema = z.object({
     })
     .optional(),
   school: z.string().optional(),
-  avatar: z
-    .string({
-      invalid_type_error: 'avatar/picture must be a string.',
-    })
-    .optional(),
   subscription_id: z.string().optional(),
 });
 
@@ -59,7 +54,6 @@ export const contactFormSchema = z.object({
   phone: z.string().min(10).max(14),
   name: z.string().min(3).max(10),
   relationship: z.string(),
-  avatar: z.instanceof(File).optional(),
   student_id: z.string().cuid(),
 });
 
@@ -90,7 +84,6 @@ export const formSchema = z.object({
     message: 'grade must be a number between 1 and 6.',
   }),
   school: z.string().min(3),
-  avatar: z.instanceof(File),
   teacher_id: z.string().cuid(),
   contact_email: z
     .string()
@@ -99,7 +92,6 @@ export const formSchema = z.object({
   contact_phone: z.string().min(10).max(14).optional(),
   contact_name: z.string().min(3).max(10).optional(),
   contact_relationship: z.string().optional(),
-  contact_avatar: z.instanceof(File).optional(),
   contact_id: z
     .union([z.string().cuid(), z.literal('none'), z.string().length(0)])
     .default(''),
@@ -114,7 +106,6 @@ export const contactSchema = z.object({
   phone: z.string().min(10).max(14),
   name: z.string().min(3).max(10),
   relationship: z.string(),
-  avatar: z.string().optional(),
   student_id: z.string().cuid().optional(),
 });
 export type Contact = z.infer<typeof contactSchema>;
@@ -149,9 +140,6 @@ export const studentSchema = z.object({
   }),
   birthdate: z.string(),
   school: z.string(),
-  avatar: z.string({
-    invalid_type_error: 'avatar/picture must be a string as url.',
-  }),
   teacher_id: z.string().cuid(),
   contact_id: z
     .union([z.string().cuid(), z.literal('none'), z.string().length(0)])
@@ -165,7 +153,6 @@ export const teacherFormSchema = z.object({
   phone: z.string().min(10).max(14),
   name: z.string().min(3),
   gender: z.string(),
-  avatar: z.instanceof(File),
   subject: z.string().min(3),
 });
 
@@ -177,7 +164,6 @@ export const teacherSchema = z.object({
   phone: z.string().min(10).max(14).optional(),
   name: z.string().min(3),
   gender: z.string(),
-  avatar: z.string(),
   subject: z.string(),
 });
 export type Teacher = z.infer<typeof teacherSchema>;

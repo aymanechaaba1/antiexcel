@@ -28,17 +28,6 @@ function LatestTeachers({
           {teachersSorted.map((teacher) => (
             <div key={teacher.id} className="flex items-center gap-4">
               <Avatar>
-                {teacher.avatar && (
-                  <div className="rounded-full">
-                    <AvatarImage
-                      src={teacher.avatar}
-                      alt={teacher.name}
-                      width={15}
-                      height={15}
-                      className="w-full object-cover"
-                    />
-                  </div>
-                )}
                 <AvatarFallback>{getAvatarName(teacher.name)}</AvatarFallback>
               </Avatar>
               <p>{teacher.name}</p>

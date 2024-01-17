@@ -66,7 +66,6 @@ model Student {
   grade      String
   birthdate  DateTime
   school     String
-  avatar     String
   admin      User      @relation(fields: [user_id], references: [id])
   user_id    String
   teacher    Teacher?  @relation(fields: [teacher_id], references: [id])
@@ -83,7 +82,6 @@ model Contact {
   phone        String    @unique
   name         String
   relationship String
-  avatar       String?
   students     Student[]
   user         User      @relation(fields: [user_id], references: [id])
   user_id      String
@@ -97,7 +95,6 @@ model Teacher {
   phone      String?   @unique
   name       String
   gender     String
-  avatar     String?
   subject    String
   students   Student[]
   user       User      @relation(fields: [user_id], references: [id])

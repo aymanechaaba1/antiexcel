@@ -17,15 +17,7 @@ function StudentsList({
           className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg border"
         >
           <Avatar>
-            <div className="rounded-full">
-              <AvatarImage
-                src={student.avatar}
-                alt={student.firstname}
-                width={10}
-                height={10}
-                className="w-full object-cover"
-              />
-            </div>
+            <div className="rounded-full"></div>
             <AvatarFallback>
               {getAvatarName(student.firstname, student.lastname)}
             </AvatarFallback>

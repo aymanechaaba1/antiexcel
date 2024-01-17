@@ -78,7 +78,6 @@ export const appRouter = router({
             gender: input.gender,
             grade: input.grade,
             school: input.school,
-            avatar: input.avatar,
             contact: {
               create: {
                 ...input.contact,
@@ -117,7 +116,6 @@ export const appRouter = router({
             gender: input.gender,
             grade: input.grade,
             school: input.school,
-            avatar: input.avatar,
             contact: {
               connect: {
                 id: input.contact_id,
@@ -200,7 +198,6 @@ export const appRouter = router({
           phone: input.phone,
           name: input.name,
           relationship: input.relationship,
-          avatar: input.avatar,
           user: {
             connect: {
               id: ctx.user_id,
@@ -221,7 +218,7 @@ export const appRouter = router({
           phone: input.phone,
           name: input.name,
           subject: input.subject,
-          avatar: input.avatar,
+
           gender: input.gender,
           user: {
             connect: {
@@ -277,7 +274,6 @@ export const appRouter = router({
         email: z.string().email().optional(),
         phone: z.string().optional(),
         name: z.string().optional(),
-        avatar: z.string().optional(),
         subject: z.string().optional(),
       })
     )
@@ -290,7 +286,6 @@ export const appRouter = router({
           email: input.email,
           phone: input.phone,
           name: input.name,
-          avatar: input.avatar,
           subject: input.subject,
         },
       });

@@ -26,15 +26,6 @@ async function LatestStudents({
             className="flex items-center justify-between gap-4"
           >
             <Avatar>
-              <div className="rounded-full">
-                <AvatarImage
-                  src={student.avatar}
-                  alt={student.firstname}
-                  width={15}
-                  height={15}
-                  className="w-full object-cover"
-                />
-              </div>
               <AvatarFallback>
                 {getAvatarName(student.firstname, student.lastname)}
               </AvatarFallback>

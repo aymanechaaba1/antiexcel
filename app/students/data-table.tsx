@@ -120,11 +120,7 @@ export function DataTable<TData, TValue>({
   const deleteStudentHandler = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    table.getFilteredSelectedRowModel().rows.forEach(async (row) => {
-      deleteStudent({
-        student_id: row.original.id,
-      });
-    });
+    table.getFilteredSelectedRowModel().rows.forEach(async (row) => {});
   };
 
   return (

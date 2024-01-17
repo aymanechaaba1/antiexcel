@@ -54,7 +54,6 @@ export function SelectTeacher({
     ...teachers.map((teacher) => ({
       value: teacher.id,
       label: teacher.name,
-      avatar: teacher.avatar,
     })),
   ] as const;
 
@@ -112,16 +111,7 @@ export function SelectTeacher({
                                 : 'opacity-0'
                             )}
                           />
-                          <Avatar>
-                            {teacher.avatar && (
-                              <div className="rounded-full w-10 h-10">
-                                <AvatarImage
-                                  src={teacher.avatar}
-                                  className="w-full object-cover"
-                                ></AvatarImage>
-                              </div>
-                            )}
-                          </Avatar>
+                          <Avatar></Avatar>
                           {teacher.label}
                         </div>
                       </CommandItem>

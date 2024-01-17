@@ -23,7 +23,7 @@ import {
 import { Input } from './ui/input';
 import { Check, ChevronsUpDown } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { cn, getFilename, getUploadTask, uploadFile } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import {
   Command,
   CommandEmpty,
@@ -33,11 +33,6 @@ import {
 } from './ui/command';
 import ProgressBar from './ProgressBar';
 import { subjects } from './AddTeacher';
-import {
-  StorageError,
-  UploadTaskSnapshot,
-  getDownloadURL,
-} from 'firebase/storage';
 import { useToast } from './ui/use-toast';
 import { caller } from '@/server';
 import { trpc } from '@/server/trpc';
@@ -45,24 +40,14 @@ import { useRouter } from 'next/navigation';
 
 function EditTeacherSheet({
   defaultValues,
-  teacher_id,
 }: {
   defaultValues: Awaited<ReturnType<(typeof caller)['getTeacher']>>;
   teacher_id: string;
 }) {
-  const formattedAvatar = new File(
-    [getFilename(defaultValues?.avatar!)],
-    defaultValues?.avatar!,
-    {
-      type: 'text/plain',
-    }
-  );
-
   const [form] = useCustomForm({
     formSchema: teacherFormSchema,
     defaultValues: {
       ...defaultValues,
-      avatar: formattedAvatar,
     },
   });
 
@@ -76,7 +61,6 @@ function EditTeacherSheet({
 
   const updateTeacher = trpc.updateTeacher.useMutation({
     onSuccess() {
-      utils.getTeacher.invalidate();
       utils.getTeachers.invalidate();
       router.refresh();
 
@@ -87,56 +71,7 @@ function EditTeacherSheet({
   });
 
   async function onSubmit(values: z.infer<typeof teacherFormSchema>) {
-    if (!values.avatar) return;
-
-    // if current avatar is equal to values.avatar
-    if (formattedAvatar.name === values.avatar?.name) {
-      // 1. update data
-      updateTeacher.mutate({
-        ...values,
-        id: teacher_id,
-        avatar: defaultValues?.avatar!,
-      });
-
-      setOpen(false);
-    } // if current avatar is different than values.avatar
-    else if (formattedAvatar.name !== values.avatar?.name) {
-      // 1. upload avatar
-
-      const fileName = getFilename(values.avatar.name);
-
-      const uploadTask = getUploadTask(`teachers/${fileName}`, values.avatar);
-
-      const onSnapshot = (snapshot: UploadTaskSnapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setProgress(progress);
-      };
-
-      const onError = (error: StorageError) => {
-        // Handle unsuccessful uploads
-        console.error(`Upload was unsuccessful. ${error.message}`);
-      };
-
-      const onSuccess = async () => {
-        // Handle successful uploads on complete
-        // For instance, get the download URL:
-        const url = await getDownloadURL(uploadTask.snapshot.ref);
-
-        // 2. update data
-        updateTeacher.mutate({
-          ...values,
-          id: teacher_id,
-          avatar: url,
-        });
-
-        form.reset();
-        setProgress(0);
-        setOpen(false);
-      };
-
-      uploadFile(fileName, values.avatar, onSnapshot, onError, onSuccess);
-    }
+    console.log(values);
   }
 
   return (
@@ -251,34 +186,6 @@ function EditTeacherSheet({
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="avatar"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Avatar</FormLabel>
-                  <FormControl>
-                    <>
-                      <Input
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            field.onChange(e.target.files[0]);
-                          }
-                        }}
-                      />
-                      <ProgressBar
-                        progress={progress}
-                        setProgress={setProgress}
-                      />
-                    </>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <Button type="submit">Save Changes</Button>
           </form>
         </Form>

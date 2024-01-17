@@ -14,13 +14,11 @@ import RegistrationForm from './RegistrationForm';
 import { useState } from 'react';
 
 import { z } from 'zod';
-import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { formSchema } from '@/zod/schemas';
 import { useSubscriptionsStore } from '@/store/store';
 import { useToast } from './ui/use-toast';
 import { ToastAction } from './ui/toast';
 import Link from 'next/link';
-import { storage } from '@/lib/firebase';
 import { caller } from '@/server';
 import { trpc } from '@/server/trpc';
 import { useRouter } from 'next/navigation';
@@ -36,7 +34,6 @@ function CreateButton({
   const { toast } = useToast();
 
   const [open, setOpen] = useState(false);
-  const [studentAvatar, setStudentAvatar] = useState('');
   const [progress, setProgress] = useState(0);
 
   const router = useRouter();
@@ -87,6 +84,7 @@ function CreateButton({
     });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     // !subscription && user.students === 3 => return toast notification
     if (!subscription && user && user.students.length === 3) {
       return toast({
@@ -121,87 +119,8 @@ function CreateButton({
       addStudentToExistingContact({
         ...values,
         birthdate: values.birthdate.toISOString(),
-        avatar: studentAvatar,
       });
       setOpen(false);
-    }
-
-    if (values.contact_avatar) {
-      // upload file
-      const imageRef = ref(storage, `images/${values.contact_avatar.name}`);
-
-      const uploadTask = uploadBytesResumable(imageRef, values.contact_avatar);
-
-      uploadTask.on(
-        'state_changed',
-        (snapshot) => {
-          const progress =
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          setProgress(progress);
-        },
-        (error) => {
-          return toast({
-            title: 'Upload was unsuccessful.',
-            description: `${error.message}`,
-          });
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            toast({
-              title: 'Image uploaded successfuly.',
-              description: `Url: ${downloadURL}`,
-            });
-
-            if (
-              (values.contact_id === 'none' || !values.contact_id) &&
-              values.contact_email &&
-              values.contact_phone &&
-              values.contact_name &&
-              values.contact_relationship
-            ) {
-              // create new student and contact
-              addStudent.mutate({
-                ...values,
-                birthdate: values.birthdate.toISOString(),
-                avatar: studentAvatar,
-                contact: {
-                  email: values.contact_email,
-                  phone: values.contact_phone,
-                  name: values.contact_name,
-                  relationship: values.contact_relationship,
-                  avatar: downloadURL,
-                },
-              });
-            }
-          });
-          setOpen(false);
-          setProgress(0);
-        }
-      );
-    }
-
-    if (!values.contact_avatar) {
-      if (
-        (values.contact_id === 'none' || !values.contact_id) &&
-        values.contact_email &&
-        values.contact_phone &&
-        values.contact_name &&
-        values.contact_relationship
-      ) {
-        // create new student and contact
-        addStudent.mutate({
-          ...values,
-          birthdate: values.birthdate.toISOString(),
-          avatar: studentAvatar,
-          contact: {
-            email: values.contact_email,
-            phone: values.contact_phone,
-            name: values.contact_name,
-            relationship: values.contact_relationship,
-          },
-        });
-        setOpen(false);
-      }
     }
   };
 
@@ -225,7 +144,6 @@ function CreateButton({
             setOpen={setOpen}
             progress={progress}
             setProgress={setProgress}
-            setStudentAvatar={setStudentAvatar}
           />
         </DialogContent>
       </Dialog>

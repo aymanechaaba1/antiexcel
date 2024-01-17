@@ -49,16 +49,6 @@ export const columns: ColumnDef<
 
       return (
         <Avatar className="">
-          {teacher.avatar && (
-            <div className="rounded-full">
-              <AvatarImage
-                src={teacher.avatar}
-                width={15}
-                height={15}
-                className="w-full object-cover"
-              />
-            </div>
-          )}
           <AvatarFallback className="">
             {getAvatarName(teacher?.name)}
           </AvatarFallback>

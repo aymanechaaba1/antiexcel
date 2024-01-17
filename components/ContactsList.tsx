@@ -35,16 +35,6 @@ async function ContactsList({
           <>
             <div key={contact.id} className="grid grid-cols-4 md:grid-cols-6">
               <Avatar>
-                {contact.avatar && (
-                  <div className="rounded-full">
-                    <AvatarImage
-                      src={contact.avatar}
-                      width={15}
-                      height={15}
-                      className="w-full object-cover"
-                    />
-                  </div>
-                )}
                 <AvatarFallback>{getAvatarName(contact.name)}</AvatarFallback>
               </Avatar>
               <p>{contact.name}</p>

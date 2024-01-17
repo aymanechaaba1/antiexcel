@@ -2,13 +2,7 @@
 
 import * as z from 'zod';
 import { format } from 'date-fns';
-import {
-  CalendarIcon,
-  Check,
-  ChevronsUpDown,
-  Loader,
-  Loader2,
-} from 'lucide-react';
+import { CalendarIcon, Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +21,7 @@ import {
   CommandItem,
 } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
-import { cn, getFilename, getUploadTask, uploadFile } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { Calendar } from '@/components/ui/calendar';
 import {
   Select,
@@ -43,17 +37,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { Dispatch, SetStateAction, useState } from 'react';
-import useCustomForm from '@/hooks/useCustomForm';
-import ProgressBar from './ProgressBar';
-import { FormSchema, formSchema } from '@/zod/schemas';
+import { formSchema } from '@/zod/schemas';
 import { SelectTeacher } from './SelectTeacher';
-import {
-  StorageError,
-  UploadTaskSnapshot,
-  getDownloadURL,
-} from 'firebase/storage';
 import { trpc } from '@/server/trpc';
-import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -67,13 +53,8 @@ export const schools = [
 ] as const;
 
 function RegistrationForm({
-  open,
-  setOpen,
   buttonLabel,
   onSubmit,
-  progress,
-  setProgress,
-  setStudentAvatar,
 }: {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -81,14 +62,10 @@ function RegistrationForm({
   onSubmit: (values: z.infer<typeof formSchema>) => void;
   progress: number;
   setProgress: Dispatch<SetStateAction<number>>;
-  setStudentAvatar: Dispatch<SetStateAction<string>>;
 }) {
   const [formStep, setFormStep] = useState(1);
 
   const [openCombobox, setOpenCombobox] = useState(false);
-
-  const { data: teachers, isLoading: loadingTeachers } =
-    trpc.getTeachers.useQuery();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -100,7 +77,7 @@ function RegistrationForm({
       grade: '1',
       school: 'chkail',
       // ...(teachers && teachers.length && { teacher_id: teachers[0].id }),
-      teacher_id: 'clqmb3vho0003ie10gs2zvnfy',
+      teacher_id: 'clrhss9280005nhu5fs5n5l7u',
       contact_id: '',
       contact_email: 'soumia@gmail.com',
       contact_phone: '06 50 60 60 50',
@@ -113,7 +90,10 @@ function RegistrationForm({
   const [selectedTeacher, setSelectedTeacher] = useState('');
 
   const { data: contacts, isLoading: loadingContacts } =
-    trpc.getContacts.useQuery();
+    trpc.getContacts.useQuery({
+      page: 1,
+      per_page: 5,
+    });
 
   const contact_id = form.watch('contact_id');
 
@@ -296,34 +276,6 @@ function RegistrationForm({
               setSelectedTeacher={setSelectedTeacher}
               form={form}
             />
-            <FormField
-              control={form.control}
-              name="avatar"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Avatar</FormLabel>
-                  <FormControl>
-                    <>
-                      <Input
-                        type="file"
-                        accept="image/png, image/jpeg"
-                        name="avatar"
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            field.onChange(e.target.files[0]);
-                          }
-                        }}
-                      />
-                      <ProgressBar
-                        progress={progress}
-                        setProgress={setProgress}
-                      />
-                    </>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <Button
               type="button"
               onClick={() => {
@@ -334,7 +286,6 @@ function RegistrationForm({
                   'gender',
                   'grade',
                   'school',
-                  'avatar',
                 ] as Array<
                   | 'firstname'
                   | 'lastname'
@@ -342,7 +293,6 @@ function RegistrationForm({
                   | 'gender'
                   | 'grade'
                   | 'school'
-                  | 'avatar'
                 >;
 
                 // setFormStep((prev) => prev + 1); // pass directly to next step
@@ -363,40 +313,7 @@ function RegistrationForm({
 
                 if (!school || !teacher_id) return;
 
-                // upload student image
-                const avatar: File | Blob = form.getValues('avatar');
-                if (!avatar) {
-                  form.trigger('avatar');
-                  return;
-                }
-
-                const fileName = getFilename(avatar.name);
-                const uploadTask = getUploadTask(`images/${fileName}`, avatar);
-
-                const onSnapshot = (snapshot: UploadTaskSnapshot) => {
-                  const progress =
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                  setProgress(progress);
-                };
-
-                const onError = (error: StorageError) => {
-                  // Handle unsuccessful uploads
-                  console.error(`Upload was unsuccessful. ${error.message}`);
-                };
-
-                const onSuccess = async () => {
-                  // Handle successful uploads on complete
-                  // For instance, get the download URL:
-                  const downloadURL = await getDownloadURL(
-                    uploadTask.snapshot.ref
-                  );
-                  setStudentAvatar(downloadURL);
-                  setFormStep((prev) => prev + 1);
-                  setProgress(0);
-                };
-
-                // upload student
-                uploadFile(fileName, avatar, onSnapshot, onError, onSuccess);
+                setFormStep(2);
               }}
             >
               Next
@@ -507,34 +424,6 @@ function RegistrationForm({
                           )}
                         </SelectContent>
                       </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="contact_avatar"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Avatar</FormLabel>
-                      <FormControl>
-                        <>
-                          <Input
-                            type="file"
-                            accept="image/png, image/jpeg"
-                            name="avatar"
-                            onChange={(e) => {
-                              if (e.target.files) {
-                                field.onChange(e.target.files[0]);
-                              }
-                            }}
-                          />
-                          <ProgressBar
-                            progress={progress}
-                            setProgress={setProgress}
-                          />
-                        </>
-                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}

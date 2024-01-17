@@ -1,6 +1,5 @@
 'use client';
 
-import { sendBecomeProEmail } from '@/actions';
 import { useToast } from '@/components/ui/use-toast';
 import { fetchNewAccessToken } from '@/lib/utils';
 import { trpc } from '@/server/trpc';
@@ -33,9 +32,7 @@ function SubscriptionProvider({ children }: { children: React.ReactNode }) {
 
     // const three_min = 3 * 60 * 1000;
     const one_week = 7 * 24 * 60 * 60 * 1000;
-    const limitIntervalId = setInterval(async () => {
-      await sendBecomeProEmail(subscription);
-    }, one_week);
+    const limitIntervalId = setInterval(async () => {}, one_week);
 
     if (!user.subscription_id) return setSubscription(undefined);
     fetchNewAccessToken()

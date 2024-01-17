@@ -32,12 +32,6 @@ import {
 } from './ui/select';
 import ProgressBar from './ProgressBar';
 import { useState } from 'react';
-import { getFilename, getUploadTask, uploadFile } from '@/lib/utils';
-import {
-  StorageError,
-  UploadTaskSnapshot,
-  getDownloadURL,
-} from 'firebase/storage';
 import { trpc } from '@/server/trpc';
 
 function AddContactForm({ student_id }: { student_id: string }) {
