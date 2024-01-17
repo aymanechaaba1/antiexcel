@@ -5,6 +5,7 @@ import prisma from '@/prisma/prismaClient';
 import { caller } from '@/server';
 import { Session } from 'next-auth';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import TrendingIcon from '../TrendingIcon';
 
 async function StudentsOverview({
   session,
@@ -89,6 +90,7 @@ async function StudentsOverview({
               </div>
               {status === 'trending' && <TrendingUp color="green" />}{' '}
               {status === 'deviating' && <TrendingDown color="red" />}
+              <TrendingIcon />
             </div>
           </CardContent>
         </Card>
