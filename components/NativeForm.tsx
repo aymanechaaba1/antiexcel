@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { PickerDate } from './PickerDate';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -20,7 +20,6 @@ function NativeForm({
     new Date(defaultValues!.birthdate)
   ); // birthdate
 
-  const [progress, setProgress] = useState(0);
   const [open, setOpen] = React.useState(false);
   const [school, setSchool] = React.useState(defaultValues!.school); // school
 

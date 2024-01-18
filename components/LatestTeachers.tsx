@@ -1,23 +1,23 @@
 'use client';
 
 import Section from './Section';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback } from './ui/avatar';
 import { getAvatarName } from '@/lib/utils';
 import { Session } from 'next-auth';
 import { useSubscriptionsStore } from '@/store/store';
-import { caller } from '@/server';
+import { Teachers } from '@/types/types';
 
 function LatestTeachers({
   session,
   teachers,
 }: {
   session: Session | null;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
+  teachers: Teachers;
 }) {
   const { subscription } = useSubscriptionsStore((state) => state);
   const isPro = session && subscription;
 
-  const teachersSorted = teachers.sort(
+  const teachersSorted = teachers?.sort(
     (a: any, b: any) => b.created_at - a?.created_at
   );
 
@@ -25,7 +25,7 @@ function LatestTeachers({
     return (
       <Section className="p-4 border rounded-lg" title="Latest Teachers">
         <div className="space-y-4 max-h-72 overflow-y-scroll">
-          {teachersSorted.map((teacher) => (
+          {teachersSorted?.map((teacher) => (
             <div key={teacher.id} className="flex items-center gap-4">
               <Avatar>
                 <AvatarFallback>{getAvatarName(teacher.name)}</AvatarFallback>

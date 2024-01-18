@@ -1,25 +1,23 @@
+'use client';
+
 import LatestStudents from '@/components/dashboard/LatestStudents';
-import { authOptions } from '@/lib/auth';
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
 import TeachersOverview from '@/components/TeachersOverview';
 import DashboardChart from '@/components/DashboardChart';
 import StudentsOverview from '@/components/dashboard/StudentsOverview';
 import SubjectsDonutChart from '@/components/SubjectsDonutChart';
 import GradesDonutChart from '@/components/GradesDonutChart';
 import LatestTeachers from '@/components/LatestTeachers';
-import { caller } from '@/server';
+import { useSession } from 'next-auth/react';
+import { trpc } from '@/server/trpc';
 
-async function DashboardPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const students = await caller.getStudents();
-  const teachers = await caller.getTeachers();
+function DashboardPage() {
+  const { data: session } = useSession();
+  const { data: students } = trpc.getStudents.useQuery();
+  const { data: teachers } = trpc.getTeachers.useQuery();
 
   return (
     <div className="space-y-4">
-      <StudentsOverview session={session} students={students} />
+      <StudentsOverview students={students} />
       <TeachersOverview session={session} teachers={teachers} />
       <DashboardChart
         session={session}
@@ -31,8 +29,8 @@ async function DashboardPage() {
         <SubjectsDonutChart session={session} teachers={teachers} />
       </div>
       <div className="flex flex-col md:flex-row gap-4">
-        {students.length !== 0 && <LatestStudents students={students} />}
-        {teachers.length !== 0 && (
+        {students?.length !== 0 && <LatestStudents students={students} />}
+        {teachers?.length !== 0 && (
           <LatestTeachers session={session} teachers={teachers} />
         )}
       </div>

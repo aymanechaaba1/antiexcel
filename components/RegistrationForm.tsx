@@ -60,8 +60,6 @@ function RegistrationForm({
   setOpen: Dispatch<SetStateAction<boolean>>;
   buttonLabel: string;
   onSubmit: (values: z.infer<typeof formSchema>) => void;
-  progress: number;
-  setProgress: Dispatch<SetStateAction<number>>;
 }) {
   const [formStep, setFormStep] = useState(1);
 

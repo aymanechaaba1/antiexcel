@@ -21,7 +21,6 @@ import { ToastAction } from './ui/toast';
 import Link from 'next/link';
 import { caller } from '@/server';
 import { trpc } from '@/server/trpc';
-import { useRouter } from 'next/navigation';
 
 function CreateButton({
   user,
@@ -34,19 +33,15 @@ function CreateButton({
   const { toast } = useToast();
 
   const [open, setOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
-
-  const router = useRouter();
 
   const { subscription } = useSubscriptionsStore((state) => state);
 
-  const addStudent = trpc.student.add.useMutation({
+  const { mutate: addStudent } = trpc.student.add.useMutation({
     onSuccess: () => {
       utils.getStudents.invalidate();
       toast({
         title: 'Student uploaded successfully.',
       });
-      router.refresh();
     },
     onMutate: () => {
       toast({
@@ -55,7 +50,7 @@ function CreateButton({
     },
     onError: () => {
       toast({
-        title: 'Student creation failed.',
+        title: 'Failed to add student',
         variant: 'destructive',
       });
     },
@@ -68,7 +63,6 @@ function CreateButton({
         toast({
           title: 'Student uploaded successfully.',
         });
-        router.refresh();
       },
       onMutate: () => {
         toast({
@@ -84,7 +78,6 @@ function CreateButton({
     });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     // !subscription && user.students === 3 => return toast notification
     if (!subscription && user && user.students.length === 3) {
       return toast({
@@ -122,6 +115,8 @@ function CreateButton({
       });
       setOpen(false);
     }
+
+    // invoke addStudent
   };
 
   return (
@@ -142,8 +137,6 @@ function CreateButton({
             buttonLabel="Submit"
             open={open}
             setOpen={setOpen}
-            progress={progress}
-            setProgress={setProgress}
           />
         </DialogContent>
       </Dialog>

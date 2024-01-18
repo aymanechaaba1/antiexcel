@@ -45,8 +45,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { trpc } from '@/server/trpc';
 import { useToast } from '@/components/ui/use-toast';
-import { useRouter } from 'next/navigation';
-import prisma from '@/prisma/prismaClient';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -94,15 +92,13 @@ export function DataTable<TData, TValue>({
 
   const utils = trpc.useUtils();
   const { toast } = useToast();
-  const router = useRouter();
 
   const { mutate: deleteStudent } = trpc.deleteStudent.useMutation({
     onSuccess() {
-      utils.getStudents.refetch();
+      utils.getStudents.invalidate();
       toast({
         title: 'Student deleted successfully.',
       });
-      router.refresh();
     },
     onMutate: () => {
       toast({
@@ -111,7 +107,7 @@ export function DataTable<TData, TValue>({
     },
     onError: (error) => {
       toast({
-        title: `Failed to deleted student.`,
+        title: `Failed to delete student.`,
         variant: 'destructive',
       });
     },
@@ -120,7 +116,9 @@ export function DataTable<TData, TValue>({
   const deleteStudentHandler = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
-    table.getFilteredSelectedRowModel().rows.forEach(async (row) => {});
+    table.getFilteredSelectedRowModel().rows.forEach(async (row) => {
+      // invoke deleteStudent
+    });
   };
 
   return (

@@ -2,22 +2,15 @@ import { compare } from '@/lib/utils';
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/prisma/prismaClient';
-import { caller } from '@/server';
-import { Session } from 'next-auth';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import TrendingIcon from '../TrendingIcon';
+import { Students } from '@/types/types';
 
-async function StudentsOverview({
-  session,
-  students,
-}: {
-  session: Session | null;
-  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
-}) {
-  const boys = students.filter((student) => student.gender === 'male');
-  const girls = students.filter((student) => student.gender === 'female');
+async function StudentsOverview({ students }: { students: Students }) {
+  const boys = students?.filter((student) => student.gender === 'male');
+  const girls = students?.filter((student) => student.gender === 'female');
 
-  const gradesCount = students.reduce((acc: any, student) => {
+  const gradesCount = students?.reduce((acc: any, student) => {
     acc[student.grade] = (acc[student.grade] || 0) + 1;
     return acc;
   }, {});
@@ -29,7 +22,7 @@ async function StudentsOverview({
   const maxCount = Math.max(...counts);
 
   const popularGrade = Object.entries(gradesCount)
-    .find(([grade, count]) => count === maxCount)
+    .find(([_, count]) => count === maxCount)
     ?.at(0) as string;
 
   const currentDate = new Date();
@@ -85,7 +78,7 @@ async function StudentsOverview({
           <CardContent>
             <div className="flex items-start justify-between">
               <div>
-                <div className="text-2xl font-bold">{students.length}</div>
+                <div className="text-2xl font-bold">{students?.length}</div>
                 <p className="text-xs text-muted-foreground"></p>
               </div>
               {status === 'trending' && <TrendingUp color="green" />}{' '}
@@ -99,7 +92,7 @@ async function StudentsOverview({
             <CardTitle className="text-sm font-medium">Boys</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{boys.length}</div>
+            <div className="text-2xl font-bold">{boys?.length}</div>
             <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>
@@ -108,7 +101,7 @@ async function StudentsOverview({
             <CardTitle className="text-sm font-medium">Girls</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{girls.length}</div>
+            <div className="text-2xl font-bold">{girls?.length}</div>
             <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>

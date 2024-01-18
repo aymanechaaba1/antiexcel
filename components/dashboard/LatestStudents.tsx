@@ -1,16 +1,12 @@
-import { formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
+import { formatSchool, getAvatarName } from '@/lib/utils';
 import Section from '../Section';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { caller } from '@/server';
+import { Students } from '@/types/types';
 
-async function LatestStudents({
-  students,
-}: {
-  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
-}) {
-  const studentsSorted = students.sort(
+async function LatestStudents({ students }: { students: Students }) {
+  const studentsSorted = students?.sort(
     (a: any, b: any) => b.created_at - a.created_at
   );
 
@@ -20,7 +16,7 @@ async function LatestStudents({
       title="Latest Students"
     >
       <div className="space-y-4 overflow-y-scroll">
-        {studentsSorted.map((student) => (
+        {studentsSorted?.map((student) => (
           <div
             key={student.id}
             className="flex items-center justify-between gap-4"

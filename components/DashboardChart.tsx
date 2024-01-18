@@ -1,8 +1,8 @@
 'use client';
 
 import { getNbStudentsByMonth } from '@/lib/utils';
-import { caller } from '@/server';
 import { useSubscriptionsStore } from '@/store/store';
+import { Students, Teachers } from '@/types/types';
 import { Card, LineChart, Title } from '@tremor/react';
 import { Session } from 'next-auth';
 
@@ -27,8 +27,8 @@ function DashboardChart({
   teachers,
 }: {
   session: Session | null;
-  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
+  students: Students;
+  teachers: Teachers;
 }) {
   const { subscription } = useSubscriptionsStore((state) => state);
   const isPro = session && subscription;

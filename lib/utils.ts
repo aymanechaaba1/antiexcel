@@ -11,7 +11,7 @@ import { PayPalAccessTokenResponse } from '@/types/paypal-accesstoken-response';
 import { formSchema } from '@/zod/schemas';
 import { z } from 'zod';
 import { Dispatch, SetStateAction } from 'react';
-import { caller } from '@/server';
+import { Students, Teachers } from '@/types/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -71,21 +71,17 @@ export const formatSchool = (school: string) =>
     .join(' ');
 
 export const getNbStudentsByMonth = (
-  data:
-    | Awaited<ReturnType<(typeof caller)['getStudents']>>
-    | Awaited<ReturnType<(typeof caller)['getTeachers']>>,
+  data: Students | Teachers,
   month: number
 ) => {
-  return data.filter((entry) => entry.created_at?.getMonth() === month).length;
+  return data?.filter((entry) => entry.created_at?.getMonth() === month).length;
 };
 
-export const getSubjectProportion = (
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>,
-  subject: string
-) => {
+export const getSubjectProportion = (teachers: Teachers, subject: string) => {
   return (
-    teachers.filter((teacher) => teacher.subject === subject).length /
-    teachers.length
+    teachers?.length &&
+    teachers?.filter((teacher) => teacher.subject === subject).length /
+      teachers?.length
   );
 };
 

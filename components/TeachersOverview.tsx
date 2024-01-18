@@ -3,8 +3,8 @@
 import Section from './Section';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { upperFirst } from '@/lib/utils';
-import { caller } from '@/server';
 import { useSubscriptionsStore } from '@/store/store';
+import { Teachers } from '@/types/types';
 import { Session } from 'next-auth';
 
 function TeachersOverview({
@@ -12,13 +12,13 @@ function TeachersOverview({
   teachers,
 }: {
   session: Session | null;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
+  teachers: Teachers;
 }) {
   const { subscription } = useSubscriptionsStore((state) => state);
 
   const isPro = session && subscription;
 
-  const subjectCount = teachers.reduce((acc: any, teacher) => {
+  const subjectCount = teachers?.reduce((acc: any, teacher) => {
     acc[teacher.subject] = (acc[teacher.subject] || 0) + 1;
     return acc;
   }, {});
@@ -30,7 +30,7 @@ function TeachersOverview({
   const maxCount = Math.max(...counts);
 
   const popularSubject = Object.entries(subjectCount)
-    .find(([subject, count]) => count === maxCount)
+    .find(([_, count]) => count === maxCount)
     ?.at(0) as string;
 
   if (teachers && isPro)

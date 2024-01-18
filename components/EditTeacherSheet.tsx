@@ -31,12 +31,10 @@ import {
   CommandInput,
   CommandItem,
 } from './ui/command';
-import ProgressBar from './ProgressBar';
 import { subjects } from './AddTeacher';
 import { useToast } from './ui/use-toast';
 import { caller } from '@/server';
 import { trpc } from '@/server/trpc';
-import { useRouter } from 'next/navigation';
 
 function EditTeacherSheet({
   defaultValues,
@@ -53,17 +51,13 @@ function EditTeacherSheet({
 
   const { toast } = useToast();
 
-  const [progress, setProgress] = React.useState(0);
   const [open, setOpen] = React.useState(false);
 
   const utils = trpc.useUtils();
-  const router = useRouter();
 
-  const updateTeacher = trpc.updateTeacher.useMutation({
+  const { mutate: updateTeacher } = trpc.updateTeacher.useMutation({
     onSuccess() {
       utils.getTeachers.invalidate();
-      router.refresh();
-
       toast({
         title: 'Teacher was edited successfully.',
       });

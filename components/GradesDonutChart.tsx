@@ -1,6 +1,6 @@
 'use client';
 
-import { caller } from '@/server';
+import { Students } from '@/types/types';
 import { Card, DonutChart, Title } from '@tremor/react';
 import { Session } from 'next-auth';
 
@@ -16,22 +16,22 @@ function GradesDonutChart({
   students,
 }: {
   session: Session | null;
-  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
+  students: Students;
 }) {
   if (!session) return;
 
-  const data = students.map((student) => ({
+  const data = students?.map((student) => ({
     grade: +student.grade,
   }));
 
-  const count = data.reduce((acc: any, student: any) => {
+  const count = data?.reduce((acc: any, student: any) => {
     acc[student.grade] = (acc[student.grade] || 0) + 1;
     return acc;
   }, {});
 
   const donut_data = Object.entries(count).map(([key, value]: any) => ({
     name: `Grade ${key}`,
-    percent: value / students.length,
+    ...(students?.length && { percent: value / students?.length }),
   }));
 
   return (

@@ -22,7 +22,6 @@ import {
   DialogTrigger,
 } from './ui/dialog';
 
-import ProgressBar from './ProgressBar';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -85,19 +84,17 @@ function AddTeacher({
   const [open, setOpen] = useState(false);
 
   const { toast } = useToast();
-  const router = useRouter();
 
   const { mutate: addTeacher } = trpc.addTeacher.useMutation({
     onSuccess() {
       utils.getTeachers.invalidate();
-      router.refresh();
       toast({
         title: 'Teacher added successfully.',
       });
     },
     onError(error) {
       toast({
-        title: error.message,
+        title: `Failed to add teacher`,
         variant: 'destructive',
       });
     },

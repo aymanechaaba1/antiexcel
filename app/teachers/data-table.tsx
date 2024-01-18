@@ -31,7 +31,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useToast } from '@/components/ui/use-toast';
 import { trpc } from '@/server/trpc';
-import { useRouter } from 'next/navigation';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -56,19 +55,16 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const router = useRouter();
-
-  const deleteTeacher = trpc.deleteTeacher.useMutation({
+  const { mutate: deleteTeacher } = trpc.deleteTeacher.useMutation({
     onSuccess() {
-      utils.getTeachers.refetch();
-      router.refresh();
+      utils.getTeachers.invalidate();
       toast({
         title: 'Teacher deleted successfully.',
       });
     },
     onError: (error) => {
       toast({
-        title: `You can\'t delete teachers that have students.`,
+        title: `Failed to delete teacher.`,
         variant: 'destructive',
       });
     },
@@ -78,7 +74,7 @@ export function DataTable<TData, TValue>({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     table.getFilteredSelectedRowModel().rows.forEach((row) => {
-      deleteTeacher.mutate({
+      deleteTeacher({
         id: (
           row.original as TData & {
             id: string;

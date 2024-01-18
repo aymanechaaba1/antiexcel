@@ -1,8 +1,8 @@
 'use client';
 
 import { getSubjectProportion } from '@/lib/utils';
-import { caller } from '@/server';
 import { useSubscriptionsStore } from '@/store/store';
+import { Teachers } from '@/types/types';
 import { Card, DonutChart, Title } from '@tremor/react';
 import { Session } from 'next-auth';
 
@@ -25,12 +25,12 @@ function SubjectsDonutChart({
   teachers,
 }: {
   session: Session | null;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
+  teachers: Teachers;
 }) {
   const { subscription } = useSubscriptionsStore((state) => state);
   const isPro = session && subscription;
 
-  const subjects = new Set(teachers.map((teacher) => teacher.subject));
+  const subjects = new Set(teachers?.map((teacher) => teacher.subject));
 
   const data = [...subjects].map((subject) => ({
     subject,
