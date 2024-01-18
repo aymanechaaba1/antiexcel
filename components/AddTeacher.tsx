@@ -47,9 +47,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { caller } from '@/server';
 import { trpc } from '@/server/trpc';
-import { useRouter } from 'next/navigation';
 
 export const subjects = [
   { label: 'English', value: 'english' },
@@ -63,11 +61,9 @@ export const subjects = [
   { label: 'Geography', value: 'geography' },
 ] as const;
 
-function AddTeacher({
-  user,
-}: {
-  user: Awaited<ReturnType<(typeof caller)['getUser']>>;
-}) {
+function AddTeacher() {
+  const { data: user } = trpc.getUser.useQuery();
+
   const utils = trpc.useUtils();
 
   const [form] = useCustomForm({

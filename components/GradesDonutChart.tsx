@@ -1,6 +1,6 @@
 'use client';
 
-import { Students } from '@/types/types';
+import { Students } from '@/types/clientTypes';
 import { Card, DonutChart, Title } from '@tremor/react';
 import { Session } from 'next-auth';
 

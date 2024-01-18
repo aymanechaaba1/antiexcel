@@ -9,18 +9,22 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { trpc } from '@/server/trpc';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 function ContactsPagination({
-  results,
   page,
   per_page,
 }: {
-  results: number;
   page: number | 1;
   per_page: number | 5;
 }) {
+  const { data: contacts } = trpc.getContacts.useQuery({
+    page,
+    per_page,
+  });
+
   const [isClient, setIsClient] = useState(false);
   const pathname = usePathname();
 
@@ -28,7 +32,8 @@ function ContactsPagination({
     setIsClient(true);
   }, []);
 
-  const lastPage = Math.trunc(results / per_page);
+  let lastPage;
+  if (contacts) lastPage = Math.trunc(contacts.length / per_page);
 
   return (
     isClient && (
@@ -53,7 +58,7 @@ function ContactsPagination({
             <PaginationEllipsis />
           </PaginationItem>
           {page !== lastPage && <PaginationItem>{lastPage}</PaginationItem>}
-          {page < lastPage && (
+          {lastPage && page < lastPage && (
             <PaginationItem>
               <PaginationNext
                 href={`${pathname}/?page=${page + 1}&per_page=${per_page}`}

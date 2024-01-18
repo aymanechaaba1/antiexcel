@@ -2,7 +2,7 @@
 
 import { getNbStudentsByMonth } from '@/lib/utils';
 import { useSubscriptionsStore } from '@/store/store';
-import { Students, Teachers } from '@/types/types';
+import { Students, Teachers } from '@/types/clientTypes';
 import { Card, LineChart, Title } from '@tremor/react';
 import { Session } from 'next-auth';
 

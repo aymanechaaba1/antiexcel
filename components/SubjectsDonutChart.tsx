@@ -2,7 +2,7 @@
 
 import { getSubjectProportion } from '@/lib/utils';
 import { useSubscriptionsStore } from '@/store/store';
-import { Teachers } from '@/types/types';
+import { Teachers } from '@/types/clientTypes';
 import { Card, DonutChart, Title } from '@tremor/react';
 import { Session } from 'next-auth';
 

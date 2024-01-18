@@ -3,7 +3,7 @@ import Section from '../Section';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { Students } from '@/types/types';
+import { Students } from '@/types/clientTypes';
 
 async function LatestStudents({ students }: { students: Students }) {
   const studentsSorted = students?.sort(

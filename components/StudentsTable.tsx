@@ -2,13 +2,11 @@
 
 import { columns } from '@/app/students/columns';
 import { DataTable } from '@/app/students/data-table';
-import { caller } from '@/server';
+import { trpc } from '@/server/trpc';
 
-function StudentsTable({
-  students,
-}: {
-  students: Awaited<ReturnType<(typeof caller)['getStudent']>>[];
-}) {
+function StudentsTable() {
+  const { data: students } = trpc.getStudents.useQuery();
+
   return <DataTable columns={columns} data={students} />;
 }
 

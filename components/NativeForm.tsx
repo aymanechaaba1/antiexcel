@@ -7,21 +7,19 @@ import { Label } from './ui/label';
 import { SelectDemo } from './SelectDemo';
 import { ComboboxDemo } from './ComboBoxDemo';
 import { Button } from './ui/button';
-import { caller } from '@/server';
+import { trpc } from '@/server/trpc';
 
-function NativeForm({
-  defaultValues,
-}: {
-  id: string;
-  defaultValues: Awaited<ReturnType<(typeof caller)['getStudent']>>;
-  setOpenSheet: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+function NativeForm({ student_id }: { student_id: string }) {
+  const { data: student } = trpc.getStudent.useQuery({
+    student_id,
+  });
+
   const [birthdate, setBirthdate] = React.useState<Date | undefined>(
-    new Date(defaultValues!.birthdate)
+    new Date(student!.birthdate)
   ); // birthdate
 
   const [open, setOpen] = React.useState(false);
-  const [school, setSchool] = React.useState(defaultValues!.school); // school
+  const [school, setSchool] = React.useState(student!.school); // school
 
   return (
     <form
@@ -32,19 +30,11 @@ function NativeForm({
     >
       <div className="flex flex-col gap-3">
         <Label htmlFor="firstname">Firstname</Label>
-        <Input
-          defaultValue={defaultValues?.firstname}
-          type="text"
-          name="firstname"
-        />
+        <Input defaultValue={student?.firstname} type="text" name="firstname" />
       </div>
       <div className="flex flex-col gap-3">
         <Label htmlFor="lastname">Lastname</Label>
-        <Input
-          defaultValue={defaultValues?.lastname}
-          type="text"
-          name="lastname"
-        />
+        <Input defaultValue={student?.lastname} type="text" name="lastname" />
       </div>
       <div className="flex flex-col gap-3">
         <Label htmlFor="gender">Date of Birth</Label>
@@ -57,7 +47,7 @@ function NativeForm({
           placeholder="Select your gender"
           label="Gender"
           values={['Male', 'Female']}
-          defaultValue={defaultValues?.gender}
+          defaultValue={student?.gender}
         />
       </div>
       <div className="flex flex-col gap-3">
@@ -67,7 +57,7 @@ function NativeForm({
           name="grade"
           min={1}
           max={6}
-          defaultValue={defaultValues?.grade}
+          defaultValue={student?.grade}
         />
       </div>
       <div className="flex flex-col gap-3">
@@ -77,7 +67,7 @@ function NativeForm({
           setOpen={setOpen}
           value={school}
           setValue={setSchool}
-          defaultValue={defaultValues?.school}
+          defaultValue={student?.school}
         />
       </div>
       <Button type="submit">Save changes</Button>

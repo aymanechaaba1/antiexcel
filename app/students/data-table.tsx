@@ -117,7 +117,7 @@ export function DataTable<TData, TValue>({
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     table.getFilteredSelectedRowModel().rows.forEach(async (row) => {
-      // invoke deleteStudent
+      // invoke deleteStudent fn
     });
   };
 

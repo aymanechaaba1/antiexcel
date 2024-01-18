@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { getAvatarName } from '@/lib/utils';
 import { Session } from 'next-auth';
 import { useSubscriptionsStore } from '@/store/store';
-import { Teachers } from '@/types/types';
+import { Teachers } from '@/types/clientTypes';
 
 function LatestTeachers({
   session,

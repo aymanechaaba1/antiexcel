@@ -1,12 +1,9 @@
 import EditTeacher from '@/components/EditTeacherSheet';
 import StudentsList from '@/components/StudentsList';
 import TeacherDetails from '@/components/TeacherDetails';
-import StudentsListSkeleton from '@/components/skeletons/StudentsListSkeleton';
 import { authOptions } from '@/lib/auth';
-import { caller } from '@/server';
 import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
-import React, { Suspense } from 'react';
+import React from 'react';
 
 type Params = {
   params: {
@@ -15,26 +12,17 @@ type Params = {
 };
 async function TeacherDetailsPage({ params: { teacher_id } }: Params) {
   const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const teacher = await caller.getTeacher({
-    teacher_id,
-  });
-  if (!teacher) return;
 
   return (
     <>
       <div>
         <div className="my-5 flex items-center justify-end gap-5 rounded-lg py-3 px-2 ">
-          <EditTeacher teacher_id={teacher_id} defaultValues={teacher} />
+          <EditTeacher teacher_id={teacher_id} />
         </div>
-        <TeacherDetails teacher={teacher} />
+        <TeacherDetails teacher_id={teacher_id} />
       </div>
-      {teacher.students && teacher.students.length !== 0 && (
-        <Suspense fallback={<StudentsListSkeleton />}>
-          <StudentsList teacher={teacher} />
-        </Suspense>
-      )}
+
+      <StudentsList teacher_id={teacher_id} />
     </>
   );
 }

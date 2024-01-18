@@ -4,7 +4,7 @@ import Section from './Section';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { upperFirst } from '@/lib/utils';
 import { useSubscriptionsStore } from '@/store/store';
-import { Teachers } from '@/types/types';
+import { Teachers } from '@/types/clientTypes';
 import { Session } from 'next-auth';
 
 function TeachersOverview({

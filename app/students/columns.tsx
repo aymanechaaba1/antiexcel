@@ -1,7 +1,7 @@
 'use client';
 
 import { schools } from '@/components/RegistrationForm';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog } from '@/components/ui/dialog';
@@ -14,14 +14,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatDate, getAvatarName, upperFirst } from '@/lib/utils';
-import { caller } from '@/server';
+import { Student } from '@/types/clientTypes';
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 
-export const columns: ColumnDef<
-  Awaited<ReturnType<(typeof caller)['getStudent']>>
->[] = [
+export const columns: ColumnDef<Student>[] = [
   {
     id: 'select',
     header: ({ table }) => (

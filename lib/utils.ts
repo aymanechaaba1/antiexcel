@@ -11,7 +11,7 @@ import { PayPalAccessTokenResponse } from '@/types/paypal-accesstoken-response';
 import { formSchema } from '@/zod/schemas';
 import { z } from 'zod';
 import { Dispatch, SetStateAction } from 'react';
-import { Students, Teachers } from '@/types/types';
+import { Students, Teachers } from '@/types/clientTypes';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

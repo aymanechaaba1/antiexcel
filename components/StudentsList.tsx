@@ -1,13 +1,13 @@
 import { formatSchool, getAvatarName } from '@/lib/utils';
 import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { caller } from '@/server';
+import { Avatar, AvatarFallback } from './ui/avatar';
+import { trpc } from '@/server/trpc';
 
-function StudentsList({
-  teacher,
-}: {
-  teacher: Awaited<ReturnType<(typeof caller)['getTeacher']>>;
-}) {
+function StudentsList({ teacher_id }: { teacher_id: string }) {
+  const { data: teacher } = trpc.getTeacher.useQuery({
+    teacher_id,
+  });
+
   return (
     <div className="space-y-3 mt-5">
       <h1 className="text-3xl">Students</h1>

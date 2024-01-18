@@ -33,19 +33,17 @@ import {
 } from './ui/command';
 import { subjects } from './AddTeacher';
 import { useToast } from './ui/use-toast';
-import { caller } from '@/server';
 import { trpc } from '@/server/trpc';
 
-function EditTeacherSheet({
-  defaultValues,
-}: {
-  defaultValues: Awaited<ReturnType<(typeof caller)['getTeacher']>>;
-  teacher_id: string;
-}) {
+function EditTeacherSheet({ teacher_id }: { teacher_id: string }) {
+  const { data: teacher } = trpc.getTeacher.useQuery({
+    teacher_id,
+  });
+
   const [form] = useCustomForm({
     formSchema: teacherFormSchema,
     defaultValues: {
-      ...defaultValues,
+      ...teacher,
     },
   });
 
@@ -86,7 +84,7 @@ function EditTeacherSheet({
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input defaultValue={defaultValues?.email} {...field} />
+                    <Input defaultValue={teacher?.email} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,7 +99,7 @@ function EditTeacherSheet({
                   <FormControl>
                     <Input
                       type="tel"
-                      defaultValue={defaultValues?.phone!}
+                      defaultValue={teacher?.phone!}
                       {...field}
                     />
                   </FormControl>
@@ -116,7 +114,7 @@ function EditTeacherSheet({
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input defaultValue={defaultValues?.name} {...field} />
+                    <Input defaultValue={teacher?.name} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

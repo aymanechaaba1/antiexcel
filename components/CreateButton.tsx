@@ -19,16 +19,12 @@ import { useSubscriptionsStore } from '@/store/store';
 import { useToast } from './ui/use-toast';
 import { ToastAction } from './ui/toast';
 import Link from 'next/link';
-import { caller } from '@/server';
 import { trpc } from '@/server/trpc';
 
-function CreateButton({
-  user,
-  teachers,
-}: {
-  user: Awaited<ReturnType<(typeof caller)['getUser']>>;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
-}) {
+function CreateButton() {
+  const { data: user } = trpc.getUser.useQuery();
+  const { data: teachers } = trpc.getTeachers.useQuery();
+
   const utils = trpc.useUtils();
   const { toast } = useToast();
 

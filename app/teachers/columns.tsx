@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { getAvatarName, upperFirst } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -15,11 +15,9 @@ import { Button } from '@/components/ui/button';
 import { MoreHorizontal } from 'lucide-react';
 import Link from 'next/link';
 import { Checkbox } from '@/components/ui/checkbox';
-import { caller } from '@/server';
+import { Teacher } from '@/types/clientTypes';
 
-export const columns: ColumnDef<
-  Awaited<ReturnType<(typeof caller)['getTeacher']>>
->[] = [
+export const columns: ColumnDef<Teacher>[] = [
   {
     id: 'select',
     header: ({ table }) => (

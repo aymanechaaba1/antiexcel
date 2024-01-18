@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/prisma/prismaClient';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import TrendingIcon from '../TrendingIcon';
-import { Students } from '@/types/types';
+import { Students } from '@/types/clientTypes';
 
 async function StudentsOverview({ students }: { students: Students }) {
   const boys = students?.filter((student) => student.gender === 'male');
