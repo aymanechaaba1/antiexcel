@@ -93,12 +93,7 @@ function CreateButton() {
 
     if (!teachers || teachers.length === 0) {
       return toast({
-        title: 'Please add at least one teacher.',
-        action: (
-          <ToastAction className="bg-gray-900" altText="Add a Teacher">
-            <Link href={`/teachers`}></Link>
-          </ToastAction>
-        ),
+        title: 'Please add at least one teacher',
         variant: 'destructive',
       });
     }
@@ -113,6 +108,22 @@ function CreateButton() {
     }
 
     // invoke addStudent
+    if (
+      values.contact_email &&
+      values.contact_phone &&
+      values.contact_name &&
+      values.contact_relationship
+    )
+      addStudent({
+        ...values,
+        birthdate: values.birthdate.toISOString(),
+        contact: {
+          email: values.contact_email,
+          phone: values.contact_phone,
+          name: values.contact_name,
+          relationship: values.contact_relationship,
+        },
+      });
   };
 
   return (

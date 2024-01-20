@@ -134,6 +134,18 @@ export const appRouter = router({
           },
         });
       }),
+    update: privateProcedure
+      .input(updateStudentSchema)
+      .mutation(async ({ ctx, input }) => {
+        return await prisma.student.update({
+          data: {
+            ...input,
+          },
+          where: {
+            id: ctx.user_id,
+          },
+        });
+      }),
   }),
   deleteStudent: privateProcedure
     .input(
@@ -177,18 +189,7 @@ export const appRouter = router({
         });
       }
     }),
-  updateStudent: privateProcedure
-    .input(updateStudentSchema)
-    .mutation(async ({ ctx, input }) => {
-      return await prisma.student.update({
-        data: {
-          ...input,
-        },
-        where: {
-          id: input.id,
-        },
-      });
-    }),
+
   addContact: privateProcedure
     .input(contactSchema)
     .mutation(async ({ ctx, input }) => {

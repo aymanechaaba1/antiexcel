@@ -9,7 +9,6 @@ export const schoolsEnum = z.enum(
 export type SchoolsEnum = z.infer<typeof schoolsEnum>;
 
 export const updateStudentSchema = z.object({
-  id: z.string().cuid().optional(),
   created_at: z.date().optional(),
   updated_at: z.date().optional(),
   firstname: z

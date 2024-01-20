@@ -8,6 +8,9 @@ import { SelectDemo } from './SelectDemo';
 import { ComboboxDemo } from './ComboBoxDemo';
 import { Button } from './ui/button';
 import { trpc } from '@/server/trpc';
+import { updateStudentSchema } from '@/zod/schemas';
+import { useToast } from './ui/use-toast';
+import { updateStudent } from '@/actions';
 
 function NativeForm({ student_id }: { student_id: string }) {
   const { data: student } = trpc.getStudent.useQuery({
@@ -21,10 +24,34 @@ function NativeForm({ student_id }: { student_id: string }) {
   const [open, setOpen] = React.useState(false);
   const [school, setSchool] = React.useState(student!.school); // school
 
+  const { toast } = useToast();
+
+  const formRef = React.useRef<HTMLFormElement>(null);
+
   return (
     <form
+      ref={formRef}
       action={async (formData: FormData) => {
-        console.log(Object.fromEntries(formData.entries()));
+        const data = Object.fromEntries(formData.entries());
+        const result = updateStudentSchema.safeParse(data);
+
+        if (!result.success)
+          return toast({
+            title: 'Something went wrong',
+            variant: 'destructive',
+          });
+
+        await updateStudent({
+          ...result.data,
+        });
+
+        toast({
+          title: 'Student updated successfully',
+        });
+
+        setOpen(false);
+
+        formRef.current?.reset();
       }}
       className="space-y-5"
     >

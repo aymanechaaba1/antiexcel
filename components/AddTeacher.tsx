@@ -87,6 +87,7 @@ function AddTeacher() {
       toast({
         title: 'Teacher added successfully.',
       });
+      setOpen(false);
     },
     onError(error) {
       toast({
