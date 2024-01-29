@@ -1,10 +1,8 @@
-'use client';
-
+import { authOptions } from '@/lib/auth';
 import { getNbStudentsByMonth } from '@/lib/utils';
-import { useSubscriptionsStore } from '@/store/store';
-import { Students, Teachers } from '@/types/clientTypes';
+import { uncached_students } from '@/prisma/db-calls';
 import { Card, LineChart, Title } from '@tremor/react';
-import { Session } from 'next-auth';
+import { getServerSession } from 'next-auth';
 
 const months = [
   'Jan',
@@ -21,27 +19,22 @@ const months = [
   'Dec',
 ];
 
-function DashboardChart({
-  session,
-  students,
-  teachers,
-}: {
-  session: Session | null;
-  students: Students;
-  teachers: Teachers;
-}) {
-  const { subscription } = useSubscriptionsStore((state) => state);
-  const isPro = session && subscription;
+async function DashboardChart() {
+  const session = await getServerSession(authOptions);
+
+  const students = await uncached_students();
+
+  // const isPro = session && subscription;
 
   // get number of students created in a specific month
   const chartData = months.map((month, i) => ({
     month,
     students: getNbStudentsByMonth(students, i),
-    ...(isPro && { teachers: getNbStudentsByMonth(teachers, i) }),
+    // ...(isPro && { teachers: getNbStudentsByMonth(teachers, i) }),
   }));
 
   const categories = ['students'];
-  if (isPro) categories.push('teachers');
+  // if (isPro) categories.push('teachers');
 
   return (
     <Card>

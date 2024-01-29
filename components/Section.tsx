@@ -1,3 +1,6 @@
+import { cn } from '@/lib/utils';
+import React from 'react';
+
 function Section({
   children,
   title,
@@ -10,8 +13,14 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={className}>
-      <h1 className="text-2xl font-bold mb-3">{title}</h1>
+    <div
+      className={cn('space-y-4', {
+        className,
+      })}
+    >
+      <h1 className="text-3xl tracking-tight font-semibold scroll-m-20 mb-5">
+        {title}
+      </h1>
       <p className="text-gray-400">{description}</p>
       {children}
     </div>

@@ -1,18 +1,17 @@
-import { Heading, Img, Text } from '@react-email/components';
+import { Heading, Text } from '@react-email/components';
 import Email from './Email';
 import { Session } from 'next-auth';
-import { LOGO_URL } from '@/lib/config';
 
 function NewSubscriptionEmail({ session }: { session: Session | null }) {
   return (
     <Email>
-      <Img
+      {/* <Img
         src={LOGO_URL}
         width="100"
         height="21"
         alt="AntiExcel"
         className="mx-auto my-5"
-      />
+      /> */}
       <Heading as="h1">Dear {session?.user.name},</Heading>
       <Text>
         Welcome to AntiExcel! Now that you&apos;re a new subscriber, we&apos;re

@@ -9,22 +9,26 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { trpc } from '@/server/trpc';
+import {
+  cached_contacts,
+  cached_students,
+  cached_teachers,
+} from '@/prisma/db-calls';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-function ContactsPagination({
-  page,
-  per_page,
+function DataPagination({
+  data,
+  page = 1,
+  per_page = 5,
 }: {
-  page: number | 1;
-  per_page: number | 5;
+  data:
+    | Awaited<ReturnType<typeof cached_students>>
+    | Awaited<ReturnType<typeof cached_teachers>>
+    | Awaited<ReturnType<typeof cached_contacts>>;
+  page?: number | 1;
+  per_page?: number | 5;
 }) {
-  const { data: contacts } = trpc.getContacts.useQuery({
-    page,
-    per_page,
-  });
-
   const [isClient, setIsClient] = useState(false);
   const pathname = usePathname();
 
@@ -33,7 +37,7 @@ function ContactsPagination({
   }, []);
 
   let lastPage;
-  if (contacts) lastPage = Math.trunc(contacts.length / per_page);
+  if (data) lastPage = Math.trunc(data.length / per_page);
 
   return (
     isClient && (
@@ -71,4 +75,4 @@ function ContactsPagination({
   );
 }
 
-export default ContactsPagination;
+export default DataPagination;

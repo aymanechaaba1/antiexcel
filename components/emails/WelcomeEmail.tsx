@@ -1,6 +1,6 @@
 import { Heading, Hr, Img, Link, Section, Text } from '@react-email/components';
 import Email from './Email';
-import { LOGO_URL } from '@/lib/config';
+// import { LOGO_URL } from '@/lib/config';
 import { User } from 'next-auth';
 import { getUrl } from '@/lib/utils';
 
@@ -13,13 +13,13 @@ export const WelcomeEmail: React.FC<Readonly<EmailTemplateProps>> = ({
 }) => (
   <Email>
     <Section>
-      <Img
+      {/* <Img
         src={LOGO_URL}
         width="100"
         height="21"
         alt="AntiExcel"
         className="mx-auto my-5"
-      />
+      /> */}
       <Hr className="border border-[#e6ebf1] my-5 mx-0" />
       <Heading as="h1" className="font-medium">
         {user.name}, Welcome to AntiExcel 👋!

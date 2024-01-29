@@ -1,39 +1,31 @@
-'use client';
-
+import { uncached_teachers } from '@/prisma/db-calls';
 import Section from './Section';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { upperFirst } from '@/lib/utils';
-import { useSubscriptionsStore } from '@/store/store';
-import { Teachers } from '@/types/clientTypes';
-import { Session } from 'next-auth';
+import prisma from '@/prisma/prismaClient';
 
-function TeachersOverview({
-  session,
-  teachers,
-}: {
-  session: Session | null;
-  teachers: Teachers;
-}) {
-  const { subscription } = useSubscriptionsStore((state) => state);
+const getPopularSubject = async () => {
+  type QueryResult = {
+    subject: string;
+    max_subject_count: number;
+  };
+  const result: QueryResult[] =
+    await prisma.$queryRaw`SELECT subject, MAX(count) AS max_subject_count FROM (
+    SELECT subject, COUNT(subject) AS count FROM "Teacher" GROUP BY subject
 
-  const isPro = session && subscription;
+  ) AS max GROUP BY subject`;
 
-  const subjectCount = teachers?.reduce((acc: any, teacher) => {
-    acc[teacher.subject] = (acc[teacher.subject] || 0) + 1;
-    return acc;
-  }, {});
+  return result[0].subject;
+};
 
-  const counts = Object.entries(subjectCount).map(
-    ([subject, count]) => count
-  ) as number[];
+async function TeachersOverview() {
+  const teachers = await uncached_teachers();
 
-  const maxCount = Math.max(...counts);
+  const popularSubject = await getPopularSubject();
+  // const isPro = session && subscription;
 
-  const popularSubject = Object.entries(subjectCount)
-    .find(([_, count]) => count === maxCount)
-    ?.at(0) as string;
-
-  if (teachers && isPro)
+  // if (teachers && isPro)
+  if (teachers)
     return (
       <Section className="space-y-4" title="Teachers Overview">
         <div className="grid grid-cols-2 gap-4">

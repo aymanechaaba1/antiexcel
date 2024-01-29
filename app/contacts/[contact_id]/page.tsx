@@ -1,19 +1,14 @@
 import { upperFirst } from '@/lib/utils';
-import { caller } from '@/server';
-import { ArrowUpRight } from 'lucide-react';
-import Image from 'next/image';
+import { cached_contact } from '@/prisma/db-calls';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
 
 async function StudentContactPage({
   params: { contact_id },
 }: {
   params: { contact_id: string };
 }) {
-  const contact = await caller.getContact({
-    id: contact_id,
-  });
-  if (!contact) notFound();
+  const contact = await cached_contact(contact_id);
+  if (!contact) return;
 
   return (
     <div className="flex flex-col md:flex-row gap-4">

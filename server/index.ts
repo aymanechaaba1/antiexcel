@@ -1,8 +1,4 @@
-import {
-  contactSchema,
-  teacherSchema,
-  updateStudentSchema,
-} from './../zod/schemas';
+import { contactSchema, teacherSchema } from './../zod/schemas';
 import { z } from 'zod';
 import prisma from '@/prisma/prismaClient';
 import { studentSchema } from '@/zod/schemas';
@@ -16,8 +12,6 @@ export const appRouter = router({
         id: ctx.user_id,
       },
       include: {
-        accounts: true,
-        sessions: true,
         students: true,
         teachers: true,
       },
@@ -67,85 +61,85 @@ export const appRouter = router({
     });
   }),
   student: router({
-    add: privateProcedure
-      .input(studentSchema)
-      .mutation(async ({ ctx, input }) => {
-        await prisma.student.create({
-          data: {
-            firstname: input.firstname,
-            lastname: input.lastname,
-            birthdate: input.birthdate,
-            gender: input.gender,
-            grade: input.grade,
-            school: input.school,
-            contact: {
-              create: {
-                ...input.contact,
-                user: {
-                  connect: {
-                    id: ctx.user_id,
-                  },
-                },
-              },
-            },
-            teacher: {
-              connect: {
-                id: input.teacher_id,
-              },
-            },
-            admin: {
-              connect: {
-                id: ctx.user_id,
-              },
-            },
-          },
-        });
-      }),
-    addToExistingContact: privateProcedure
-      .input(
-        studentSchema.omit({
-          contact: true,
-        })
-      )
-      .mutation(async ({ ctx, input }) => {
-        await prisma.student.create({
-          data: {
-            firstname: input.firstname,
-            lastname: input.lastname,
-            birthdate: input.birthdate,
-            gender: input.gender,
-            grade: input.grade,
-            school: input.school,
-            contact: {
-              connect: {
-                id: input.contact_id,
-              },
-            },
-            teacher: {
-              connect: {
-                id: input.teacher_id,
-              },
-            },
-            admin: {
-              connect: {
-                id: ctx.user_id,
-              },
-            },
-          },
-        });
-      }),
-    update: privateProcedure
-      .input(updateStudentSchema)
-      .mutation(async ({ ctx, input }) => {
-        return await prisma.student.update({
-          data: {
-            ...input,
-          },
-          where: {
-            id: ctx.user_id,
-          },
-        });
-      }),
+    // add: privateProcedure
+    //   .input(studentSchema)
+    //   .mutation(async ({ ctx, input }) => {
+    //     await prisma.student.create({
+    //       data: {
+    //         firstname: input.firstname,
+    //         lastname: input.lastname,
+    //         birthdate: input.birthdate,
+    //         gender: input.gender,
+    //         grade: input.grade,
+    //         school: input.school,
+    //         contact: {
+    //           create: {
+    //             ...input.contact,
+    //             user: {
+    //               connect: {
+    //                 id: ctx.user_id,
+    //               },
+    //             },
+    //           },
+    //         },
+    //         teacher: {
+    //           connect: {
+    //             id: input.teacher_id,
+    //           },
+    //         },
+    //         admin: {
+    //           connect: {
+    //             id: ctx.user_id,
+    //           },
+    //         },
+    //       },
+    //     });
+    //   }),
+    // addToExistingContact: privateProcedure
+    //   .input(
+    //     studentSchema.omit({
+    //       contact: true,
+    //     })
+    //   )
+    //   .mutation(async ({ ctx, input }) => {
+    //     await prisma.student.create({
+    //       data: {
+    //         firstname: input.firstname,
+    //         lastname: input.lastname,
+    //         birthdate: input.birthdate,
+    //         gender: input.gender,
+    //         grade: input.grade,
+    //         school: input.school,
+    //         contact: {
+    //           connect: {
+    //             id: input.contact_id,
+    //           },
+    //         },
+    //         teacher: {
+    //           connect: {
+    //             id: input.teacher_id,
+    //           },
+    //         },
+    //         admin: {
+    //           connect: {
+    //             id: ctx.user_id,
+    //           },
+    //         },
+    //       },
+    //     });
+    //   }),
+    // update: privateProcedure
+    //   .input(studentSchema)
+    //   .mutation(async ({ ctx, input }) => {
+    //     return await prisma.student.update({
+    //       data: {
+    //         ...input,
+    //       },
+    //       where: {
+    //         id: ctx.user_id,
+    //       },
+    //     });
+    //   }),
   }),
   deleteStudent: privateProcedure
     .input(
@@ -219,7 +213,6 @@ export const appRouter = router({
           phone: input.phone,
           name: input.name,
           subject: input.subject,
-
           gender: input.gender,
           user: {
             connect: {
@@ -270,12 +263,8 @@ export const appRouter = router({
     }),
   updateTeacher: privateProcedure
     .input(
-      z.object({
+      teacherSchema.extend({
         id: z.string().cuid(),
-        email: z.string().email().optional(),
-        phone: z.string().optional(),
-        name: z.string().optional(),
-        subject: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
@@ -284,10 +273,7 @@ export const appRouter = router({
           id: input.id,
         },
         data: {
-          email: input.email,
-          phone: input.phone,
-          name: input.name,
-          subject: input.subject,
+          ...input,
         },
       });
     }),
@@ -308,25 +294,16 @@ export const appRouter = router({
       const subscription: Subscription = await res.json();
       return subscription;
     }),
-  getContacts: privateProcedure
-    .input(
-      z.object({
-        page: z.number().default(1),
-        per_page: z.number().default(10),
-      })
-    )
-    .query(async ({ ctx, input }) => {
-      return await prisma.contact.findMany({
-        where: {
-          user_id: ctx.user_id,
-        },
-        include: {
-          students: true,
-        },
-        skip: input.page * input.per_page,
-        take: input.per_page,
-      });
-    }),
+  getContacts: privateProcedure.query(async ({ ctx }) => {
+    return await prisma.contact.findMany({
+      where: {
+        user_id: ctx.user_id,
+      },
+      include: {
+        students: true,
+      },
+    });
+  }),
   getContact: privateProcedure
     .input(
       z.object({

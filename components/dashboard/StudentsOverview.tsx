@@ -1,72 +1,44 @@
-import { compare } from '@/lib/utils';
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/prisma/prismaClient';
-import { TrendingDown, TrendingUp } from 'lucide-react';
-import TrendingIcon from '../TrendingIcon';
-import { Students } from '@/types/clientTypes';
+import { uncached_students } from '@/prisma/db-calls';
 
-async function StudentsOverview({ students }: { students: Students }) {
-  const boys = students?.filter((student) => student.gender === 'male');
-  const girls = students?.filter((student) => student.gender === 'female');
-
-  const gradesCount = students?.reduce((acc: any, student) => {
-    acc[student.grade] = (acc[student.grade] || 0) + 1;
-    return acc;
-  }, {});
-
-  const counts = Object.entries(gradesCount).map(
-    ([grade, count]) => count
-  ) as number[];
-
-  const maxCount = Math.max(...counts);
-
-  const popularGrade = Object.entries(gradesCount)
-    .find(([_, count]) => count === maxCount)
-    ?.at(0) as string;
-
-  const currentDate = new Date();
-  const start_ofthe_month = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    1
-  );
-  const end_of_month = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1,
-    0
-  );
-
-  const startOfPreviousMonth = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() - 1,
-    1
-  );
-  const endOfPreviousMonth = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    0
-  );
-
-  const nbs_currMonth = await prisma.student.findMany({
+const getBoys = async () =>
+  await prisma.student.findMany({
     where: {
-      created_at: {
-        gte: start_ofthe_month,
-        lte: end_of_month,
-      },
+      gender: 'male',
     },
   });
 
-  const nbs_prevMonth = await prisma.student.findMany({
+const getGirls = async () =>
+  await prisma.student.findMany({
     where: {
-      created_at: {
-        gte: startOfPreviousMonth,
-        lte: endOfPreviousMonth,
-      },
+      gender: 'female',
     },
   });
 
-  const status = compare(nbs_currMonth.length, nbs_prevMonth.length);
+const getPopularGrade = async () => {
+  type QueryResult = {
+    grade: number;
+    max_grade_count: number;
+  };
+
+  const result: QueryResult[] =
+    await prisma.$queryRaw`SELECT grade, MAX(count) AS max_grade_count
+    FROM (
+        SELECT grade, COUNT(grade) AS count
+        FROM "Student"
+        GROUP BY grade
+    ) AS counts GROUP BY grade`;
+
+  return result[0].grade;
+};
+
+async function StudentsOverview() {
+  const students = await uncached_students();
+
+  const boys = await getBoys();
+  const girls = await getGirls();
 
   return (
     <Section className="space-y-4" title="Students Overview">
@@ -81,9 +53,6 @@ async function StudentsOverview({ students }: { students: Students }) {
                 <div className="text-2xl font-bold">{students?.length}</div>
                 <p className="text-xs text-muted-foreground"></p>
               </div>
-              {status === 'trending' && <TrendingUp color="green" />}{' '}
-              {status === 'deviating' && <TrendingDown color="red" />}
-              <TrendingIcon />
             </div>
           </CardContent>
         </Card>
@@ -109,12 +78,11 @@ async function StudentsOverview({ students }: { students: Students }) {
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Popular Grade</CardTitle>
           </CardHeader>
-          {popularGrade && (
-            <CardContent>
-              <div className="text-2xl font-bold">{popularGrade}</div>
-              <p className="text-xs text-muted-foreground"></p>
-            </CardContent>
-          )}
+
+          <CardContent>
+            <div className="text-2xl font-bold">{getPopularGrade()}</div>
+            <p className="text-xs text-muted-foreground"></p>
+          </CardContent>
         </Card>
       </div>
     </Section>

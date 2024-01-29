@@ -1,7 +1,11 @@
 import Link from 'next/link';
 import { Button } from './ui/button';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 
-function Hero() {
+async function Hero() {
+  const session = await getServerSession(authOptions);
+
   return (
     <div className="">
       <h1 className="text-center text-4xl font-bold">Excel, Seriously!?</h1>
@@ -15,9 +19,11 @@ function Hero() {
         >
           <Link href={`/#pricing`}>Get Started</Link>
         </Button>
-        <Button className="" variant={'secondary'} asChild>
-          <Link href={`/dashboard`}>Dashboard</Link>
-        </Button>
+        {session && (
+          <Button className="" variant={'secondary'} asChild>
+            <Link href={`/dashboard`}>Dashboard</Link>
+          </Button>
+        )}
       </div>
     </div>
   );

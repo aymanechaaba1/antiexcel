@@ -1,4 +1,5 @@
 'use client';
+
 import { VIDEO_URL } from '@/lib/config';
 import { useEffect, useState } from 'react';
 import ReactPlayer from 'react-player';

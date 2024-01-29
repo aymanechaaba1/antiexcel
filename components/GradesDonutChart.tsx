@@ -1,33 +1,18 @@
-'use client';
-
-import { Students } from '@/types/clientTypes';
+import { uncached_students } from '@/prisma/db-calls';
 import { Card, DonutChart, Title } from '@tremor/react';
-import { Session } from 'next-auth';
+import GradesProportionChart from './GradesProportionChart';
 
-const valueFormatter = (number: number) =>
-  new Intl.NumberFormat('en-US', {
-    style: 'percent',
-  })
-    .format(number)
-    .toString();
+async function GradesDonutChart() {
+  const students = await uncached_students();
 
-function GradesDonutChart({
-  session,
-  students,
-}: {
-  session: Session | null;
-  students: Students;
-}) {
-  if (!session) return;
-
-  const data = students?.map((student) => ({
-    grade: +student.grade,
-  }));
-
-  const count = data?.reduce((acc: any, student: any) => {
-    acc[student.grade] = (acc[student.grade] || 0) + 1;
-    return acc;
-  }, {});
+  const count = students
+    ?.map((student) => ({
+      grade: +student.grade,
+    }))
+    .reduce((acc: any, student: any) => {
+      acc[student.grade] = (acc[student.grade] || 0) + 1;
+      return acc;
+    }, {});
 
   const donut_data = Object.entries(count).map(([key, value]: any) => ({
     name: `Grade ${key}`,
@@ -37,15 +22,7 @@ function GradesDonutChart({
   return (
     <Card className="max-w-lg rounded-lg">
       <Title>Grades Proportion</Title>
-      <DonutChart
-        className="mt-6"
-        data={donut_data}
-        category="percent"
-        index="name"
-        valueFormatter={valueFormatter}
-        colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
-        variant="pie"
-      />
+      <GradesProportionChart donut_data={donut_data} />
     </Card>
   );
 }

@@ -41,17 +41,17 @@ export const authOptions: NextAuthOptions = {
   },
   events: {
     signIn: async ({ user, isNewUser }) => {
-      console.log(isNewUser);
-      if (isNewUser) {
-        // send welcome email
-        const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
-        const { data, error } = await resend.emails.send({
-          from: 'onboarding@resend.dev', // custom email
-          to: `aymanechaaba1@gmail.com`, // to new user
-          subject: `${user.name}, Welcome to AntiExcel!`,
-          react: WelcomeEmail({ user }) as React.ReactElement,
-        });
-      }
+      // console.log(isNewUser);
+      // if (isNewUser) {
+      // send welcome email
+      //   const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
+      //   const { data, error } = await resend.emails.send({
+      //     from: 'onboarding@resend.dev', // custom email
+      //     to: `aymanechaaba1@gmail.com`, // to new user
+      //     subject: `${user.name}, Welcome to AntiExcel!`,
+      //     react: WelcomeEmail({ user }) as React.ReactElement,
+      //   });
+      // }
     },
   },
 } satisfies NextAuthOptions;
