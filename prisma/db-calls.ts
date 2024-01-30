@@ -198,34 +198,3 @@ export const cached_contact = unstable_cache(
       },
     })
 );
-
-export const getStudents = cache(
-  async (user_id: string) =>
-    await prisma.student.findMany({
-      where: {
-        user_id,
-      },
-      include: {
-        contact: true,
-        teacher: true,
-      },
-      orderBy: {
-        created_at: 'desc',
-      },
-    })
-);
-
-export const getTeachers = cache(
-  async (user_id: string) =>
-    await prisma.teacher.findMany({
-      where: {
-        user_id,
-      },
-      include: {
-        students: true,
-      },
-      orderBy: {
-        created_at: 'desc',
-      },
-    })
-);
