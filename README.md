@@ -39,7 +39,7 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ Welcome, Become a PRO, Canceled and Suspended Subscriptions Emails.
 
 > [!IMPORTANT]
-> I didn't provide any url yet because there is a bug either in shadcn or nextjs or both that caused the deployment to fail, all my code is working fine on the development but the file upload triggers a bug and that's something that needs to be fixed, once it gets fixed, my project will be live on the internet.
+> No live url 😡 yet because NextJS has some bugs Everything works properly in the development even if you **build localy**.
 
 1. `npm i`
 2. Setup your env variables
