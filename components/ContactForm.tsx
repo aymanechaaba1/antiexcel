@@ -14,7 +14,7 @@ import { cached_contact } from '@/prisma/db-calls';
 import { addContact, updateContact } from '@/actions';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
-import { notFound, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { useToast } from './ui/use-toast';
 

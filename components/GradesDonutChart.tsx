@@ -1,9 +1,15 @@
-import { uncached_students } from '@/prisma/db-calls';
-import { Card, DonutChart, Title } from '@tremor/react';
+import { Card, Title } from '@tremor/react';
 import GradesProportionChart from './GradesProportionChart';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import { getStudents } from '@/prisma/db-calls';
 
 async function GradesDonutChart() {
-  const students = await uncached_students();
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
+  const students = await getStudents(session.user.id);
 
   const count = students
     ?.map((student) => ({

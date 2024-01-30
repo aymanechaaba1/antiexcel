@@ -1,8 +1,9 @@
+import { getStudents } from '@/prisma/db-calls';
 import { authOptions } from '@/lib/auth';
 import { getNbStudentsByMonth } from '@/lib/utils';
-import { uncached_students } from '@/prisma/db-calls';
 import { Card, LineChart, Title } from '@tremor/react';
 import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 
 const months = [
   'Jan',
@@ -21,8 +22,9 @@ const months = [
 
 async function DashboardChart() {
   const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
 
-  const students = await uncached_students();
+  const students = await getStudents(session.user.id);
 
   // const isPro = session && subscription;
 

@@ -1,6 +1,5 @@
 import ErrorFallBack from '@/components/ErrorFallBack';
 import Section from '@/components/Section';
-import { columns } from '@/components/StudentDetails';
 import TeacherDetails from '@/components/TeacherDetails';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';

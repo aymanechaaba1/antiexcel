@@ -1,4 +1,4 @@
-import { formatDate, upperFirst } from '@/lib/utils';
+import { formatDate } from '@/lib/utils';
 import { uncached_teacher } from '@/prisma/db-calls';
 import StudentsList from './StudentsList';
 import { notFound } from 'next/navigation';

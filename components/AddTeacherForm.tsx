@@ -57,6 +57,7 @@ function AddTeacherForm() {
   const [state, formAction] = useFormState(addTeacher, initState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     if (state?.message) {
@@ -66,10 +67,11 @@ function AddTeacherForm() {
           variant: 'destructive',
         });
       if (state?.ok) {
+        formRef.current?.reset();
+        router.replace(`/teachers`);
         toast({
           title: state.message,
         });
-        formRef.current?.reset();
       }
     }
   }, [state]);

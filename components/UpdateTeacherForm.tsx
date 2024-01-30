@@ -4,7 +4,6 @@ import { updateTeacher } from '@/actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TeacherFormState } from './AddTeacherForm';
-import { trpc } from '@/server/trpc';
 import { useEffect, useRef } from 'react';
 import { notFound, useRouter } from 'next/navigation';
 import { useFormState, useFormStatus } from 'react-dom';

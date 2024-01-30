@@ -10,9 +10,15 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { HelpCircle } from 'lucide-react';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 async function AddStudentPage() {
-  const teachers = await cached_teachers();
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
+  const teachers = await cached_teachers(session.user.id);
 
   return (
     <>

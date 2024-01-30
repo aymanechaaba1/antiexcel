@@ -7,7 +7,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { AlertDialogHeader } from '@/components/ui/alert-dialog';
-import { Button } from './ui/button';
 import ContactForm from './ContactForm';
 import { updateContact } from '@/actions';
 import { useState } from 'react';

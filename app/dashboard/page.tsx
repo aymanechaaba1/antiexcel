@@ -15,7 +15,6 @@ function ChartSkeleton({ height = 40 }: { height?: number }) {
 }
 
 function LatestStudentsSkeleton() {
-  const rows = 2;
   return (
     <div className="p-4 border rounded-lg flex-grow space-y-3">
       <h3 className="text-2xl tracking-tight font-semibold scroll-m-20">
@@ -36,7 +35,6 @@ function LatestStudentsSkeleton() {
 }
 
 function LatestTeachersSkeleton() {
-  const rows = 2;
   return (
     <div className="p-4 border rounded-lg flex-grow space-y-3">
       <h3 className="text-2xl tracking-tight font-semibold scroll-m-20">

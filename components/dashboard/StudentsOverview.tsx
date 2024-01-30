@@ -1,7 +1,10 @@
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/prisma/prismaClient';
-import { uncached_students } from '@/prisma/db-calls';
+import { getStudents } from '@/prisma/db-calls';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 const getBoys = async () =>
   await prisma.student.findMany({
@@ -35,10 +38,15 @@ const getPopularGrade = async () => {
 };
 
 async function StudentsOverview() {
-  const students = await uncached_students();
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
+  const students = await getStudents(session.user.id);
 
   const boys = await getBoys();
   const girls = await getGirls();
+
+  const popularGrade = getPopularGrade();
 
   return (
     <Section className="space-y-4" title="Students Overview">
@@ -74,16 +82,19 @@ async function StudentsOverview() {
             <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Popular Grade</CardTitle>
-          </CardHeader>
-
-          <CardContent>
-            <div className="text-2xl font-bold">{getPopularGrade()}</div>
-            <p className="text-xs text-muted-foreground"></p>
-          </CardContent>
-        </Card>
+        {popularGrade && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Popular Grade
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{popularGrade}</div>
+              <p className="text-xs text-muted-foreground"></p>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </Section>
   );

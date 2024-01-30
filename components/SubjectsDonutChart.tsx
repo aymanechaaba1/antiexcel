@@ -1,14 +1,17 @@
 import { authOptions } from '@/lib/auth';
 import { getSubjectProportion } from '@/lib/utils';
-import { uncached_teachers } from '@/prisma/db-calls';
 import prisma from '@/prisma/prismaClient';
-import { Card, DonutChart, Title } from '@tremor/react';
+import { Card, Title } from '@tremor/react';
 import { getServerSession } from 'next-auth';
 import SubjectsProportionChart from './SubjectsProportionChart';
+import { redirect } from 'next/navigation';
+import { getTeachers } from '@/prisma/db-calls';
 
 async function SubjectsDonutChart() {
   const session = await getServerSession(authOptions);
-  const teachers = await uncached_teachers();
+  if (!session) redirect(`/api/auth/signin`);
+
+  const teachers = await getTeachers(session.user.id);
 
   // const { subscription } = useSubscriptionsStore((state) => state);
   // const isPro = session && subscription;

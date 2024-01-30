@@ -139,13 +139,14 @@ export const addTeacher = async (prevState: any, formData: FormData) => {
         },
       },
     });
-    revalidateTag('teachers');
   } catch (err) {
     return {
       ok: false,
       message: 'Failed to add teacher',
     };
   }
+
+  revalidateTag('teachers');
 
   return {
     ok: true,

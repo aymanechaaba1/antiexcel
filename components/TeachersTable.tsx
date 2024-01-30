@@ -4,11 +4,17 @@ import { cached_teachers } from '@/prisma/db-calls';
 import Link from 'next/link';
 import Section from './Section';
 import { Avatar, AvatarFallback } from './ui/avatar';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
 export const columns = ['Avatar', 'Name', 'Subject'];
 
 async function TeachersTable() {
-  const teachers = await cached_teachers();
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
+  const teachers = await cached_teachers(session.user.id);
 
   if (!teachers || !teachers.length)
     return (

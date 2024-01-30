@@ -1,7 +1,6 @@
 'use client';
 
 import { Search } from 'lucide-react';
-import { useTransition } from 'react';
 
 function SearchBar() {
   // const [startTransition] = useTransition();

@@ -6,6 +6,7 @@ import { cached_contacts } from '@/prisma/db-calls';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import UpdateContactButton from './UpdateContactButton';
+import { redirect } from 'next/navigation';
 
 export const columns = ['Avatar', 'Name', 'Phone', 'Relationship'];
 
@@ -17,7 +18,7 @@ async function ContactsTable({
   per_page: number | 5;
 }) {
   const session = await getServerSession(authOptions);
-  if (!session) return;
+  if (!session) redirect(`/api/auth/signin`);
 
   const contacts = await cached_contacts(session.user.id);
 
