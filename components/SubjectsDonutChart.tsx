@@ -5,14 +5,13 @@ import { Card, Title } from '@tremor/react';
 import { getServerSession } from 'next-auth';
 import SubjectsProportionChart from './SubjectsProportionChart';
 import { redirect } from 'next/navigation';
-import { getTeachers } from '@/prisma/db-calls';
+import { cached_teachers, getTeachers } from '@/prisma/db-calls';
 
-async function SubjectsDonutChart() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const teachers = await getTeachers(session.user.id);
-
+async function SubjectsDonutChart({
+  teachers,
+}: {
+  teachers: Awaited<ReturnType<typeof cached_teachers>>;
+}) {
   // const { subscription } = useSubscriptionsStore((state) => state);
   // const isPro = session && subscription;
 

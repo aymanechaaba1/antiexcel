@@ -3,15 +3,14 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { getAvatarName } from '@/lib/utils';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
-import { getTeachers } from '@/prisma/db-calls';
+import { cached_teachers, getTeachers } from '@/prisma/db-calls';
 
-async function LatestTeachers() {
+async function LatestTeachers({
+  teachers,
+}: {
+  teachers: Awaited<ReturnType<typeof cached_teachers>>;
+}) {
   // const { subscription } = useSubscriptionsStore((state) => state);
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const teachers = await getTeachers(session.user.id);
-  if (!teachers || !teachers.length) return;
 
   // if (teachers && isPro)
   return (

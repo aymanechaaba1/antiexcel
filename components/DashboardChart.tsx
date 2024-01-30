@@ -1,4 +1,4 @@
-import { getStudents } from '@/prisma/db-calls';
+import { cached_students, getStudents } from '@/prisma/db-calls';
 import { authOptions } from '@/lib/auth';
 import { getNbStudentsByMonth } from '@/lib/utils';
 import { Card, LineChart, Title } from '@tremor/react';
@@ -20,12 +20,11 @@ const months = [
   'Dec',
 ];
 
-async function DashboardChart() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const students = await getStudents(session.user.id);
-
+async function DashboardChart({
+  students,
+}: {
+  students: Awaited<ReturnType<typeof cached_students>>;
+}) {
   // const isPro = session && subscription;
 
   // get number of students created in a specific month

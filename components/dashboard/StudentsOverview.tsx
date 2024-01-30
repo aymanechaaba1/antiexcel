@@ -1,7 +1,7 @@
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/prisma/prismaClient';
-import { getStudents } from '@/prisma/db-calls';
+import { cached_students, getStudents } from '@/prisma/db-calls';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
@@ -37,12 +37,11 @@ const getPopularGrade = async () => {
   return result[0].grade;
 };
 
-async function StudentsOverview() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const students = await getStudents(session.user.id);
-
+async function StudentsOverview({
+  students,
+}: {
+  students: Awaited<ReturnType<typeof cached_students>>;
+}) {
   const boys = await getBoys();
   const girls = await getGirls();
 

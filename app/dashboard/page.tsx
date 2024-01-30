@@ -1,103 +1,39 @@
 import LatestStudents from '@/components/dashboard/LatestStudents';
 import TeachersOverview from '@/components/TeachersOverview';
-import DashboardChart from '@/components/DashboardChart';
 import StudentsOverview from '@/components/dashboard/StudentsOverview';
 import SubjectsDonutChart from '@/components/SubjectsDonutChart';
 import GradesDonutChart from '@/components/GradesDonutChart';
 import LatestTeachers from '@/components/LatestTeachers';
-import { Suspense } from 'react';
-import DashboardCardSkeleton from '@/components/skeletons/DashboardCardSkeleton';
-import { ErrorBoundary } from 'react-error-boundary';
-import ErrorFallBack from '@/components/ErrorFallBack';
+import { cached_students, cached_teachers } from '@/prisma/db-calls';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
 
-function ChartSkeleton({ height = 40 }: { height?: number }) {
-  return <div className={`w-full h-${height} rounded-lg skeleton`} />;
-}
+async function DashboardPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
 
-function LatestStudentsSkeleton() {
-  return (
-    <div className="p-4 border rounded-lg flex-grow space-y-3">
-      <h3 className="text-2xl tracking-tight font-semibold scroll-m-20">
-        Latest Students
-      </h3>
-      <div className="grid grid-cols-4 gap-x-4 gap-y-3 items-center">
-        {Array.from({ length: 2 }).map((_, i) => (
-          <>
-            <div className="w-10 h-10 rounded-full clip-circle skeleton" />
-            {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="w-full h-10 rounded-lg skeleton" />
-            ))}
-          </>
-        ))}
-      </div>
-    </div>
-  );
-}
+  const [students, teachers] = await Promise.all([
+    cached_students(session.user.id),
+    cached_teachers(session.user.id),
+  ]);
 
-function LatestTeachersSkeleton() {
-  return (
-    <div className="p-4 border rounded-lg flex-grow space-y-3">
-      <h3 className="text-2xl tracking-tight font-semibold scroll-m-20">
-        Latest Teachers
-      </h3>
-      <div className="grid grid-cols-2 gap-x-4 gap-y-3 items-center">
-        {Array.from({ length: 2 }).map((_, i) => (
-          <>
-            <div className="w-10 h-10 rounded-full clip-circle skeleton" />
-            <div key={i} className="w-full h-10 rounded-lg skeleton" />
-          </>
-        ))}
-      </div>
-    </div>
-  );
-}
+  if (!students || !students.length || !teachers || !teachers.length)
+    return <p className="text-center muted">No Data</p>;
 
-function DashboardPage() {
   return (
     <div className="space-y-4">
-      <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <Suspense fallback={<DashboardCardSkeleton cards={4} />}>
-          <StudentsOverview />
-        </Suspense>
-      </ErrorBoundary>
-
-      <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <Suspense fallback={<DashboardCardSkeleton />}>
-          <TeachersOverview />
-        </Suspense>
-      </ErrorBoundary>
-
-      <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <Suspense fallback={<ChartSkeleton height={60} />}>
-          <DashboardChart />
-        </Suspense>
-      </ErrorBoundary>
+      <StudentsOverview students={students} />
+      <TeachersOverview teachers={teachers} />
+      {/* <DashboardChart students={students} /> */}
 
       <div className="flex flex-col md:flex-row gap-4">
-        <ErrorBoundary FallbackComponent={ErrorFallBack}>
-          <Suspense fallback={<ChartSkeleton height={60} />}>
-            <GradesDonutChart />
-          </Suspense>
-        </ErrorBoundary>
-
-        <ErrorBoundary FallbackComponent={ErrorFallBack}>
-          <Suspense fallback={<ChartSkeleton height={60} />}>
-            <SubjectsDonutChart />
-          </Suspense>
-        </ErrorBoundary>
+        <GradesDonutChart students={students} />
+        <SubjectsDonutChart teachers={teachers} />
       </div>
       <div className="flex flex-col md:flex-row gap-4">
-        <ErrorBoundary FallbackComponent={ErrorFallBack}>
-          <Suspense fallback={<LatestStudentsSkeleton />}>
-            <LatestStudents />
-          </Suspense>
-        </ErrorBoundary>
-
-        <ErrorBoundary FallbackComponent={ErrorFallBack}>
-          <Suspense fallback={<LatestTeachersSkeleton />}>
-            <LatestTeachers />
-          </Suspense>
-        </ErrorBoundary>
+        <LatestStudents students={students} />
+        <LatestTeachers teachers={teachers} />
       </div>
     </div>
   );

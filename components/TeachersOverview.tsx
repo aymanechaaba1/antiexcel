@@ -1,11 +1,8 @@
-import { getTeachers } from '@/prisma/db-calls';
+import { cached_teachers } from '@/prisma/db-calls';
 import Section from './Section';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { upperFirst } from '@/lib/utils';
 import prisma from '@/prisma/prismaClient';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 
 const getPopularSubject = async () => {
   type QueryResult = {
@@ -21,12 +18,11 @@ const getPopularSubject = async () => {
   return result[0].subject;
 };
 
-async function TeachersOverview() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const teachers = await getTeachers(session.user.id);
-
+async function TeachersOverview({
+  teachers,
+}: {
+  teachers: Awaited<ReturnType<typeof cached_teachers>>;
+}) {
   const popularSubject = await getPopularSubject();
   // const isPro = session && subscription;
 
