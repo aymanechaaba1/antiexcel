@@ -1,9 +1,6 @@
 import { Card, Title } from '@tremor/react';
 import GradesProportionChart from './GradesProportionChart';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { cached_students, getStudents } from '@/prisma/db-calls';
+import { cached_students } from '@/prisma/db-calls';
 
 async function GradesDonutChart({
   students,

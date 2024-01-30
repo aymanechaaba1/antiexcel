@@ -2,10 +2,7 @@ import { formatSchool, getAvatarName } from '@/lib/utils';
 import { Avatar, AvatarFallback } from '../ui/avatar';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { cached_students, getStudents } from '@/prisma/db-calls';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+import { cached_students } from '@/prisma/db-calls';
 
 async function LatestStudents({
   students,

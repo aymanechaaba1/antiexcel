@@ -1,9 +1,6 @@
-import { cached_students, getStudents } from '@/prisma/db-calls';
-import { authOptions } from '@/lib/auth';
+import { cached_students } from '@/prisma/db-calls';
 import { getNbStudentsByMonth } from '@/lib/utils';
 import { Card, LineChart, Title } from '@tremor/react';
-import { getServerSession } from 'next-auth';
-import { redirect } from 'next/navigation';
 
 const months = [
   'Jan',

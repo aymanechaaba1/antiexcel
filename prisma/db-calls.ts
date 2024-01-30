@@ -1,6 +1,5 @@
 import { unstable_cache } from 'next/cache';
 import prisma from './prismaClient';
-import { cache } from 'react';
 import { getServerSession } from 'next-auth';
 
 export const uncached_user = async () => {

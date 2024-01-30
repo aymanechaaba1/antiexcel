@@ -8,6 +8,7 @@ import { cached_students, cached_teachers } from '@/prisma/db-calls';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import DashboardChart from '@/components/DashboardChart';
 
 async function DashboardPage() {
   const session = await getServerSession(authOptions);
@@ -25,7 +26,7 @@ async function DashboardPage() {
     <div className="space-y-4">
       <StudentsOverview students={students} />
       <TeachersOverview teachers={teachers} />
-      {/* <DashboardChart students={students} /> */}
+      <DashboardChart students={students} />
 
       <div className="flex flex-col md:flex-row gap-4">
         <GradesDonutChart students={students} />

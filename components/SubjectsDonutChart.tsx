@@ -2,10 +2,8 @@ import { authOptions } from '@/lib/auth';
 import { getSubjectProportion } from '@/lib/utils';
 import prisma from '@/prisma/prismaClient';
 import { Card, Title } from '@tremor/react';
-import { getServerSession } from 'next-auth';
 import SubjectsProportionChart from './SubjectsProportionChart';
-import { redirect } from 'next/navigation';
-import { cached_teachers, getTeachers } from '@/prisma/db-calls';
+import { cached_teachers } from '@/prisma/db-calls';
 
 async function SubjectsDonutChart({
   teachers,

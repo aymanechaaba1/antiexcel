@@ -1,9 +1,6 @@
-import { getServerSession } from 'next-auth';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { getAvatarName } from '@/lib/utils';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { cached_teachers, getTeachers } from '@/prisma/db-calls';
+import { cached_teachers } from '@/prisma/db-calls';
 
 async function LatestTeachers({
   teachers,

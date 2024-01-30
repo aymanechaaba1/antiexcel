@@ -1,10 +1,7 @@
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import prisma from '@/prisma/prismaClient';
-import { cached_students, getStudents } from '@/prisma/db-calls';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
+import { cached_students } from '@/prisma/db-calls';
 
 const getBoys = async () =>
   await prisma.student.findMany({
