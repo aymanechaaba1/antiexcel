@@ -15,7 +15,7 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ Upgrade to PRO and unlock and expand your management to unlimited students and teachers.
 - ✔️ PRO members have access to real-time data about teachers.
 
-## This is for Developers
+## For Developers
 
 - ✔️ The best stack on the world: NextJS, Typescript, Tailwind, tRPC, Prisma, Zod, Zustand, etc
 - ✔️ Protected routes using built-in NextJS middleware.
@@ -38,14 +38,9 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ Beautiful Emails sent with resend and react-email
 - ✔️ Welcome, Become a PRO, Canceled and Suspended Subscriptions Emails.
 
-> [!IMPORTANT]
-> No live url 😡 yet because NextJS has some bugs Everything works properly in the development even if you **build localy**.
-
 1. `npm i`
 2. Setup your env variables
 3. `npm run dev`
-
-This will run the development server on <mark>http://localhost:443</mark> (443 and not 3000 because Paypal requires that).
 
 📍 For Paypal API:
 
