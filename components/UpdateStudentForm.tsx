@@ -67,6 +67,8 @@ function UpdateStudentForm({
   const { data: teachers, isLoading: loadingTeachers } =
     trpc.getTeachers.useQuery();
 
+  console.log(teachers);
+
   useEffect(() => {
     if (state.message) {
       !state?.ok &&

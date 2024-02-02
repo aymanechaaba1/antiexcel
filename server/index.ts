@@ -1,7 +1,6 @@
 import { contactSchema, teacherSchema } from './../zod/schemas';
 import { z } from 'zod';
 import prisma from '@/prisma/prismaClient';
-import { studentSchema } from '@/zod/schemas';
 import { TRPCClientError } from '@trpc/client';
 import { privateProcedure, router } from '@/app/api/trpc/trpc-config';
 
@@ -223,7 +222,7 @@ export const appRouter = router({
       });
     }),
   getTeachers: privateProcedure.query(async ({ ctx }) => {
-    return await prisma.teacher.findMany({
+    const teachers = await prisma.teacher.findMany({
       where: {
         user_id: ctx.user_id,
       },
@@ -231,6 +230,8 @@ export const appRouter = router({
         students: true,
       },
     });
+    console.log(teachers);
+    return teachers;
   }),
   getTeacher: privateProcedure
     .input(
