@@ -19,7 +19,7 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const url =
     process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' || 'preview'
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      ? `https://antiexcel.vercel.app`
       : 'http://localhost:3000';
 
   console.log(url);
