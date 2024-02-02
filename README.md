@@ -15,7 +15,7 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ Upgrade to PRO and unlock and expand your management to unlimited students and teachers.
 - ✔️ PRO members have access to real-time data about teachers.
 
-## This is for Developers
+## For Developers
 
 - ✔️ The best stack on the world: NextJS, Typescript, Tailwind, tRPC, Prisma, Zod, Zustand, etc
 - ✔️ Protected routes using built-in NextJS middleware.
@@ -37,3 +37,12 @@ It's a paid platform where you can manage students and teachers.
 - ✔️ The Easiest state management in the world, Zustand
 - ✔️ Beautiful Emails sent with resend and react-email
 - ✔️ Welcome, Become a PRO, Canceled and Suspended Subscriptions Emails.
+
+1. `npm i`
+2. Setup your env variables
+3. `npm run dev`
+
+📍 For Paypal API:
+
+1. Follow this guide to use the Paypal REST API. https://developer.paypal.com/api/rest
+2. make sure you add a webhook url using ngrok, I've tried the new NextJS feature to use https localhost but Paypal didn't accept that.

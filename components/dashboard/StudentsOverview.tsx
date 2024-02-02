@@ -1,34 +1,48 @@
 import Section from '../Section';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { caller } from '@/server';
-import { Session } from 'next-auth';
+import prisma from '@/prisma/prismaClient';
+import { cached_students } from '@/prisma/db-calls';
+
+const getBoys = async () =>
+  await prisma.student.findMany({
+    where: {
+      gender: 'male',
+    },
+  });
+
+const getGirls = async () =>
+  await prisma.student.findMany({
+    where: {
+      gender: 'female',
+    },
+  });
+
+const getPopularGrade = async () => {
+  type QueryResult = {
+    grade: number;
+    max_grade_count: number;
+  };
+
+  const result: QueryResult[] =
+    await prisma.$queryRaw`SELECT grade, MAX(count) AS max_grade_count
+    FROM (
+        SELECT grade, COUNT(grade) AS count
+        FROM "Student"
+        GROUP BY grade
+    ) AS counts GROUP BY grade`;
+
+  return result[0].grade;
+};
 
 async function StudentsOverview({
-  session,
   students,
 }: {
-  session: Session | null;
-  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
+  students: Awaited<ReturnType<typeof cached_students>>;
 }) {
-  if (!session) return;
+  const boys = await getBoys();
+  const girls = await getGirls();
 
-  const boys = students.filter((student) => student.gender === 'male');
-  const girls = students.filter((student) => student.gender === 'female');
-
-  const gradesCount = students.reduce((acc: any, student) => {
-    acc[student.grade] = (acc[student.grade] || 0) + 1;
-    return acc;
-  }, {});
-
-  const counts = Object.entries(gradesCount).map(
-    ([grade, count]) => count
-  ) as number[];
-
-  const maxCount = Math.max(...counts);
-
-  const popularGrade = Object.entries(gradesCount)
-    .find(([grade, count]) => count === maxCount)
-    ?.at(0) as string;
+  const popularGrade = getPopularGrade();
 
   return (
     <Section className="space-y-4" title="Students Overview">
@@ -38,8 +52,12 @@ async function StudentsOverview({
             <CardTitle className="text-sm font-medium">Students</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{students.length}</div>
-            <p className="text-xs text-muted-foreground"></p>
+            <div className="flex items-start justify-between">
+              <div>
+                <div className="text-2xl font-bold">{students?.length}</div>
+                <p className="text-xs text-muted-foreground"></p>
+              </div>
+            </div>
           </CardContent>
         </Card>
         <Card>
@@ -47,7 +65,7 @@ async function StudentsOverview({
             <CardTitle className="text-sm font-medium">Boys</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{boys.length}</div>
+            <div className="text-2xl font-bold">{boys?.length}</div>
             <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>
@@ -56,21 +74,23 @@ async function StudentsOverview({
             <CardTitle className="text-sm font-medium">Girls</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{girls.length}</div>
+            <div className="text-2xl font-bold">{girls?.length}</div>
             <p className="text-xs text-muted-foreground"></p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Popular Grade</CardTitle>
-          </CardHeader>
-          {popularGrade && (
+        {popularGrade && (
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Popular Grade
+              </CardTitle>
+            </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{popularGrade}</div>
               <p className="text-xs text-muted-foreground"></p>
             </CardContent>
-          )}
-        </Card>
+          </Card>
+        )}
       </div>
     </Section>
   );

@@ -1,40 +1,26 @@
-import { formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
-import Section from '../Section';
-import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { formatSchool, getAvatarName } from '@/lib/utils';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { caller } from '@/server';
+import { cached_students } from '@/prisma/db-calls';
 
 async function LatestStudents({
   students,
 }: {
-  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
+  students: Awaited<ReturnType<typeof cached_students>>;
 }) {
-  const studentsSorted = students.sort(
-    (a: any, b: any) => b.created_at - a.created_at
-  );
-
   return (
-    <Section
-      className="p-4 border rounded-lg w-full md:w-2/3"
-      title="Latest Students"
-    >
+    <div className="p-4 border rounded-lg flex-grow space-y-3">
+      <h3 className="text-2xl tracking-tight font-semibold scroll-m-20">
+        Latest Students
+      </h3>
       <div className="space-y-4 overflow-y-scroll">
-        {studentsSorted.map((student) => (
+        {students?.map((student) => (
           <div
             key={student.id}
             className="flex items-center justify-between gap-4"
           >
             <Avatar>
-              <div className="rounded-full">
-                <AvatarImage
-                  src={student.avatar}
-                  alt={student.firstname}
-                  width={15}
-                  height={15}
-                  className="w-full object-cover"
-                />
-              </div>
               <AvatarFallback>
                 {getAvatarName(student.firstname, student.lastname)}
               </AvatarFallback>
@@ -58,7 +44,7 @@ async function LatestStudents({
           </div>
         ))}
       </div>
-    </Section>
+    </div>
   );
 }
 

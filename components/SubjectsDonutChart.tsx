@@ -1,57 +1,35 @@
-'use client';
-
+import { authOptions } from '@/lib/auth';
 import { getSubjectProportion } from '@/lib/utils';
-import { caller } from '@/server';
-import { useSubscriptionsStore } from '@/store/store';
-import { Card, DonutChart, Title } from '@tremor/react';
-import { Session } from 'next-auth';
+import prisma from '@/prisma/prismaClient';
+import { Card, Title } from '@tremor/react';
+import SubjectsProportionChart from './SubjectsProportionChart';
+import { cached_teachers } from '@/prisma/db-calls';
 
-const cities = [
-  {
-    subject: 'Science',
-    proportion: 0.75,
-  },
-];
-
-const valueFormatter = (number: number) =>
-  `${new Intl.NumberFormat('en-US', {
-    style: 'percent',
-  })
-    .format(number)
-    .toString()}`;
-
-function SubjectsDonutChart({
-  session,
+async function SubjectsDonutChart({
   teachers,
 }: {
-  session: Session | null;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
+  teachers: Awaited<ReturnType<typeof cached_teachers>>;
 }) {
-  const { subscription } = useSubscriptionsStore((state) => state);
-  const isPro = session && subscription;
+  // const { subscription } = useSubscriptionsStore((state) => state);
+  // const isPro = session && subscription;
 
-  const subjects = new Set(teachers.map((teacher) => teacher.subject));
+  const subjects: {
+    subject: string;
+  }[] = await prisma.$queryRaw`SELECT DISTINCT subject FROM "Teacher"`;
 
-  const data = [...subjects].map((subject) => ({
+  const data = [...subjects].map(({ subject }) => ({
     subject,
     proportion: getSubjectProportion(teachers, subject),
   }));
 
   // get percentage of a subject
-  if (isPro)
-    return (
-      <Card className="max-w-lg rounded-lg">
-        <Title>Subjects Proportion</Title>
-        <DonutChart
-          className="mt-6"
-          data={data}
-          category="proportion"
-          index="subject"
-          valueFormatter={valueFormatter}
-          colors={['slate', 'violet', 'indigo', 'rose', 'cyan', 'amber']}
-        />
-      </Card>
-    );
+  // if (isPro)
+  return (
+    <Card className="max-w-lg rounded-lg">
+      <Title>Subjects Proportion</Title>
+      <SubjectsProportionChart data={data} />
+    </Card>
+  );
 }
 
 export default SubjectsDonutChart;

@@ -1,84 +1,289 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { z } from 'zod';
-import { updateStudentSchema } from './zod/schemas';
+import prisma from './prisma/prismaClient';
+import { revalidateTag } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './lib/auth';
-import { Resend } from 'resend';
+import { contactSchema, studentSchema, teacherSchema } from './zod/schemas';
 
-import { caller } from './server';
-import SuspendedSubscriptionEmail from './components/emails/SuspendedSubscriptionEmail';
-import CanceledSubscriptionEmail from './components/emails/CanceledSubscriptionEmail';
-import BecomeProEmail from './components/emails/BecomeProEmail';
-import NewSubscriptionEmail from './components/emails/NewSubscriptionEmail';
-
-export const updateStudent = async (
-  values: z.infer<typeof updateStudentSchema>
-) => {
-  await caller.updateStudent({
-    ...values,
-  });
-
-  revalidatePath(`/students/${values?.id}`);
-};
-
-const resend = new Resend(process.env.NEXT_PUBLIC_RESEND_KEY);
-const sendEmail = async ({
-  subject,
-  to,
-  react,
-}: {
-  subject: string;
-  to: string[];
-  react: any;
-}) => {
+export const addStudent = async (prevState: any, formData: FormData) => {
   const session = await getServerSession(authOptions);
-  await resend.emails.send({
-    from: 'AntiExcel <onboarding@resend.dev>',
-    to,
-    subject,
-    react: react({ session }),
-  });
-};
+  const data = Object.fromEntries(formData.entries());
 
-export const sendNewSubEmail = async () => {
-  await sendEmail({
-    subject: "You're a PRO, Yepee 🎉",
-    to: ['aymanechaaba1@gmail.com'],
-    react: NewSubscriptionEmail,
-  });
-};
+  const result = studentSchema.safeParse(data);
 
-export const sendCanceledSubEmail = async () => {
-  await sendEmail({
-    subject: "We're sorry to hear your cancelation 😢",
-    to: ['aymanechaaba1@gmail.com'],
-    react: CanceledSubscriptionEmail,
-  });
-};
+  if (!result.success) {
+    return {
+      ok: false,
+      message: 'Invalid fields ❌',
+      errors: result.error.flatten().fieldErrors,
+    };
+  }
 
-export const sendSuspendedSubEmail = async () => {
-  await sendEmail({
-    subject: 'Suspended Subscription',
-    to: ['aymanechaaba1@gmail.com'],
-    react: SuspendedSubscriptionEmail,
-  });
-};
-
-export const sendBecomeProEmail = async (
-  subscription: Subscription | null | undefined
-) => {
-  // subscription
-  const students = await caller.getStudents();
-  const teachers = await caller.getTeachers();
-  const reachedLimit =
-    !subscription && students.length === 3 && teachers.length === 3;
-
-  if (reachedLimit)
-    await sendEmail({
-      subject: "It's maybe time to become a PRO",
-      to: ['aymanechaaba1@gmail.com'],
-      react: BecomeProEmail,
+  try {
+    await prisma.student.create({
+      data: {
+        ...result.data,
+        teacher: {
+          connect: {
+            id: result.data.teacher,
+          },
+        },
+        user: {
+          connect: {
+            id: session?.user.id,
+          },
+        },
+      },
     });
+  } catch (err) {
+    return {
+      ok: false,
+      message: 'Um, Um, Something went Wrong ❌',
+    };
+  }
+
+  revalidateTag('students');
+
+  return {
+    ok: true,
+    message: 'New Student, Yeepe 🎉',
+  };
+};
+
+export const updateStudent = async (prevState: any, formData: FormData) => {
+  const data = Object.fromEntries(formData.entries());
+  const result = studentSchema.safeParse(data);
+
+  if (!result.success) {
+    return {
+      ok: false,
+      message: 'Invalid fields',
+      errors: result.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    await prisma.student.update({
+      data: {
+        ...result.data,
+        teacher: {
+          connect: {
+            id: result.data.teacher,
+          },
+        },
+      },
+      where: {
+        id: data.id as string,
+      },
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      message: 'Failed to update student',
+    };
+  }
+
+  revalidateTag('students');
+
+  return {
+    ok: true,
+    message: 'Student Updated 👍',
+  };
+};
+
+export const deleteStudent = async (id: string) => {
+  try {
+    await prisma.student.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      message: 'Failed to delete student',
+    };
+  }
+
+  revalidateTag('students');
+  return {
+    ok: true,
+    message: 'Student Deleted 👍',
+  };
+};
+
+export const addTeacher = async (prevState: any, formData: FormData) => {
+  const session = await getServerSession(authOptions);
+  if (!session) return;
+
+  const data = Object.fromEntries(formData.entries());
+  const result = teacherSchema.safeParse(data);
+
+  if (!result.success) {
+    return {
+      ok: false,
+      message: 'Invalid fields',
+      errors: result.error.flatten().fieldErrors,
+    };
+  }
+
+  try {
+    await prisma.teacher.create({
+      data: {
+        ...result.data,
+        user: {
+          connect: {
+            id: session.user.id,
+          },
+        },
+      },
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      message: 'Failed to add teacher',
+    };
+  }
+
+  revalidateTag('teachers');
+
+  return {
+    ok: true,
+    message: 'New Teacher, Yepee 🎉',
+  };
+};
+
+export const deleteTeacher = async (id: string) => {
+  try {
+    await prisma.teacher.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      message: 'Failed to delete teacher',
+    };
+  }
+
+  revalidateTag('teachers');
+
+  return {
+    ok: true,
+    message: 'Teacher Deleted 👍',
+  };
+};
+
+export const updateTeacher = async (prevState: any, formData: FormData) => {
+  const data = Object.fromEntries(formData.entries());
+  const result = teacherSchema.safeParse(data);
+  const id = formData.get('id') as string;
+
+  if (!result.success)
+    return {
+      ok: false,
+      message: 'Invalid fields',
+      errors: result.error.flatten().fieldErrors,
+    };
+
+  try {
+    await prisma.teacher.update({
+      data: {
+        ...result.data,
+      },
+      where: {
+        id,
+      },
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      message: 'Failed to update teacher',
+    };
+  }
+
+  revalidateTag('teachers');
+
+  return {
+    ok: true,
+    message: 'Teacher Updated 👍',
+  };
+};
+
+export const addContact = async (prevState: any, formData: FormData) => {
+  const session = await getServerSession(authOptions);
+  const data = Object.fromEntries(formData.entries());
+  const result = contactSchema.safeParse(data);
+
+  if (!result.success)
+    return {
+      ok: false,
+      message: 'Invalid fields',
+      errors: result.error.flatten().fieldErrors,
+    };
+
+  try {
+    await prisma.contact.create({
+      data: {
+        ...result.data,
+        user: {
+          connect: {
+            id: session?.user.id,
+          },
+        },
+      },
+      include: {
+        students: true,
+      },
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      message: 'Failed to add contact',
+    };
+  }
+
+  revalidateTag('contacts');
+
+  return {
+    ok: true,
+    message: 'New Contact, Yepee 🎉',
+  };
+};
+
+export const updateContact = async (prevState: any, formData: FormData) => {
+  const data = Object.fromEntries(formData.entries());
+  const result = contactSchema.safeParse(data);
+
+  if (!result.success)
+    return {
+      ok: false,
+      message: 'Invalid fields',
+      errors: result.error.flatten().fieldErrors,
+    };
+
+  try {
+    await prisma.contact.update({
+      data: {
+        ...result.data,
+      },
+      where: {
+        id: data.id as string,
+      },
+    });
+  } catch (err) {
+    return {
+      ok: false,
+      message: 'Failed to update contact ❌',
+    };
+  }
+
+  revalidateTag('contacts');
+
+  return {
+    ok: true,
+    message: 'Contact Updated 👍',
+  };
 };

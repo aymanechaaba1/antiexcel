@@ -9,6 +9,9 @@ import { usePathname } from 'next/navigation';
 
 function MenuBar() {
   const pathname = usePathname();
+  const searchParams = new URLSearchParams();
+  searchParams.set('page', '1');
+  searchParams.set('per_page', '5');
 
   return (
     <Sheet>
@@ -20,7 +23,7 @@ function MenuBar() {
       <SheetContent>
         <SheetHeader></SheetHeader>
         <div className="flex flex-col gap-4 mt-10">
-          {['Dashboard', 'Students', 'Teachers', 'Contacts'].map((link, i) => {
+          {['Dashboard', 'Students', 'Teachers'].map((link, i) => {
             return (
               <Button asChild key={i} variant={'ghost'} className="border">
                 <Link
@@ -35,6 +38,17 @@ function MenuBar() {
               </Button>
             );
           })}
+          <Button asChild variant={'ghost'} className="border">
+            <Link
+              href={`/contacts?${searchParams.toString()}`}
+              className={cn('text-sm text-gray-500', {
+                'text-blue-500 font-medium py-3 px-5 hover:bg-gray-500':
+                  pathname.includes(`/contacts`),
+              })}
+            >
+              Contacts
+            </Link>
+          </Button>
         </div>
       </SheetContent>
     </Sheet>

@@ -5,7 +5,6 @@ export const config = {
     '/dashboard',
     '/students/:path*',
     '/teachers/:path*',
-    '/settings/:path*',
     '/contacts/:path*',
   ],
 };

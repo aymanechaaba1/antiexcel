@@ -1,47 +1,53 @@
-'use client';
-
+import { cached_students } from '@/prisma/db-calls';
 import { getNbStudentsByMonth } from '@/lib/utils';
-import { caller } from '@/server';
-import { useSubscriptionsStore } from '@/store/store';
 import { Card, LineChart, Title } from '@tremor/react';
-import { Session } from 'next-auth';
+import prisma from '@/prisma/prismaClient';
 
-const months = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
+const months = new Map([
+  [1, 'Jan'],
+  [2, 'Feb'],
+  [3, 'Mar'],
+  [4, 'Apr'],
+  [5, 'May'],
+  [6, 'June'],
+  [7, 'Jul'],
+  [8, 'Aug'],
+  [9, 'Sep'],
+  [10, 'Oct'],
+  [11, 'Nov'],
+  [12, 'Dec'],
+]);
 
-function DashboardChart({
-  session,
+async function DashboardChart({
   students,
-  teachers,
 }: {
-  session: Session | null;
-  students: Awaited<ReturnType<(typeof caller)['getStudents']>>;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
+  students: Awaited<ReturnType<typeof cached_students>>;
 }) {
-  const { subscription } = useSubscriptionsStore((state) => state);
-  const isPro = session && subscription;
+  // const isPro = session && subscription;
 
   // get number of students created in a specific month
-  const chartData = months.map((month, i) => ({
-    month,
-    students: getNbStudentsByMonth(students, i),
-    ...(isPro && { teachers: getNbStudentsByMonth(teachers, i) }),
+  type QueryResult = {
+    month: number;
+    nb_students: number;
+  };
+  let result: QueryResult[] =
+    await prisma.$queryRaw`SELECT CAST(EXTRACT(MONTH FROM created_at) AS INTEGER) AS month, 
+                           CAST(COUNT(*) AS INTEGER) AS nb_students
+                           FROM "Student" 
+                           GROUP BY month
+                           ORDER BY month`;
+
+  type ChartData = {
+    month: string;
+    nb_students: number;
+  };
+  const chartData: ChartData[] = result.map((entry) => ({
+    month: months.get(entry.month)!,
+    nb_students: entry.nb_students,
   }));
 
-  const categories = ['students'];
-  if (isPro) categories.push('teachers');
+  const categories = ['nb_students'];
+  // if (isPro) categories.push('teachers');
 
   return (
     <Card>

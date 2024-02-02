@@ -25,7 +25,7 @@ async function Header() {
       </Link>
       {session && session.user && <Nav />}
       <div className="flex items-center gap-2">
-        <MenuBar />
+        {session && <MenuBar />}
         <ToggleDarkMode />
         <UserDropdown />
       </div>

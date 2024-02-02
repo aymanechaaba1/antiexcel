@@ -1,128 +1,30 @@
+import { dateOptions } from '@/lib/config';
+import { formatDate, formatSchool, upperFirst } from '@/lib/utils';
 import { z } from 'zod';
 
-export const schoolsEnum = z.enum(
-  ['chkail', 'henri_matisse', 'le_bougeoir', 'diwan', 'wlad_slama', 'al_wahda'],
-  {
-    invalid_type_error: 'school must be within the provided values.',
-  }
-);
-export type SchoolsEnum = z.infer<typeof schoolsEnum>;
-
-export const updateStudentSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.date().optional(),
-  updated_at: z.date().optional(),
-  firstname: z
-    .string({
-      invalid_type_error: 'firstname must be a string.',
-    })
-    .min(2, {
-      message: 'firstname must be at least 2 characters.',
-    })
-    .max(50, {
-      message: 'firstname must be 50 characters max.',
-    })
-    .optional(),
-  lastname: z
-    .string({
-      invalid_type_error: 'lastname must be a string.',
-    })
-    .min(2, {
-      message: 'lastname must be at least 2 characters.',
-    })
-    .max(50, {
-      message: 'lastname must be 50 characters max.',
-    })
-    .optional(),
-  birthdate: z.date().optional(),
-  gender: z.string().min(4).max(6).optional(),
-  grade: z
-    .string()
-    .max(1, {
-      message: 'grade must be a number between 1 and 6.',
-    })
-    .optional(),
-  school: z.string().optional(),
-  avatar: z
-    .string({
-      invalid_type_error: 'avatar/picture must be a string.',
-    })
-    .optional(),
-  subscription_id: z.string().optional(),
-});
-
-export const contactFormSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.date().nullable(),
-  updated_at: z.date().nullable(),
-  email: z.string().email(),
-  phone: z.string().min(10).max(14),
-  name: z.string().min(3).max(10),
-  relationship: z.string(),
-  avatar: z.instanceof(File).optional(),
-  student_id: z.string().cuid(),
-});
-
-export const formSchema = z.object({
-  firstname: z
-    .string({
-      invalid_type_error: 'firstname must be a string.',
-    })
-    .min(2, {
-      message: 'firstname must be at least 2 characters.',
-    })
-    .max(50, {
-      message: 'firstname must be 50 characters max.',
-    }),
-  lastname: z
-    .string({
-      invalid_type_error: 'lastname must be a string.',
-    })
-    .min(2, {
-      message: 'lastname must be at least 2 characters.',
-    })
-    .max(50, {
-      message: 'lastname must be 50 characters max.',
-    }),
-  birthdate: z.date(),
-  gender: z.string().min(4).max(6),
-  grade: z.string().max(1, {
-    message: 'grade must be a number between 1 and 6.',
-  }),
-  school: z.string().min(3),
-  avatar: z.instanceof(File),
-  teacher_id: z.string().cuid(),
-  contact_email: z
-    .string()
-    .regex(new RegExp('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$'))
-    .optional(),
-  contact_phone: z.string().min(10).max(14).optional(),
-  contact_name: z.string().min(3).max(10).optional(),
-  contact_relationship: z.string().optional(),
-  contact_avatar: z.instanceof(File).optional(),
-  contact_id: z
-    .union([z.string().cuid(), z.literal('none'), z.string().length(0)])
-    .default(''),
-});
-export type FormSchema = z.infer<typeof formSchema>;
-
 export const contactSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.date().nullable().optional(),
-  updated_at: z.date().nullable().optional(),
   email: z.string().email(),
-  phone: z.string().min(10).max(14),
-  name: z.string().min(3).max(10),
-  relationship: z.string(),
-  avatar: z.string().optional(),
-  student_id: z.string().cuid().optional(),
+  phone: z
+    .string()
+    .min(10, {
+      message: 'Invalid phone',
+    })
+    .max(14, {
+      message: 'Invalid phone',
+    }),
+  name: z
+    .string()
+    .min(3, {
+      message: 'Invalid name',
+    })
+    .max(10, {
+      message: 'Invalid name',
+    })
+    .transform((val) => upperFirst(val)),
+  relationship: z.enum(['mother', 'father', 'brother', 'sister']),
 });
-export type Contact = z.infer<typeof contactSchema>;
 
 export const studentSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.date().optional(),
-  updated_at: z.date().optional(),
   firstname: z
     .string({
       invalid_type_error: 'firstname must be a string.',
@@ -130,9 +32,11 @@ export const studentSchema = z.object({
     .min(2, {
       message: 'firstname must be at least 2 characters.',
     })
+
     .max(50, {
       message: 'firstname must be 50 characters max.',
-    }),
+    })
+    .transform((firstname) => upperFirst(firstname)),
   lastname: z
     .string({
       invalid_type_error: 'lastname must be a string.',
@@ -142,45 +46,32 @@ export const studentSchema = z.object({
     })
     .max(50, {
       message: 'lastname must be 50 characters max.',
-    }),
-  gender: z.string(),
-  grade: z.string().max(1, {
-    message: 'grade must be a number between 1 and 6.',
-  }),
-  birthdate: z.string(),
-  school: z.string(),
-  avatar: z.string({
-    invalid_type_error: 'avatar/picture must be a string as url.',
-  }),
-  teacher_id: z.string().cuid(),
-  contact_id: z
-    .union([z.string().cuid(), z.literal('none'), z.string().length(0)])
-    .default(''),
-  contact: contactSchema,
-});
-export type Student = z.infer<typeof studentSchema>;
-
-export const teacherFormSchema = z.object({
-  email: z.string().email(),
-  phone: z.string().min(10).max(14),
-  name: z.string().min(3),
-  gender: z.string(),
-  avatar: z.instanceof(File),
-  subject: z.string().min(3),
+    })
+    .transform((lastname) => upperFirst(lastname)),
+  gender: z.enum(['male', 'female']),
+  grade: z.enum(['1', '2', '3', '4', '5', '6']).transform((val) => +val),
+  birthdate: z.coerce.date(),
+  school: z.enum([
+    'chkail',
+    'henri_matisse',
+    'le_bougeoir',
+    'diwan',
+    'wlad_slama',
+    'al_wahda',
+  ]),
+  teacher: z.string().cuid(),
 });
 
 export const teacherSchema = z.object({
-  id: z.string().cuid().optional(),
-  created_at: z.date().optional(),
-  updated_at: z.date().optional(),
   email: z.string().email(),
-  phone: z.string().min(10).max(14).optional(),
-  name: z.string().min(3),
-  gender: z.string(),
-  avatar: z.string(),
-  subject: z.string(),
+  phone: z.string().min(10).max(14),
+  name: z
+    .string()
+    .min(3)
+    .transform((val) => upperFirst(val)),
+  gender: z.enum(['male', 'female']),
+  subject: z.enum(['physics', 'maths', 'french']),
 });
-export type Teacher = z.infer<typeof teacherSchema>;
 
 export const PaypalRequestBody = z.object({
   id: z.string().min(6).max(50).startsWith('PROD-').optional(),

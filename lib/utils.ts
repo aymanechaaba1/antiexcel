@@ -1,17 +1,9 @@
 import { type ClassValue, clsx } from 'clsx';
-import {
-  StorageError,
-  UploadTaskSnapshot,
-  uploadBytesResumable,
-} from 'firebase/storage';
 import { twMerge } from 'tailwind-merge';
-import { ref } from 'firebase/storage';
-import { storage } from './firebase';
 import { PayPalAccessTokenResponse } from '@/types/paypal-accesstoken-response';
-import { formSchema } from '@/zod/schemas';
 import { z } from 'zod';
 import { Dispatch, SetStateAction } from 'react';
-import { caller } from '@/server';
+import { PrismaStudents, PrismaTeachers } from '@/types/prismaTypes';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -39,20 +31,6 @@ export const formatUnderscore = (word: string) =>
 export const getFilename = (fileUrl: string) =>
   fileUrl.split('\\').slice(-1).join('');
 
-export const getUploadTask = (refUrl: string, file: File | Blob) =>
-  uploadBytesResumable(ref(storage, refUrl), file);
-
-export const uploadFile = (
-  refUrl: string,
-  file: File | Blob,
-  onSnapshot: (snapshot: UploadTaskSnapshot) => void,
-  onError: (error: StorageError) => void,
-  onSuccess: () => void
-) => {
-  const uploadTask = getUploadTask(refUrl, file);
-  uploadTask.on('state_changed', onSnapshot, onError, onSuccess);
-};
-
 export const getBase64 = (file: File | Blob) => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -71,21 +49,20 @@ export const formatSchool = (school: string) =>
     .join(' ');
 
 export const getNbStudentsByMonth = (
-  data:
-    | Awaited<ReturnType<(typeof caller)['getStudents']>>
-    | Awaited<ReturnType<(typeof caller)['getTeachers']>>,
+  data: PrismaStudents | PrismaTeachers,
   month: number
 ) => {
-  return data.filter((entry) => entry.created_at?.getMonth() === month).length;
+  return data?.filter((entry) => entry.created_at?.getMonth() === month).length;
 };
 
 export const getSubjectProportion = (
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>,
+  teachers: PrismaTeachers,
   subject: string
 ) => {
   return (
-    teachers.filter((teacher) => teacher.subject === subject).length /
-    teachers.length
+    teachers?.length &&
+    teachers?.filter((teacher) => teacher.subject === subject).length /
+      teachers?.length
   );
 };
 
@@ -107,16 +84,27 @@ export const fetchNewAccessToken = async () => {
   return data;
 };
 
-export const uploadContactAvatar = (
-  values: z.infer<typeof formSchema>,
-  setProgress: Dispatch<SetStateAction<number>>,
-  setContactAvatar: Dispatch<SetStateAction<string>>,
-  fn: () => void
-) => {};
-
 export const hideId = (id: string) => id.slice(0, 4).padEnd(id.length, '*');
 
 export const getUrl = () =>
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
     : `http://localhost:443`;
+
+export const compare = (
+  nbs_currMonth: number,
+  nbs_prevMonth: number
+): 'trending' | 'deviating' | 'nothing' => {
+  if (nbs_currMonth > nbs_prevMonth) return 'trending';
+  if (nbs_currMonth < nbs_prevMonth) return 'deviating';
+  return 'nothing';
+};
+
+export const isoToString = (isoDate: Date) => {
+  const date = new Date(isoDate);
+  const yyyy = date.getFullYear();
+  const mm = `${date.getMonth()}`.padStart(2, '0');
+  const dd = `${date.getDate()}`.padStart(2, '0');
+
+  return `${yyyy}-${mm}-${dd}`;
+};

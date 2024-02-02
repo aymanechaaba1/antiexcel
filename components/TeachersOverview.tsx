@@ -1,51 +1,46 @@
-'use client';
-
+import { cached_teachers } from '@/prisma/db-calls';
 import Section from './Section';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { upperFirst } from '@/lib/utils';
-import { caller } from '@/server';
-import { useSubscriptionsStore } from '@/store/store';
-import { Session } from 'next-auth';
+import prisma from '@/prisma/prismaClient';
 
-function TeachersOverview({
-  session,
+const getPopularSubject = async () => {
+  type QueryResult = {
+    subject: string;
+    max_subject_count: number;
+  };
+  const result: QueryResult[] =
+    await prisma.$queryRaw`SELECT subject, MAX(count) AS max_subject_count FROM (
+    SELECT subject, COUNT(subject) AS count FROM "Teacher" GROUP BY subject
+
+  ) AS max GROUP BY subject`;
+
+  return result[0].subject;
+};
+
+async function TeachersOverview({
   teachers,
 }: {
-  session: Session | null;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
+  teachers: Awaited<ReturnType<typeof cached_teachers>>;
 }) {
-  const { subscription } = useSubscriptionsStore((state) => state);
+  const popularSubject = await getPopularSubject();
+  // const isPro = session && subscription;
 
-  const isPro = session && subscription;
+  // if (teachers && isPro)
 
-  const subjectCount = teachers.reduce((acc: any, teacher) => {
-    acc[teacher.subject] = (acc[teacher.subject] || 0) + 1;
-    return acc;
-  }, {});
-
-  const counts = Object.entries(subjectCount).map(
-    ([subject, count]) => count
-  ) as number[];
-
-  const maxCount = Math.max(...counts);
-
-  const popularSubject = Object.entries(subjectCount)
-    .find(([subject, count]) => count === maxCount)
-    ?.at(0) as string;
-
-  if (teachers && isPro)
-    return (
-      <Section className="space-y-4" title="Teachers Overview">
-        <div className="grid grid-cols-2 gap-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Teachers</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{teachers.length}</div>
-              <p className="text-xs text-muted-foreground"></p>
-            </CardContent>
-          </Card>
+  return (
+    <Section className="space-y-4" title="Teachers Overview">
+      <div className="grid grid-cols-2 gap-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Teachers</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{teachers.length}</div>
+            <p className="text-xs text-muted-foreground"></p>
+          </CardContent>
+        </Card>
+        {popularSubject && (
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -59,9 +54,10 @@ function TeachersOverview({
               <p className="text-xs text-muted-foreground"></p>
             </CardContent>
           </Card>
-        </div>
-      </Section>
-    );
+        )}
+      </div>
+    </Section>
+  );
 }
 
 export default TeachersOverview;

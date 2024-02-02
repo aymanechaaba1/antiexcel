@@ -1,52 +1,32 @@
-'use client';
-
-import Section from './Section';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { Avatar, AvatarFallback } from './ui/avatar';
 import { getAvatarName } from '@/lib/utils';
-import { Session } from 'next-auth';
-import { useSubscriptionsStore } from '@/store/store';
-import { caller } from '@/server';
+import { cached_teachers } from '@/prisma/db-calls';
 
-function LatestTeachers({
-  session,
+async function LatestTeachers({
   teachers,
 }: {
-  session: Session | null;
-  teachers: Awaited<ReturnType<(typeof caller)['getTeachers']>>;
+  teachers: Awaited<ReturnType<typeof cached_teachers>>;
 }) {
-  const { subscription } = useSubscriptionsStore((state) => state);
-  const isPro = session && subscription;
+  // const { subscription } = useSubscriptionsStore((state) => state);
 
-  const teachersSorted = teachers.sort(
-    (a: any, b: any) => b.created_at - a?.created_at
+  // if (teachers && isPro)
+  return (
+    <div className="p-4 border rounded-lg flex-grow space-y-3">
+      <h3 className="text-2xl tracking-tight font-semibold scroll-m-20">
+        Latest Teachers
+      </h3>
+      <div className="space-y-4 max-h-72 overflow-y-scroll">
+        {teachers?.map((teacher) => (
+          <div key={teacher.id} className="flex items-center gap-4">
+            <Avatar>
+              <AvatarFallback>{getAvatarName(teacher.name)}</AvatarFallback>
+            </Avatar>
+            <p>{teacher.name}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
-
-  if (teachers && isPro)
-    return (
-      <Section className="p-4 border rounded-lg" title="Latest Teachers">
-        <div className="space-y-4 max-h-72 overflow-y-scroll">
-          {teachersSorted.map((teacher) => (
-            <div key={teacher.id} className="flex items-center gap-4">
-              <Avatar>
-                {teacher.avatar && (
-                  <div className="rounded-full">
-                    <AvatarImage
-                      src={teacher.avatar}
-                      alt={teacher.name}
-                      width={15}
-                      height={15}
-                      className="w-full object-cover"
-                    />
-                  </div>
-                )}
-                <AvatarFallback>{getAvatarName(teacher.name)}</AvatarFallback>
-              </Avatar>
-              <p>{teacher.name}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
-    );
 }
 
 export default LatestTeachers;

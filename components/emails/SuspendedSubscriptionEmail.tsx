@@ -1,17 +1,16 @@
 import { Img, Text } from '@react-email/components';
 import Email from './Email';
-import { LOGO_URL } from '@/lib/config';
 
 function SuspendedSubscriptionEmail() {
   return (
     <Email>
-      <Img
+      {/* <Img
         src={LOGO_URL}
         width="100"
         height="21"
         alt="AntiExcel"
         className="mx-auto my-5"
-      />
+      /> */}
       <Text>
         This email is a confirmation of suspension of your subscription.
       </Text>

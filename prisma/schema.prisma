@@ -56,23 +56,43 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
+enum Gender {
+  male
+  female
+}
+
+enum School {
+  chkail
+  henri_matisse
+  le_bougeoir
+  diwan
+  wlad_slama
+  al_wahda
+}
+
 model Student {
   id         String    @id @default(cuid())
   created_at DateTime? @default(now())
   updated_at DateTime? @updatedAt
   firstname  String
   lastname   String
-  gender     String
-  grade      String
+  gender     Gender
+  grade      Int
   birthdate  DateTime
-  school     String
-  avatar     String
-  admin      User      @relation(fields: [user_id], references: [id])
+  school     School
+  user      User      @relation(fields: [user_id], references: [id])
   user_id    String
   teacher    Teacher?  @relation(fields: [teacher_id], references: [id])
   teacher_id String
-  contact    Contact   @relation(fields: [contact_id], references: [id], onDelete: Cascade)
-  contact_id String
+  contact    Contact?   @relation(fields: [contact_id], references: [id], onDelete: Cascade)
+  contact_id String?
+}
+
+enum Relationship {
+  mother
+  father
+  brother
+  sister
 }
 
 model Contact {
@@ -82,11 +102,16 @@ model Contact {
   email        String    @unique
   phone        String    @unique
   name         String
-  relationship String
-  avatar       String?
+  relationship Relationship
   students     Student[]
   user         User      @relation(fields: [user_id], references: [id])
   user_id      String
+}
+
+enum Subject {
+  physics
+  maths
+  french
 }
 
 model Teacher {
@@ -96,9 +121,8 @@ model Teacher {
   email      String    @unique
   phone      String?   @unique
   name       String
-  gender     String
-  avatar     String?
-  subject    String
+  gender     Gender
+  subject    Subject
   students   Student[]
   user       User      @relation(fields: [user_id], references: [id])
   user_id    String

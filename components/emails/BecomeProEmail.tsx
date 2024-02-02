@@ -1,19 +1,18 @@
 import { Button, Img, Link, Text } from '@react-email/components';
 import Email from './Email';
-import { LOGO_URL } from '@/lib/config';
 import { Session } from 'next-auth';
 import { getUrl } from '@/lib/utils';
 
 function BecomeProEmail({ session }: { session: Session | null }) {
   return (
     <Email>
-      <Img
+      {/* <Img
         src={LOGO_URL}
         width="100"
         height="21"
         alt="AntiExcel"
         className="mx-auto my-5"
-      />
+      /> */}
       <Text>
         {session?.user.name?.split(' ')[0]}, You&apos;ve reached the limit,
         expand your membership and become a PRO.

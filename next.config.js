@@ -7,7 +7,6 @@ const nextConfig = {
         hostname: 'cloudflare-ipfs.com',
       },
       {
-        protocol: 'https',
         hostname: 'firebasestorage.googleapis.com',
       },
     ],

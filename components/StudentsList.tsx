@@ -1,45 +1,33 @@
 import { formatSchool, getAvatarName } from '@/lib/utils';
 import React from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { caller } from '@/server';
+import { Avatar, AvatarFallback } from './ui/avatar';
+import { PrismaStudents } from '@/types/prismaTypes';
+import Section from './Section';
 
-function StudentsList({
-  teacher,
-}: {
-  teacher: Awaited<ReturnType<(typeof caller)['getTeacher']>>;
-}) {
-  return (
-    <div className="space-y-3 mt-5">
-      <h1 className="text-3xl">Students</h1>
-      {teacher?.students.map((student) => (
-        <div
-          key={student.id}
-          className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg border"
-        >
-          <Avatar>
-            <div className="rounded-full">
-              <AvatarImage
-                src={student.avatar}
-                alt={student.firstname}
-                width={10}
-                height={10}
-                className="w-full object-cover"
-              />
-            </div>
-            <AvatarFallback>
-              {getAvatarName(student.firstname, student.lastname)}
-            </AvatarFallback>
-          </Avatar>
+function StudentsList({ students }: { students: PrismaStudents }) {
+  if (students && students.length > 0)
+    return (
+      <Section title="Students" className="space-y-3 mt-5">
+        {students.map((student) => (
+          <div
+            key={student.id}
+            className="flex items-center justify-between gap-4 px-4 py-2 rounded-lg border"
+          >
+            <Avatar>
+              <AvatarFallback>
+                {getAvatarName(student.firstname, student.lastname)}
+              </AvatarFallback>
+            </Avatar>
 
-          <p className="flex-1">
-            {student.firstname} {student.lastname}
-          </p>
-          <p className="flex-1 text-gray-500">Grade {student.grade}</p>
-          <p className="flex-1">{formatSchool(student.school)}</p>
-        </div>
-      ))}
-    </div>
-  );
+            <p className="flex-1">
+              {student.firstname} {student.lastname}
+            </p>
+            <p className="flex-1 text-gray-500">Grade {student.grade}</p>
+            <p className="flex-1">{formatSchool(student.school)}</p>
+          </div>
+        ))}
+      </Section>
+    );
 }
 
 export default StudentsList;
