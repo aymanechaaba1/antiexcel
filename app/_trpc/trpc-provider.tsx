@@ -1,6 +1,5 @@
 'use client';
 
-import { getUrl } from '@/lib/utils';
 import { trpc } from '@/server/trpc';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink, getFetch } from '@trpc/client';
@@ -19,10 +18,10 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const url =
     process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' || 'preview'
-      ? `https://antiexcel.vercel.app`
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
       : 'http://localhost:3000';
 
-  console.log(url);
+  // console.log(url);
 
   const [trpcClient] = useState(() =>
     trpc.createClient({
