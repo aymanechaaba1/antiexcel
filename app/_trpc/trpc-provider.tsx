@@ -17,7 +17,10 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
       })
   );
 
-  const url = `${getUrl()}/api/trpc`;
+  const url =
+    process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+      : 'http://localhost:3000';
 
   const [trpcClient] = useState(() =>
     trpc.createClient({
