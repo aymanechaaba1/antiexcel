@@ -4,7 +4,7 @@ import StudentsOverview from '@/components/dashboard/StudentsOverview';
 import SubjectsDonutChart from '@/components/SubjectsDonutChart';
 import GradesDonutChart from '@/components/GradesDonutChart';
 import LatestTeachers from '@/components/LatestTeachers';
-import { cached_students, cached_teachers } from '@/prisma/db-calls';
+import { uncached_students, uncached_teachers } from '@/prisma/db-calls';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
@@ -15,8 +15,8 @@ async function DashboardPage() {
   if (!session) redirect(`/api/auth/signin`);
 
   const [students, teachers] = await Promise.all([
-    cached_students(session.user.id),
-    cached_teachers(session.user.id),
+    uncached_students(session.user.id),
+    uncached_teachers(session.user.id),
   ]);
 
   if (!students || !students.length || !teachers || !teachers.length)

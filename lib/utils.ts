@@ -87,9 +87,9 @@ export const fetchNewAccessToken = async () => {
 export const hideId = (id: string) => id.slice(0, 4).padEnd(id.length, '*');
 
 export const getUrl = () =>
-  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' || 'preview'
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-    : `http://localhost:443`;
+    : `http://localhost:3000`;
 
 export const compare = (
   nbs_currMonth: number,

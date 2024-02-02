@@ -41,7 +41,7 @@ export const cached_students = unstable_cache(
       ...(per_page && { take: per_page }),
     }),
   ['students'],
-  { tags: ['students'] }
+  { tags: ['students'], revalidate: 60 }
 );
 
 export const cached_student = unstable_cache(
@@ -58,6 +58,7 @@ export const cached_student = unstable_cache(
   [`students`],
   {
     tags: ['students'],
+    revalidate: 60,
   }
 );
 
@@ -102,6 +103,7 @@ export const cached_teachers = unstable_cache(
   ['teachers'],
   {
     tags: ['teachers'],
+    revalidate: 60,
   }
 );
 export const uncached_teachers = async (user_id: string) =>
@@ -130,6 +132,7 @@ export const cached_teacher = unstable_cache(
   ['teachers'],
   {
     tags: ['teachers'],
+    revalidate: 60,
   }
 );
 
@@ -159,6 +162,7 @@ export const cached_contacts = unstable_cache(
   ['contacts'],
   {
     tags: ['contacts'],
+    revalidate: 60,
   }
 );
 
@@ -195,5 +199,7 @@ export const cached_contact = unstable_cache(
       include: {
         students: true,
       },
-    })
+    }),
+  ['contacts'],
+  { tags: ['contacts'], revalidate: 60 }
 );

@@ -35,15 +35,7 @@ function StudentsTableSkeleton() {
   );
 }
 
-async function StudentsPage({
-  searchParams: { page, per_page },
-}: {
-  searchParams: {
-    page: string;
-    per_page: string;
-    sort_by: 'latest' | 'grade';
-  };
-}) {
+async function StudentsPage() {
   return (
     <>
       <div className="flex justify-end">
@@ -53,7 +45,7 @@ async function StudentsPage({
       </div>
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<StudentsTableSkeleton />}>
-          <StudentsTable page={+page} per_page={+per_page} />
+          <StudentsTable />
         </Suspense>
       </ErrorBoundary>
     </>

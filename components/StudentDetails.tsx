@@ -1,7 +1,7 @@
 import { formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { cached_student } from '@/prisma/db-calls';
+import { cached_student, uncached_student } from '@/prisma/db-calls';
 import { deleteStudent } from '@/actions';
 import { notFound } from 'next/navigation';
 import DeleteButton from './DeleteButton';
@@ -18,7 +18,7 @@ export const columns = [
 ];
 
 async function StudentDetails({ student_id }: { student_id: string }) {
-  const student = await cached_student(student_id);
+  const student = await uncached_student(student_id);
   if (!student) notFound();
 
   return (

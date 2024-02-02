@@ -57,10 +57,10 @@ function DeleteButton({
                     title: message,
                     ...(!ok && { variant: 'destructive' }),
                   });
-                }
 
-                if (ok) {
-                  router.replace(redirectTo);
+                  if (ok) {
+                    router.replace(redirectTo);
+                  }
                 }
               }}
             >
