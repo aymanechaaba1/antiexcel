@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Separator } from './ui/separator';
 import { formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
-import { cached_students } from '@/prisma/db-calls';
+import { cached_students, uncached_students } from '@/prisma/db-calls';
 import Section from './Section';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -18,24 +18,11 @@ export const columns = [
   'Teacher',
 ];
 
-async function StudentsTable({
-  page,
-  per_page,
-  sort_by = 'latest',
-}: {
-  page?: number;
-  per_page?: number;
-  sort_by?: 'latest' | 'grade';
-}) {
+async function StudentsTable() {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const students = await cached_students(
-    session.user.id,
-    sort_by,
-    page,
-    per_page
-  );
+  const students = await uncached_students(session.user.id);
 
   if (!students || !students.length)
     return (
