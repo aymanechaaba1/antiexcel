@@ -19,9 +19,7 @@ import { useFormState, useFormStatus } from 'react-dom';
 import { useEffect, useRef } from 'react';
 import { cn, isoToString } from '@/lib/utils';
 import { useToast } from './ui/use-toast';
-import { cached_student } from '@/prisma/db-calls';
-import { trpc } from '@/server/trpc';
-import { Loader2 } from 'lucide-react';
+import { cached_student, cached_teachers } from '@/prisma/db-calls';
 
 const genders = ['Male', 'Female'] as const;
 const schools = [
@@ -57,17 +55,15 @@ function SubmitButton() {
 
 function UpdateStudentForm({
   student,
+  teachers,
 }: {
   student: Awaited<ReturnType<typeof cached_student>>;
+  teachers: Awaited<ReturnType<typeof cached_teachers>>;
 }) {
   const [state, formAction] = useFormState(updateStudent, initState);
   const { toast } = useToast();
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
-  const { data: teachers, isLoading: loadingTeachers } =
-    trpc.getTeachers.useQuery();
-
-  console.log(teachers);
 
   useEffect(() => {
     if (state.message) {
@@ -258,7 +254,6 @@ function UpdateStudentForm({
         <Label htmlFor="teacher" className="text-gray-500">
           Teacher
         </Label>
-        {loadingTeachers && <Loader2 className="animate-spin" size={18} />}
         {teachers && teachers.length > 0 && (
           <>
             <Select name="teacher" defaultValue={teachers[0].id}>

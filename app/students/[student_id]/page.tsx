@@ -1,10 +1,8 @@
-import ErrorFallBack from '@/components/ErrorFallBack';
 import Section from '@/components/Section';
 import StudentDetails from '@/components/StudentDetails';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 
 function StudentDetailsSkeleton() {
   return (
@@ -31,11 +29,9 @@ function StudentPage({
           <Link href={`/students/${student_id}/update`}>Update</Link>
         </Button>
       </div>
-      <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <Suspense fallback={<StudentDetailsSkeleton />}>
-          <StudentDetails student_id={student_id} />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<StudentDetailsSkeleton />}>
+        <StudentDetails student_id={student_id} />
+      </Suspense>
     </>
   );
 }

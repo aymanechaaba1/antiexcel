@@ -1,6 +1,7 @@
 import { upperFirst } from '@/lib/utils';
 import { cached_contact } from '@/prisma/db-calls';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 async function StudentContactPage({
   params: { contact_id },
@@ -8,7 +9,7 @@ async function StudentContactPage({
   params: { contact_id: string };
 }) {
   const contact = await cached_contact(contact_id);
-  if (!contact) return;
+  if (!contact) notFound();
 
   return (
     <div className="flex flex-col md:flex-row gap-4">

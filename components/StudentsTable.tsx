@@ -22,7 +22,7 @@ async function StudentsTable() {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const students = await uncached_students(session.user.id);
+  const students = await cached_students(session.user.id);
 
   if (!students || !students.length)
     return (

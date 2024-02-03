@@ -1,6 +1,6 @@
 import { Separator } from './ui/separator';
 import { getAvatarName } from '@/lib/utils';
-import { uncached_teachers } from '@/prisma/db-calls';
+import { cached_teachers, uncached_teachers } from '@/prisma/db-calls';
 import Link from 'next/link';
 import Section from './Section';
 import { Avatar, AvatarFallback } from './ui/avatar';
@@ -14,7 +14,7 @@ async function TeachersTable() {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const teachers = await uncached_teachers(session.user.id);
+  const teachers = await cached_teachers(session.user.id);
 
   if (!teachers || !teachers.length)
     return (

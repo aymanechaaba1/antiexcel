@@ -1,8 +1,9 @@
-import ErrorFallBack from '@/components/ErrorFallBack';
 import UpdateStudentForm from '@/components/UpdateStudentForm';
-import { cached_student } from '@/prisma/db-calls';
+import { authOptions } from '@/lib/auth';
+import { cached_student, cached_teachers } from '@/prisma/db-calls';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
 
 function UpdateStudentFormSkeleton() {
   const rows = 6;
@@ -26,15 +27,17 @@ async function UpdateStudentPage({
     student_id: string;
   };
 }) {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
   const student = await cached_student(student_id);
+  const teachers = await cached_teachers(session.user.id);
 
   return (
     <>
-      <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <Suspense fallback={<UpdateStudentFormSkeleton />}>
-          <UpdateStudentForm student={student} />
-        </Suspense>
-      </ErrorBoundary>
+      <Suspense fallback={<UpdateStudentFormSkeleton />}>
+        <UpdateStudentForm student={student} teachers={teachers} />
+      </Suspense>
     </>
   );
 }
