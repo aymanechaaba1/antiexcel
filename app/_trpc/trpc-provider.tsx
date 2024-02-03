@@ -6,9 +6,9 @@ import { httpBatchLink, getFetch } from '@trpc/client';
 import { useState } from 'react';
 import superjson from 'superjson';
 
-export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+export const TrpcProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -16,10 +16,7 @@ export const TrpcProvider: React.FC<{ children: React.ReactNode }> = ({
       })
   );
 
-  const url =
-    process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' || 'preview'
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
-      : 'http://localhost:3000';
+  const url = 'http://localhost:3000';
 
   // console.log(url);
 

@@ -2,7 +2,7 @@
 
 import { useToast } from '@/components/ui/use-toast';
 import { fetchNewAccessToken } from '@/lib/utils';
-import { trpc } from '@/server/trpc';
+import { uncached_user } from '@/prisma/db-calls';
 import {
   useAccessTokenStore,
   useSubscriptionsStore,
@@ -11,13 +11,17 @@ import {
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
 
-function SubscriptionProvider({ children }: { children: React.ReactNode }) {
+function SubscriptionProvider({
+  children,
+  user,
+}: {
+  children: React.ReactNode;
+  user: Awaited<ReturnType<typeof uncached_user>>;
+}) {
   const { data: session } = useSession();
   if (!session) return <>{children}</>;
 
   const { toast } = useToast();
-
-  const { data: user } = trpc.getUser.useQuery();
 
   const { access_token, setAccessToken } = useAccessTokenStore(
     (state) => state

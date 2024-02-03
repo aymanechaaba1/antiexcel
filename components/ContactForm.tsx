@@ -10,8 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { cached_contact } from '@/prisma/db-calls';
-import { addContact, updateContact } from '@/actions';
+import { addContact, uncached_contact, updateContact } from '@/actions';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
 import { useRouter } from 'next/navigation';
@@ -54,16 +53,44 @@ function SubmitButton({ type }: { type: 'add' | 'update' }) {
   );
 }
 
+function LoadingContactSkeleton() {
+  return (
+    <form className="grid grid-cols-1 gap-y-4 gap-x-5">
+      <Label htmlFor="email" className="text-gray-500">
+        Email
+      </Label>
+      <div className="skeleton w-full h-10 rounded-lg" />
+
+      <Label htmlFor="phone" className="text-gray-500">
+        Phone
+      </Label>
+      <div className="skeleton w-full h-10 rounded-lg" />
+
+      <Label htmlFor="name" className="text-gray-500">
+        Name
+      </Label>
+      <div className="skeleton w-full h-10 rounded-lg" />
+
+      <Label htmlFor="relationship" className="text-gray-500">
+        Relationship
+      </Label>
+      <div className="skeleton w-full h-10 rounded-lg" />
+    </form>
+  );
+}
+
 function ContactForm({
   type,
   action,
-  contact,
   setOpenForm,
+  contact,
+  loadingContact,
 }: {
   type: 'add' | 'update';
   action: typeof addContact | typeof updateContact;
-  contact?: Awaited<ReturnType<typeof cached_contact>>;
   setOpenForm: Dispatch<SetStateAction<boolean>>;
+  contact?: Awaited<ReturnType<typeof uncached_contact>>;
+  loadingContact?: boolean;
 }) {
   const [state, formAction] = useFormState(action, initState);
   const { toast } = useToast();
@@ -87,6 +114,8 @@ function ContactForm({
       }
     }
   }, [state]);
+
+  if (loadingContact) return <LoadingContactSkeleton />;
 
   return (
     <form

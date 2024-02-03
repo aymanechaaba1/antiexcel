@@ -15,9 +15,8 @@ import { addStudent } from '@/actions';
 import { useEffect, useRef } from 'react';
 import { useToast } from './ui/use-toast';
 import { Label } from './ui/label';
-import { Loader2 } from 'lucide-react';
-import { trpc } from '@/server/trpc';
 import { useRouter } from 'next/navigation';
+import { uncached_teachers } from '@/prisma/db-calls';
 
 const genders = ['Male', 'Female'] as const;
 const schools = [
@@ -55,26 +54,24 @@ const initState: StudentFormState = {
   },
 };
 
-function SubmitButton({ loadingTeachers }: { loadingTeachers: boolean }) {
+function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button
-      className="my-5"
-      type="submit"
-      disabled={loadingTeachers || pending}
-    >
+    <Button className="my-5" type="submit">
       {pending ? 'Submitting...' : 'Submit'}
     </Button>
   );
 }
 
-function AddStudentForm() {
+function AddStudentForm({
+  teachers,
+}: {
+  teachers: Awaited<ReturnType<typeof uncached_teachers>>;
+}) {
   const [state, formAction] = useFormState(addStudent, initState);
   const formRef = useRef<HTMLFormElement>(null);
   const { toast } = useToast();
 
-  const { data: teachers, isLoading: loadingTeachers } =
-    trpc.getTeachers.useQuery();
   const router = useRouter();
 
   useEffect(() => {
@@ -204,7 +201,6 @@ function AddStudentForm() {
         <Label htmlFor="teacher" className="text-gray-500">
           Teacher
         </Label>
-        {loadingTeachers && <Loader2 className="animate-spin" size={18} />}
         {teachers && teachers.length > 0 && (
           <>
             <Select name="teacher" defaultValue={teachers[0].id}>
@@ -224,7 +220,7 @@ function AddStudentForm() {
       </div>
       <div />
       <div className="flex justify-end">
-        <SubmitButton loadingTeachers={loadingTeachers} />
+        <SubmitButton />
       </div>
     </form>
   );

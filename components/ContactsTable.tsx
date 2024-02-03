@@ -10,13 +10,7 @@ import { redirect } from 'next/navigation';
 
 export const columns = ['Avatar', 'Name', 'Phone', 'Relationship'];
 
-async function ContactsTable({
-  page,
-  per_page,
-}: {
-  page: number | 1;
-  per_page: number | 5;
-}) {
+async function ContactsTable() {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
@@ -34,16 +28,16 @@ async function ContactsTable({
 
           <div />
         </div>
-        {contacts.map((contact) => (
+        {contacts.map((c) => (
           <>
-            <div key={contact.id} className="grid grid-cols-5">
+            <div key={c.id} className="grid grid-cols-5">
               <Avatar>
-                <AvatarFallback>{getAvatarName(contact.name)}</AvatarFallback>
+                <AvatarFallback>{getAvatarName(c.name)}</AvatarFallback>
               </Avatar>
-              <p>{contact.name}</p>
-              <p className="">{contact.phone}</p>
-              <p className="">{upperFirst(contact.relationship)}</p>
-              <UpdateContactButton contact_id={contact.id} />
+              <p>{c.name}</p>
+              <p className="">{c.phone}</p>
+              <p className="">{upperFirst(c.relationship)}</p>
+              <UpdateContactButton contact_id={c.id} />
             </div>
             <Separator />
           </>

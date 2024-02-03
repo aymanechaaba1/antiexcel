@@ -1,5 +1,5 @@
 import Section from '@/components/Section';
-import { cached_teachers } from '@/prisma/db-calls';
+import { cached_teachers, uncached_teachers } from '@/prisma/db-calls';
 import AddStudentForm from '@/components/AddStudentForm';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -18,7 +18,7 @@ async function AddStudentPage() {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const teachers = await cached_teachers(session.user.id);
+  const teachers = await uncached_teachers(session.user.id);
 
   return (
     <>
@@ -44,7 +44,7 @@ async function AddStudentPage() {
           </Button>
         ) : (
           <Section title="Add Student">
-            <AddStudentForm />
+            <AddStudentForm teachers={teachers} />
           </Section>
         ))}
     </>
