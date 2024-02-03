@@ -5,16 +5,15 @@ import SubjectsDonutChart from '@/components/SubjectsDonutChart';
 import GradesDonutChart from '@/components/GradesDonutChart';
 import LatestTeachers from '@/components/LatestTeachers';
 import DashboardChart from '@/components/DashboardChart';
-import { uncached_students, uncached_teachers } from '@/actions';
+import { cached_students, cached_teachers } from '@/actions';
 
 async function DashboardPage() {
   const [students, teachers] = await Promise.all([
-    uncached_students(),
-    uncached_teachers(),
+    cached_students(),
+    cached_teachers(),
   ]);
 
-  if (!students || !students.length || !teachers || !teachers.length)
-    return <p className="text-center muted">No Data</p>;
+  if (!students || !teachers) return;
 
   return (
     <div className="space-y-4">
