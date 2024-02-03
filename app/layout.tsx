@@ -7,9 +7,9 @@ import PaypalProvider from '@/providers/PaypalProvider';
 import UpgradeBanner from '@/components/UpgradeBanner';
 import SubscriptionProvider from '@/providers/SubscriptionProvider';
 import { Toaster } from '@/components/ui/toaster';
-import { uncached_user } from '@/prisma/db-calls';
 import { QueryClient } from '@tanstack/react-query';
 import ReactQueryClientProvider from '@/providers/ReactQueryClientProvider';
+import { uncached_user } from '@/actions';
 
 const queryClient = new QueryClient();
 

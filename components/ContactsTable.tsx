@@ -2,19 +2,13 @@ import Section from './Section';
 import { Avatar, AvatarFallback } from './ui/avatar';
 import { getAvatarName, upperFirst } from '@/lib/utils';
 import { Separator } from './ui/separator';
-import { cached_contacts } from '@/prisma/db-calls';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import UpdateContactButton from './UpdateContactButton';
-import { redirect } from 'next/navigation';
+import { cached_contacts } from '@/actions';
 
 export const columns = ['Avatar', 'Name', 'Phone', 'Relationship'];
 
 async function ContactsTable() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const contacts = await cached_contacts(session.user.id);
+  const contacts = await cached_contacts();
 
   return (
     <Section title="Contacts" className="min-h-screen">

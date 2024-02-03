@@ -1,12 +1,9 @@
 import Link from 'next/link';
 import { Separator } from './ui/separator';
 import { formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
-import { cached_students, uncached_students } from '@/prisma/db-calls';
 import Section from './Section';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 import { Avatar, AvatarFallback } from './ui/avatar';
+import { cached_students } from '@/actions';
 
 export const columns = [
   'Avatar',
@@ -19,10 +16,7 @@ export const columns = [
 ];
 
 async function StudentsTable() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const students = await cached_students(session.user.id);
+  const students = await cached_students();
 
   if (!students || !students.length)
     return (

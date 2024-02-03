@@ -4,19 +4,13 @@ import StudentsOverview from '@/components/dashboard/StudentsOverview';
 import SubjectsDonutChart from '@/components/SubjectsDonutChart';
 import GradesDonutChart from '@/components/GradesDonutChart';
 import LatestTeachers from '@/components/LatestTeachers';
-import { uncached_students, uncached_teachers } from '@/prisma/db-calls';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 import DashboardChart from '@/components/DashboardChart';
+import { uncached_students, uncached_teachers } from '@/actions';
 
 async function DashboardPage() {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
   const [students, teachers] = await Promise.all([
-    uncached_students(session.user.id),
-    uncached_teachers(session.user.id),
+    uncached_students(),
+    uncached_teachers(),
   ]);
 
   if (!students || !students.length || !teachers || !teachers.length)
