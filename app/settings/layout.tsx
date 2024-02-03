@@ -30,7 +30,7 @@ function SettingsLayout({ children }: { children: React.ReactNode }) {
     >
       <div className="flex flex-col md:flex-row my-4 gap-5">
         {/* Sidebar */}
-        <div className="w-full flex flex-row md:flex-col gap-4 p-4 rounded-lg border md:w-1/3 md:h-96">
+        <div className="w-full flex flex-row md:flex-col gap-4 p-4 rounded-lg border md:w-1/3 md:h-96 overflow-scroll">
           {sideBarNavItems.map((item, i) => (
             <Link
               key={i}
