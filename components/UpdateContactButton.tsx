@@ -8,21 +8,19 @@ import {
 } from '@/components/ui/dialog';
 import { AlertDialogHeader } from '@/components/ui/alert-dialog';
 import ContactForm from './ContactForm';
-import { updateContact } from '@/actions';
+import { uncached_contact, updateContact } from '@/actions';
 import { useState } from 'react';
 import { Edit2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { uncached_contact } from '@/prisma/db-calls';
 
 function UpdateContactButton({ contact_id }: { contact_id: string }) {
   const [openForm, setOpenForm] = useState(false);
 
-  const { data: contact } = useQuery({
+  const { data: contact, isLoading: loadingContact } = useQuery({
     queryFn: () => uncached_contact(contact_id),
     queryKey: [['contacts'], { contact_id }],
+    cacheTime: 0,
   });
-
-  console.log(contact);
 
   return (
     <div className="flex justify-end">
@@ -34,12 +32,15 @@ function UpdateContactButton({ contact_id }: { contact_id: string }) {
           <AlertDialogHeader>
             <DialogTitle>Update Contact</DialogTitle>
           </AlertDialogHeader>
-          <ContactForm
-            contact={contact}
-            action={updateContact}
-            type="update"
-            setOpenForm={setOpenForm}
-          />
+          {
+            <ContactForm
+              contact={contact}
+              loadingContact={loadingContact}
+              action={updateContact}
+              type="update"
+              setOpenForm={setOpenForm}
+            />
+          }
         </DialogContent>
       </Dialog>
     </div>

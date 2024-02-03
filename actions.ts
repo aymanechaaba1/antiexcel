@@ -287,3 +287,13 @@ export const updateContact = async (prevState: any, formData: FormData) => {
     message: 'Contact Updated 👍',
   };
 };
+
+export const uncached_contact = async (id: string) =>
+  await prisma.contact.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      students: true,
+    },
+  });
