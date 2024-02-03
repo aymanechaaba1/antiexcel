@@ -11,7 +11,7 @@ export default function Error({
 }) {
   return (
     <div className="grid place-items-center place-content-center p-5 w-full h-48 space-y-4">
-      <h2 className="h2 text-center">{error.message}</h2>
+      <h2 className="h2 text-center">Something Went Wrong!</h2>
       <Button onClick={() => reset()}>Try again</Button>
     </div>
   );
