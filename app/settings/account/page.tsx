@@ -8,7 +8,7 @@ async function AccountDetailsPage() {
   if (!session || !session.user) redirect(`/api/auth/signin`);
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2">
       <p className="text-gray-500">Email</p>
       <p>{session.user.email}</p>
       <p className="text-gray-500">Name</p>

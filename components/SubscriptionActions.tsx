@@ -25,15 +25,6 @@ function SubscriptionActions() {
 
   const utils = trpc.useUtils();
 
-  const { mutate: updateUser } = trpc.updateUser.useMutation({
-    onSuccess: () => {
-      utils.getUser.refetch();
-      toast({
-        title: 'Subscription Canceled!',
-      });
-    },
-  });
-
   const handleSuspendSubscription = async () => {
     if (!subscription) return;
 
@@ -52,9 +43,9 @@ function SubscriptionActions() {
 
     if (!res.ok) throw new Error(`Subscription Suspension Failed.`);
 
-    updateUser({
-      subscription_id: null,
-    });
+    // updateUser({
+    //   subscription_id: null,
+    // });
   };
 
   const handleCancelSubscription = async () => {
@@ -73,9 +64,9 @@ function SubscriptionActions() {
 
     if (!res.ok) throw new Error(`Subscription Cancelation Failed.`);
 
-    updateUser({
-      subscription_id: null,
-    });
+    // updateUser({
+    //   subscription_id: null,
+    // });
   };
 
   if (subscription) {

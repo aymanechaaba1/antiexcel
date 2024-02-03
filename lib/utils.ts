@@ -84,7 +84,8 @@ export const fetchNewAccessToken = async () => {
   return data;
 };
 
-export const hideId = (id: string) => id.slice(0, 4).padEnd(id.length, '*');
+export const hideId = (id: string): string =>
+  id.slice(0, 4).padEnd(id.length, '*');
 
 export const getUrl = () =>
   process.env.NEXT_PUBLIC_VERCEL_ENV === 'production' || 'preview'
