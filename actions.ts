@@ -107,6 +107,7 @@ export const deleteStudent = async (id: string) => {
   }
 
   revalidateTag('students');
+
   return {
     ok: true,
     message: 'Student Deleted 👍',
