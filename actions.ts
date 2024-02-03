@@ -1,10 +1,221 @@
 'use server';
 
 import prisma from './prisma/prismaClient';
-import { revalidateTag } from 'next/cache';
+import { revalidateTag, unstable_cache } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './lib/auth';
 import { contactSchema, studentSchema, teacherSchema } from './zod/schemas';
+import { redirect } from 'next/navigation';
+
+const serverSession = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
+  return session;
+};
+
+export const uncached_user = async () => {
+  const session = await serverSession();
+
+  return await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+    include: {
+      students: true,
+      teachers: true,
+    },
+  });
+};
+
+export const cached_students = unstable_cache(
+  async () => {
+    const session = await serverSession();
+
+    const students = await prisma.student.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+      include: {
+        teacher: true,
+      },
+      where: {
+        user_id: session.user.id,
+      },
+    });
+
+    return students;
+  },
+  ['students'],
+  { tags: ['students'] }
+);
+
+export const cached_student = unstable_cache(
+  async (id: string) =>
+    await prisma.student.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        teacher: true,
+        contact: true,
+      },
+    }),
+  [`students`],
+  {
+    tags: ['students'],
+  }
+);
+
+export const uncached_students = async () => {
+  const session = await serverSession();
+
+  const students = await prisma.student.findMany({
+    orderBy: {
+      created_at: 'desc',
+    },
+    include: {
+      teacher: true,
+      contact: true,
+    },
+    where: {
+      user_id: session.user.id,
+    },
+  });
+
+  return students;
+};
+
+export const uncached_student = async (id: string) =>
+  await prisma.student.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      teacher: true,
+      contact: true,
+    },
+  });
+
+export const cached_teachers = unstable_cache(
+  async () => {
+    const session = await serverSession();
+
+    const teachers = await prisma.teacher.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+      include: {
+        students: true,
+      },
+      where: {
+        user_id: session.user.id,
+      },
+    });
+
+    return teachers;
+  },
+  ['teachers'],
+  {
+    tags: ['teachers'],
+  }
+);
+
+export const uncached_teachers = async () => {
+  const session = await serverSession();
+
+  const teachers = await prisma.teacher.findMany({
+    orderBy: {
+      created_at: 'desc',
+    },
+    include: {
+      students: true,
+    },
+    where: {
+      user_id: session.user.id,
+    },
+  });
+
+  return teachers;
+};
+
+export const cached_teacher = unstable_cache(
+  async (id: string) =>
+    await prisma.teacher.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        students: true,
+      },
+    }),
+  ['teachers'],
+  {
+    tags: ['teachers'],
+  }
+);
+
+export const uncached_teacher = async (id: string) =>
+  await prisma.teacher.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      students: true,
+    },
+  });
+
+export const cached_contacts = unstable_cache(
+  async () => {
+    const session = await serverSession();
+
+    return await prisma.contact.findMany({
+      orderBy: {
+        created_at: 'desc',
+      },
+      where: {
+        user_id: session.user.id,
+      },
+      include: {
+        students: true,
+      },
+    });
+  },
+  ['contacts'],
+  {
+    tags: ['contacts'],
+  }
+);
+
+export const uncached_contacts = async () => {
+  const session = await serverSession();
+
+  return await prisma.contact.findMany({
+    orderBy: {
+      created_at: 'desc',
+    },
+    include: {
+      students: true,
+    },
+    where: {
+      user_id: session.user.id,
+    },
+  });
+};
+
+export const cached_contact = unstable_cache(
+  async (id: string) =>
+    await prisma.contact.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        students: true,
+      },
+    }),
+  ['contacts'],
+  { tags: ['contacts'] }
+);
 
 export const addStudent = async (prevState: any, formData: FormData) => {
   const session = await getServerSession(authOptions);
