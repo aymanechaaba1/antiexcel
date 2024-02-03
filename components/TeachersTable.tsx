@@ -1,6 +1,6 @@
 import { Separator } from './ui/separator';
 import { getAvatarName } from '@/lib/utils';
-import { cached_teachers, uncached_teachers } from '@/prisma/db-calls';
+import { uncached_teachers } from '@/prisma/db-calls';
 import Link from 'next/link';
 import Section from './Section';
 import { Avatar, AvatarFallback } from './ui/avatar';

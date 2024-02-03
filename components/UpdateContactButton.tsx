@@ -11,14 +11,18 @@ import ContactForm from './ContactForm';
 import { updateContact } from '@/actions';
 import { useState } from 'react';
 import { Edit2 } from 'lucide-react';
-import { trpc } from '@/server/trpc';
+import { useQuery } from '@tanstack/react-query';
+import { uncached_contact } from '@/prisma/db-calls';
 
 function UpdateContactButton({ contact_id }: { contact_id: string }) {
   const [openForm, setOpenForm] = useState(false);
 
-  const { data: contact } = trpc.getContact.useQuery({
-    id: contact_id,
+  const { data: contact } = useQuery({
+    queryFn: () => uncached_contact(contact_id),
+    queryKey: [['contacts'], { contact_id }],
   });
+
+  console.log(contact);
 
   return (
     <div className="flex justify-end">

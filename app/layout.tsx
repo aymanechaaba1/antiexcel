@@ -1,5 +1,4 @@
 import { getServerSession } from 'next-auth';
-import { TrpcProvider } from './_trpc/trpc-provider';
 import './globals.css';
 import SessionProvider from '../components/SessionProvider';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -8,6 +7,11 @@ import PaypalProvider from '@/providers/PaypalProvider';
 import UpgradeBanner from '@/components/UpgradeBanner';
 import SubscriptionProvider from '@/providers/SubscriptionProvider';
 import { Toaster } from '@/components/ui/toaster';
+import { uncached_user } from '@/prisma/db-calls';
+import { QueryClient } from '@tanstack/react-query';
+import ReactQueryClientProvider from '@/providers/ReactQueryClientProvider';
+
+const queryClient = new QueryClient();
 
 export default async function RootLayout({
   children,
@@ -15,10 +19,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
+  const user = await uncached_user();
 
   return (
-    <SessionProvider session={session}>
-      <TrpcProvider>
+    <ReactQueryClientProvider>
+      <SessionProvider session={session}>
         <html lang="en">
           <body className="">
             <ThemeProvider
@@ -29,7 +34,7 @@ export default async function RootLayout({
             >
               <PaypalProvider>
                 <Header />
-                <SubscriptionProvider>
+                <SubscriptionProvider user={user}>
                   <UpgradeBanner />
                   <main className="p-4">{children}</main>
                   <Toaster />
@@ -38,7 +43,7 @@ export default async function RootLayout({
             </ThemeProvider>
           </body>
         </html>
-      </TrpcProvider>
-    </SessionProvider>
+      </SessionProvider>
+    </ReactQueryClientProvider>
   );
 }

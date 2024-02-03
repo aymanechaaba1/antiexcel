@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import { cached_contact } from '@/prisma/db-calls';
+import { cached_contact, uncached_contact } from '@/prisma/db-calls';
 import { addContact, updateContact } from '@/actions';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
@@ -62,7 +62,7 @@ function ContactForm({
 }: {
   type: 'add' | 'update';
   action: typeof addContact | typeof updateContact;
-  contact?: Awaited<ReturnType<typeof cached_contact>>;
+  contact?: Awaited<ReturnType<typeof uncached_contact>>;
   setOpenForm: Dispatch<SetStateAction<boolean>>;
 }) {
   const [state, formAction] = useFormState(action, initState);

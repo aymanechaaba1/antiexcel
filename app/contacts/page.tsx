@@ -34,23 +34,13 @@ function ContactsTableSkeleton() {
   );
 }
 
-async function ContactsPage({
-  searchParams,
-}: {
-  searchParams?: {
-    page?: string;
-    per_page?: string;
-  };
-}) {
-  const page = Number(searchParams?.page) || 1;
-  const per_page = Number(searchParams?.per_page) || 5;
-
+async function ContactsPage() {
   return (
     <>
       <AddContactButton />
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <Suspense key={page + per_page} fallback={<ContactsTableSkeleton />}>
-          <ContactsList page={page} per_page={per_page} />
+        <Suspense fallback={<ContactsTableSkeleton />}>
+          <ContactsList />
         </Suspense>
       </ErrorBoundary>
     </>

@@ -203,3 +203,13 @@ export const cached_contact = unstable_cache(
   ['contacts'],
   { tags: ['contacts'], revalidate: 60 }
 );
+
+export const uncached_contact = async (id: string) =>
+  await prisma.contact.findFirst({
+    where: {
+      id,
+    },
+    include: {
+      students: true,
+    },
+  });
