@@ -77,14 +77,13 @@ export const updateStudent = async (prevState: any, formData: FormData) => {
         id: data.id as string,
       },
     });
+    revalidateTag('students');
   } catch (err) {
     return {
       ok: false,
       message: 'Failed to update student',
     };
   }
-
-  revalidateTag('students');
 
   return {
     ok: true,
@@ -99,14 +98,13 @@ export const deleteStudent = async (id: string) => {
         id,
       },
     });
+    revalidateTag('students');
   } catch (err) {
     return {
       ok: false,
       message: 'Failed to delete student',
     };
   }
-
-  revalidateTag('students');
 
   return {
     ok: true,
