@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,6 +12,7 @@ import {
   AlertDialogTrigger,
 } from './ui/alert-dialog';
 import { Button } from './ui/button';
+import { useToast } from './ui/use-toast';
 
 function DeleteButton({
   id,
@@ -18,9 +20,15 @@ function DeleteButton({
   label = 'Delete',
 }: {
   id: string;
-  action: (id: string) => Promise<void>;
+  action: (id: string) => Promise<{
+    ok: boolean;
+    message: string;
+  }>;
   label?: string;
 }) {
+  const { toast } = useToast();
+  const router = useRouter();
+
   return (
     <div className="flex items-center justify-between border border-red-500 rounded-lg p-4">
       <h3 className="text-red-500 font-bold tracking-tight scroll-m-20 text-md">
@@ -40,7 +48,14 @@ function DeleteButton({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={async () => {
-                await action(id);
+                const { ok, message } = await action(id);
+
+                if (message) {
+                  toast({
+                    title: message,
+                    ...(!ok && { variant: 'destructive' }),
+                  });
+                }
               }}
             >
               Continue
