@@ -5,6 +5,7 @@ import { revalidateTag } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './lib/auth';
 import { contactSchema, studentSchema, teacherSchema } from './zod/schemas';
+import { redirect } from 'next/navigation';
 
 export const addStudent = async (prevState: any, formData: FormData) => {
   const session = await getServerSession(authOptions);
@@ -106,10 +107,7 @@ export const deleteStudent = async (id: string) => {
     };
   }
 
-  return {
-    ok: true,
-    message: 'Student Deleted 👍',
-  };
+  redirect(`/students`);
 };
 
 export const addTeacher = async (prevState: any, formData: FormData) => {
@@ -168,11 +166,7 @@ export const deleteTeacher = async (id: string) => {
   }
 
   revalidateTag('teachers');
-
-  return {
-    ok: true,
-    message: 'Teacher Deleted 👍',
-  };
+  redirect(`/students`);
 };
 
 export const updateTeacher = async (prevState: any, formData: FormData) => {
