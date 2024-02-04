@@ -18,7 +18,6 @@ function DeleteButton({
   id,
   action,
   label = 'Delete',
-  redirectTo,
 }: {
   id: string;
   action: (id: string) => Promise<{
@@ -26,7 +25,6 @@ function DeleteButton({
     message: string;
   }>;
   label?: string;
-  redirectTo: string;
 }) {
   const { toast } = useToast();
   const router = useRouter();
@@ -57,10 +55,6 @@ function DeleteButton({
                     title: message,
                     ...(!ok && { variant: 'destructive' }),
                   });
-
-                  if (ok) {
-                    router.replace(redirectTo);
-                  }
                 }
               }}
             >

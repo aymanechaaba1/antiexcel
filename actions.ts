@@ -5,6 +5,7 @@ import { revalidateTag } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './lib/auth';
 import { contactSchema, studentSchema, teacherSchema } from './zod/schemas';
+import { redirect } from 'next/navigation';
 
 export const addStudent = async (prevState: any, formData: FormData) => {
   const session = await getServerSession(authOptions);
@@ -77,14 +78,13 @@ export const updateStudent = async (prevState: any, formData: FormData) => {
         id: data.id as string,
       },
     });
+    revalidateTag('students');
   } catch (err) {
     return {
       ok: false,
       message: 'Failed to update student',
     };
   }
-
-  revalidateTag('students');
 
   return {
     ok: true,
@@ -99,6 +99,7 @@ export const deleteStudent = async (id: string) => {
         id,
       },
     });
+    revalidateTag('students');
   } catch (err) {
     return {
       ok: false,
@@ -106,12 +107,7 @@ export const deleteStudent = async (id: string) => {
     };
   }
 
-  revalidateTag('students');
-
-  return {
-    ok: true,
-    message: 'Student Deleted 👍',
-  };
+  redirect(`/students`);
 };
 
 export const addTeacher = async (prevState: any, formData: FormData) => {
@@ -170,11 +166,7 @@ export const deleteTeacher = async (id: string) => {
   }
 
   revalidateTag('teachers');
-
-  return {
-    ok: true,
-    message: 'Teacher Deleted 👍',
-  };
+  redirect(`/students`);
 };
 
 export const updateTeacher = async (prevState: any, formData: FormData) => {

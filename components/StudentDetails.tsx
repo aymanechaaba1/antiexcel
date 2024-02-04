@@ -1,7 +1,7 @@
 import { formatDate } from '@/lib/utils';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
-import { cached_student, uncached_student } from '@/prisma/db-calls';
+import { uncached_student } from '@/prisma/db-calls';
 import { deleteStudent } from '@/actions';
 import { notFound } from 'next/navigation';
 import DeleteButton from './DeleteButton';
@@ -90,7 +90,6 @@ async function StudentDetails({ student_id }: { student_id: string }) {
         id={student_id}
         action={deleteStudent.bind(null, student_id)}
         label="Delete Student"
-        redirectTo="/students"
       />
     </Section>
   );

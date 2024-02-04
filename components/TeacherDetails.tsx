@@ -32,7 +32,6 @@ async function TeacherDetails({ teacher_id }: { teacher_id: string }) {
         id={teacher_id}
         action={deleteTeacher.bind(null, teacher_id)}
         label="Delete Teacher"
-        redirectTo="/teachers"
       />
     </Section>
   );
