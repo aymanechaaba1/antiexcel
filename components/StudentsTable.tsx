@@ -31,7 +31,10 @@ async function StudentsTable({
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
-  const students = await cached_students(session.user.id, page, per_page);
+  const [totalStudents, students] = await Promise.all([
+    prisma.student.count(),
+    cached_students(session.user.id, page, per_page),
+  ]);
 
   if (!students || !students.length)
     return (
@@ -79,7 +82,7 @@ async function StudentsTable({
           ))}
         </div>
       </Section>
-      <DataPagination totalPages={students.length} />
+      <DataPagination totalResults={totalStudents} />
     </div>
   );
 }

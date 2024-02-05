@@ -2,6 +2,7 @@ import ErrorFallBack from '@/components/ErrorFallBack';
 import Section from '@/components/Section';
 import StudentsTable, { columns } from '@/components/StudentsTable';
 import { Button } from '@/components/ui/button';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '@/lib/config';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -43,8 +44,6 @@ async function StudentsPage({
     per_page: string;
   };
 }) {
-  console.log(page, per_page);
-
   return (
     <>
       <div className="flex justify-end">
@@ -54,7 +53,10 @@ async function StudentsPage({
       </div>
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<StudentsTableSkeleton />}>
-          <StudentsTable page={+page} per_page={+per_page} />
+          <StudentsTable
+            page={+page || DEFAULT_PAGE}
+            per_page={+per_page || DEFAULT_PER_PAGE}
+          />
         </Suspense>
       </ErrorBoundary>
     </>

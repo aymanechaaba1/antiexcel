@@ -2,17 +2,17 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
-  const { pathname, origin } = req.nextUrl;
+  // const { pathname, origin } = req.nextUrl;
 
-  if (pathname.startsWith('/students')) {
-    const searchParams = new URLSearchParams();
-    searchParams.set('page', '1');
-    searchParams.set('per_page', '5');
+  // if (pathname.startsWith('/students')) {
+  //   const searchParams = new URLSearchParams();
+  //   searchParams.set('page', '1');
+  //   searchParams.set('per_page', '5');
 
-    const url = new URL(`${pathname}?${searchParams.toString()}`, req.url);
+  //   const url = new URL(`${pathname}?${searchParams.toString()}`, origin);
 
-    return NextResponse.rewrite(url);
-  }
+  //   return NextResponse.rewrite(url);
+  // }
 
   return NextResponse.next();
 }

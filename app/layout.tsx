@@ -10,6 +10,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { uncached_user } from '@/prisma/db-calls';
 import { QueryClient } from '@tanstack/react-query';
 import ReactQueryClientProvider from '@/providers/ReactQueryClientProvider';
+import UpdateURLPattern from '@/components/UpdateURLPattern';
 
 const queryClient = new QueryClient();
 
@@ -33,12 +34,14 @@ export default async function RootLayout({
               disableTransitionOnChange
             >
               <PaypalProvider>
-                <Header />
-                <SubscriptionProvider user={user}>
-                  <UpgradeBanner />
-                  <main className="p-4">{children}</main>
-                  <Toaster />
-                </SubscriptionProvider>
+                <UpdateURLPattern>
+                  <Header />
+                  <SubscriptionProvider user={user}>
+                    <UpgradeBanner />
+                    <main className="p-4">{children}</main>
+                    <Toaster />
+                  </SubscriptionProvider>
+                </UpdateURLPattern>
               </PaypalProvider>
             </ThemeProvider>
           </body>

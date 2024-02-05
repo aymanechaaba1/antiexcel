@@ -2,48 +2,63 @@
 
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Button } from './ui/button';
 
-function DataPagination({ totalPages }: { totalPages: number }) {
+function DataPagination({ totalResults }: { totalResults: number }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
 
-  const currentPage = searchParams.get('page');
-  const perPage = searchParams.get('per_page');
+  let currentPage = searchParams.get('page');
+  let per_page = searchParams.get('per_page');
+  if (!currentPage || !per_page) return;
+
+  const totalPages = Math.trunc(totalResults / Number(per_page)) || 1;
+  const onFirstPage = Number(currentPage) === 1;
+  const onLastPage = Number(currentPage) === totalPages;
 
   const newSearchParams = new URLSearchParams();
 
   return (
     <div className="flex items-center justify-between w-full mx-auto my-5">
-      {Number(currentPage) > 1 ? (
-        <div className="p-1 rounded-lg flex justify-center items-center border">
+      {!onFirstPage ? (
+        <Button
+          variant={'ghost'}
+          className="px-3 py-2 rounded-lg flex justify-center items-center border"
+          onClick={() => {
+            newSearchParams.set('page', `${Number(currentPage) - 1}`);
+            per_page && newSearchParams.set('per_page', per_page);
+            replace(`${pathname}/?${newSearchParams.toString()}`);
+          }}
+        >
+          <p className="sr-only text-center font-semibold">Prev</p>
           <ArrowLeft
             size={20}
             className="dark:text-gray-200 text-gray-800 cursor-pointer"
-            onClick={() => {
-              newSearchParams.set('page', `${Number(currentPage) - 1}`);
-              perPage && newSearchParams.set('per_page', perPage);
-              replace(`${pathname}/?${newSearchParams.toString()}`);
-            }}
           />
-        </div>
+        </Button>
       ) : (
         <div />
       )}
 
       <p className="font-bold">{currentPage}</p>
-      {totalPages < +!perPage ? (
-        <div className="p-1 rounded-lg flex justify-center items-center border">
+
+      {!onLastPage ? (
+        <Button
+          variant={'ghost'}
+          className="px-3 py-2 rounded-lg flex justify-center items-center border"
+          onClick={() => {
+            newSearchParams.set('page', `${Number(currentPage) + 1}`);
+            per_page && newSearchParams.set('per_page', per_page);
+            replace(`${pathname}/?${newSearchParams.toString()}`);
+          }}
+        >
+          <p className="sr-only text-center font-semibold">Next</p>
           <ArrowRight
             size={20}
             className="dark:text-gray-200 text-gray-800 cursor-pointer"
-            onClick={() => {
-              newSearchParams.set('page', `${Number(currentPage) + 1}`);
-              perPage && newSearchParams.set('per_page', perPage);
-              replace(`${pathname}/?${newSearchParams.toString()}`);
-            }}
           />
-        </div>
+        </Button>
       ) : (
         <div />
       )}
