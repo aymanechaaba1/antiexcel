@@ -1,77 +1,53 @@
 'use client';
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
-import {
-  cached_contacts,
-  cached_students,
-  cached_teachers,
-} from '@/prisma/db-calls';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-function DataPagination({
-  data,
-  page = 1,
-  per_page = 5,
-}: {
-  data:
-    | Awaited<ReturnType<typeof cached_students>>
-    | Awaited<ReturnType<typeof cached_teachers>>
-    | Awaited<ReturnType<typeof cached_contacts>>;
-  page?: number | 1;
-  per_page?: number | 5;
-}) {
-  const [isClient, setIsClient] = useState(false);
+function DataPagination({ totalPages }: { totalPages: number }) {
+  const searchParams = useSearchParams();
   const pathname = usePathname();
+  const { replace } = useRouter();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const currentPage = searchParams.get('page');
+  const perPage = searchParams.get('per_page');
 
-  let lastPage;
-  if (data) lastPage = Math.trunc(data.length / per_page);
+  const newSearchParams = new URLSearchParams();
 
   return (
-    isClient && (
-      <Pagination>
-        <PaginationContent>
-          {page > 1 && (
-            <PaginationItem>
-              <PaginationPrevious
-                href={`${pathname}/?page=${page - 1}&per_page=${per_page}`}
-              />
-            </PaginationItem>
-          )}
-          <PaginationItem>
-            <PaginationLink
-              href={`${pathname}/?page=${page}&per_page=${per_page}`}
-              isActive
-            >
-              {page}
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          {page !== lastPage && <PaginationItem>{lastPage}</PaginationItem>}
-          {lastPage && page < lastPage && (
-            <PaginationItem>
-              <PaginationNext
-                href={`${pathname}/?page=${page + 1}&per_page=${per_page}`}
-              />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
-    )
+    <div className="flex items-center justify-between w-full mx-auto my-5">
+      {Number(currentPage) > 1 ? (
+        <div className="p-1 rounded-lg flex justify-center items-center border">
+          <ArrowLeft
+            size={20}
+            className="dark:text-gray-200 text-gray-800 cursor-pointer"
+            onClick={() => {
+              newSearchParams.set('page', `${Number(currentPage) - 1}`);
+              perPage && newSearchParams.set('per_page', perPage);
+              replace(`${pathname}/?${newSearchParams.toString()}`);
+            }}
+          />
+        </div>
+      ) : (
+        <div />
+      )}
+
+      <p className="font-bold">{currentPage}</p>
+      {totalPages < +!perPage ? (
+        <div className="p-1 rounded-lg flex justify-center items-center border">
+          <ArrowRight
+            size={20}
+            className="dark:text-gray-200 text-gray-800 cursor-pointer"
+            onClick={() => {
+              newSearchParams.set('page', `${Number(currentPage) + 1}`);
+              perPage && newSearchParams.set('per_page', perPage);
+              replace(`${pathname}/?${newSearchParams.toString()}`);
+            }}
+          />
+        </div>
+      ) : (
+        <div />
+      )}
+    </div>
   );
 }
 
