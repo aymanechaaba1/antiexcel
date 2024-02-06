@@ -2,6 +2,7 @@ import { unstable_cache } from 'next/cache';
 import prisma from './prismaClient';
 import { getServerSession } from 'next-auth';
 import { StudentsSortOptions } from '@/components/StudentsTable';
+import { TeachersSortOptions } from '@/components/TeachersTable';
 
 export const uncached_user = async () => {
   const session = await getServerSession();
@@ -89,11 +90,20 @@ export const uncached_student = async (id: string) =>
   });
 
 export const cached_teachers = unstable_cache(
-  async (user_id: string, page: number, per_page: number, sort_by: SortBy) =>
+  async (
+    user_id: string,
+    page: number,
+    per_page: number,
+    sort_by: TeachersSortOptions
+  ) =>
     await prisma.teacher.findMany({
       orderBy: {
-        ...(sort_by === 'grade' && { grade: 'asc' }),
-        ...(sort_by !== 'grade' && {
+        ...(sort_by === 'nb_students' && {
+          students: {
+            _count: 'desc',
+          },
+        }),
+        ...(sort_by !== 'nb_students' && {
           created_at: sort_by === 'latest' ? 'desc' : 'asc',
         }),
       },

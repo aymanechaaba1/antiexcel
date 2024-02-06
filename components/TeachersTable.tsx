@@ -9,9 +9,12 @@ import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import DataPagination from './DataPagination';
 import prisma from '@/prisma/prismaClient';
-import SortBtn, { SortBy } from './SortBtn';
+import SortBtn from './SortBtn';
 
-export const columns = ['Avatar', 'Name', 'Subject'];
+export const columns = ['Avatar', 'Name', 'Subject'] as const;
+
+export type TeachersSortOptions = 'latest' | 'oldest' | 'nb_students';
+const teachersSortOptions = ['latest', 'oldest', 'nb_students'] as const;
 
 async function TeachersTable({
   page,
@@ -20,7 +23,7 @@ async function TeachersTable({
 }: {
   page: number;
   per_page: number;
-  sort_by: SortBy;
+  sort_by: TeachersSortOptions;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
@@ -40,7 +43,7 @@ async function TeachersTable({
     return (
       <div className="flex flex-col min-h-screen">
         <div className="flex justify-end">
-          <SortBtn />
+          <SortBtn sortOptions={teachersSortOptions} />
         </div>
         <Section title="Teachers" className="flex-1">
           <div className="space-y-3 mt-5">
