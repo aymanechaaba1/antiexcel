@@ -4,6 +4,7 @@ import AddContactButton from '@/components/AddContactButton';
 import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '@/lib/config';
 
 function ContactsTableSkeleton() {
   const rows = 3;
@@ -34,13 +35,23 @@ function ContactsTableSkeleton() {
   );
 }
 
-async function ContactsPage() {
+async function ContactsPage({
+  searchParams: { page, per_page },
+}: {
+  searchParams: {
+    page: string;
+    per_page: string;
+  };
+}) {
   return (
     <>
       <AddContactButton />
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<ContactsTableSkeleton />}>
-          <ContactsList />
+          <ContactsList
+            page={+page || DEFAULT_PAGE}
+            per_page={+per_page || DEFAULT_PER_PAGE}
+          />
         </Suspense>
       </ErrorBoundary>
     </>

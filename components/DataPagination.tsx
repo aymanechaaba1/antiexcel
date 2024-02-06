@@ -1,77 +1,68 @@
 'use client';
 
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from '@/components/ui/pagination';
-import {
-  cached_contacts,
-  cached_students,
-  cached_teachers,
-} from '@/prisma/db-calls';
-import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Button } from './ui/button';
 
-function DataPagination({
-  data,
-  page = 1,
-  per_page = 5,
-}: {
-  data:
-    | Awaited<ReturnType<typeof cached_students>>
-    | Awaited<ReturnType<typeof cached_teachers>>
-    | Awaited<ReturnType<typeof cached_contacts>>;
-  page?: number | 1;
-  per_page?: number | 5;
-}) {
-  const [isClient, setIsClient] = useState(false);
+function DataPagination({ totalResults }: { totalResults: number }) {
+  const searchParams = useSearchParams();
   const pathname = usePathname();
+  const { replace } = useRouter();
 
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  let currentPage = searchParams.get('page');
+  let per_page = searchParams.get('per_page');
+  if (!currentPage || !per_page) return;
 
-  let lastPage;
-  if (data) lastPage = Math.trunc(data.length / per_page);
+  const totalPages = Math.trunc(totalResults / Number(per_page)) || 1;
+  const onFirstPage = Number(currentPage) === 1;
+  const onLastPage = Number(currentPage) === totalPages;
+
+  const newSearchParams = new URLSearchParams();
 
   return (
-    isClient && (
-      <Pagination>
-        <PaginationContent>
-          {page > 1 && (
-            <PaginationItem>
-              <PaginationPrevious
-                href={`${pathname}/?page=${page - 1}&per_page=${per_page}`}
-              />
-            </PaginationItem>
-          )}
-          <PaginationItem>
-            <PaginationLink
-              href={`${pathname}/?page=${page}&per_page=${per_page}`}
-              isActive
-            >
-              {page}
-            </PaginationLink>
-          </PaginationItem>
-          <PaginationItem>
-            <PaginationEllipsis />
-          </PaginationItem>
-          {page !== lastPage && <PaginationItem>{lastPage}</PaginationItem>}
-          {lastPage && page < lastPage && (
-            <PaginationItem>
-              <PaginationNext
-                href={`${pathname}/?page=${page + 1}&per_page=${per_page}`}
-              />
-            </PaginationItem>
-          )}
-        </PaginationContent>
-      </Pagination>
-    )
+    <div className="flex items-center justify-between w-full mx-auto my-5">
+      {!onFirstPage ? (
+        <Button
+          variant={'ghost'}
+          className="px-3 py-2 rounded-lg flex justify-center items-center border"
+          onClick={() => {
+            newSearchParams.set('page', `${Number(currentPage) - 1}`);
+            per_page && newSearchParams.set('per_page', per_page);
+            replace(`${pathname}/?${newSearchParams.toString()}`);
+          }}
+        >
+          <p className="sr-only text-center font-semibold">Prev</p>
+          <ArrowLeft
+            size={20}
+            className="dark:text-gray-200 text-gray-800 cursor-pointer"
+          />
+        </Button>
+      ) : (
+        <div />
+      )}
+
+      <p className="font-bold">{currentPage}</p>
+
+      {!onLastPage ? (
+        <Button
+          variant={'ghost'}
+          className="px-3 py-2 rounded-lg flex justify-center items-center border"
+          onClick={() => {
+            newSearchParams.set('page', `${Number(currentPage) + 1}`);
+            per_page && newSearchParams.set('per_page', per_page);
+            replace(`${pathname}/?${newSearchParams.toString()}`);
+          }}
+        >
+          <p className="sr-only text-center font-semibold">Next</p>
+          <ArrowRight
+            size={20}
+            className="dark:text-gray-200 text-gray-800 cursor-pointer"
+          />
+        </Button>
+      ) : (
+        <div />
+      )}
+    </div>
   );
 }
 

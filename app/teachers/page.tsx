@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '@/lib/config';
 
 function TeachersTableSkeleton() {
   const rows = 3;
@@ -35,7 +36,14 @@ function TeachersTableSkeleton() {
   );
 }
 
-async function TeachersPage() {
+async function TeachersPage({
+  searchParams: { page, per_page },
+}: {
+  searchParams: {
+    page: string;
+    per_page: string;
+  };
+}) {
   return (
     <>
       <div className="flex justify-end">
@@ -45,7 +53,10 @@ async function TeachersPage() {
       </div>
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<TeachersTableSkeleton />}>
-          <TeachersTable />
+          <TeachersTable
+            page={+page || DEFAULT_PAGE}
+            per_page={+per_page || DEFAULT_PER_PAGE}
+          />
         </Suspense>
       </ErrorBoundary>
     </>
