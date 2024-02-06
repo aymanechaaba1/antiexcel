@@ -10,6 +10,7 @@ import { Avatar, AvatarFallback } from './ui/avatar';
 import { cache } from 'react';
 import prisma from '@/prisma/prismaClient';
 import DataPagination from './DataPagination';
+import SortBtn, { SortBy } from './SortBtn';
 
 export const columns = [
   'Avatar',
@@ -22,16 +23,18 @@ export const columns = [
 async function StudentsTable({
   page,
   per_page,
+  sort_by,
 }: {
   page: number;
   per_page: number;
+  sort_by: SortBy;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalStudents, students] = await Promise.all([
     prisma.student.count(),
-    cached_students(session.user.id, page, per_page),
+    cached_students(session.user.id, page, per_page, sort_by),
   ]);
 
   if (!students || !students.length)
@@ -43,6 +46,9 @@ async function StudentsTable({
 
   return (
     <div className="flex flex-col min-h-screen">
+      <div className="flex justify-end">
+        <SortBtn />
+      </div>
       <Section title="Students" className="flex-1">
         <div className="space-y-3 mt-5">
           <div className={`grid grid-cols-${columns.length} gap-x-4 gap-y-6`}>

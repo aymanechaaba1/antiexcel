@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import prisma from './prismaClient';
 import { getServerSession } from 'next-auth';
+import { SortBy } from '@/components/SortBtn';
 
 export const uncached_user = async () => {
   const session = await getServerSession();
@@ -18,10 +19,13 @@ export const uncached_user = async () => {
 };
 
 export const cached_students = unstable_cache(
-  async (user_id: string, page: number, per_page: number) =>
+  async (user_id: string, page: number, per_page: number, sort_by: SortBy) =>
     await prisma.student.findMany({
       orderBy: {
-        created_at: 'desc',
+        ...(sort_by === 'grade' && { grade: 'asc' }),
+        ...(sort_by !== 'grade' && {
+          created_at: sort_by === 'latest' ? 'desc' : 'asc',
+        }),
       },
       include: {
         teacher: true,
