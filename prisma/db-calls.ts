@@ -141,7 +141,7 @@ export const uncached_teacher = async (id: string) =>
   });
 
 export const cached_contacts = unstable_cache(
-  async (user_id: string, page: number = 1, per_page: number = 5) =>
+  async (user_id: string, page: number, per_page: number) =>
     await prisma.contact.findMany({
       orderBy: {
         created_at: 'desc',
@@ -152,6 +152,8 @@ export const cached_contacts = unstable_cache(
       include: {
         students: true,
       },
+      take: per_page,
+      skip: (page - 1) * per_page,
     }),
   ['contacts'],
   {
