@@ -14,7 +14,11 @@ function UpdateURLPattern({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (page || per_page) return;
 
-    if (pathname === '/students') {
+    if (
+      pathname === '/students' ||
+      pathname === '/teachers' ||
+      pathname === '/contacts'
+    ) {
       const searchParams = new URLSearchParams();
       searchParams.set('page', DEFAULT_PAGE.toString());
       searchParams.set('per_page', DEFAULT_PER_PAGE.toString());
