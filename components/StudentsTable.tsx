@@ -7,10 +7,9 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Avatar, AvatarFallback } from './ui/avatar';
-import { cache } from 'react';
 import prisma from '@/prisma/prismaClient';
 import DataPagination from './DataPagination';
-import SortBtn, { SortBy } from './SortBtn';
+import SortBtn from './SortBtn';
 
 export const columns = [
   'Avatar',
@@ -20,6 +19,9 @@ export const columns = [
   'School',
 ] as const;
 
+export type StudentsSortOptions = 'latest' | 'oldest' | 'grade';
+const studentsSortOptions = ['latest', 'oldest', 'grade'] as const;
+
 async function StudentsTable({
   page,
   per_page,
@@ -27,7 +29,7 @@ async function StudentsTable({
 }: {
   page: number;
   per_page: number;
-  sort_by: SortBy;
+  sort_by: StudentsSortOptions;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
@@ -47,7 +49,7 @@ async function StudentsTable({
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex justify-end">
-        <SortBtn />
+        <SortBtn sortOptions={studentsSortOptions} />
       </div>
       <Section title="Students" className="flex-1">
         <div className="space-y-3 mt-5">

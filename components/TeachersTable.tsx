@@ -9,22 +9,25 @@ import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import DataPagination from './DataPagination';
 import prisma from '@/prisma/prismaClient';
+import SortBtn, { SortBy } from './SortBtn';
 
 export const columns = ['Avatar', 'Name', 'Subject'];
 
 async function TeachersTable({
   page,
   per_page,
+  sort_by,
 }: {
   page: number;
   per_page: number;
+  sort_by: SortBy;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalTeachers, teachers] = await Promise.all([
     prisma.teacher.count(),
-    cached_teachers(session.user.id, page, per_page),
+    cached_teachers(session.user.id, page, per_page, sort_by),
   ]);
   if (!teachers || !teachers.length)
     return (
@@ -36,6 +39,9 @@ async function TeachersTable({
   if (teachers && teachers.length)
     return (
       <div className="flex flex-col min-h-screen">
+        <div className="flex justify-end">
+          <SortBtn />
+        </div>
         <Section title="Teachers" className="flex-1">
           <div className="space-y-3 mt-5">
             <div className={`grid grid-cols-${columns.length} px-4 gap-x-4`}>

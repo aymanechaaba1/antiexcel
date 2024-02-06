@@ -13,10 +13,8 @@ import {
 import { DEFAULT_SORT_BY } from '@/lib/config';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-const sortByOptions = ['latest', 'oldest', 'grade'] as const;
-export type SortBy = 'grade' | 'latest' | 'oldest';
-function SortBtn() {
-  const [sortBy, setSortBy] = useState<SortBy>('latest');
+function SortBtn({ sortOptions }: { sortOptions: readonly string[] }) {
+  const [sortBy, setSortBy] = useState<string>(DEFAULT_SORT_BY);
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -36,19 +34,14 @@ function SortBtn() {
   }, [sortBy]);
 
   return (
-    <Select
-      onValueChange={(value) => {
-        setSortBy(value as SortBy);
-      }}
-      defaultValue={DEFAULT_SORT_BY}
-    >
+    <Select onValueChange={setSortBy} defaultValue={DEFAULT_SORT_BY}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Sort By" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>
           <SelectLabel>Sort By</SelectLabel>
-          {sortByOptions.map((option, i) => (
+          {sortOptions.map((option, i) => (
             <SelectItem key={i} value={option}>
               {option}
             </SelectItem>
