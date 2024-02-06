@@ -1,7 +1,9 @@
 import ErrorFallBack from '@/components/ErrorFallBack';
 import Section from '@/components/Section';
-import { SortBy } from '@/components/SortBtn';
-import StudentsTable, { columns } from '@/components/StudentsTable';
+import StudentsTable, {
+  StudentsSortOptions,
+  columns,
+} from '@/components/StudentsTable';
 import { Button } from '@/components/ui/button';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import Link from 'next/link';
@@ -43,7 +45,7 @@ async function StudentsPage({
   searchParams: {
     page: string;
     per_page: string;
-    sort_by: SortBy;
+    sort_by: StudentsSortOptions;
   };
 }) {
   return (

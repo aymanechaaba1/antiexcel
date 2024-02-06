@@ -20,7 +20,10 @@ function UpdateContactButton({ contact_id }: { contact_id: string }) {
     queryFn: () => uncached_contact(contact_id),
     queryKey: [['contacts'], { contact_id }],
     cacheTime: 0,
+    staleTime: Infinity,
   });
+
+  console.log(contact);
 
   return (
     <div className="flex justify-end">

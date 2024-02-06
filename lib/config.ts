@@ -1,5 +1,3 @@
-import { SortBy } from '@/components/SortBtn';
-
 export const LOGO_URL =
   'https://firebasestorage.googleapis.com/v0/b/school-manager-e26b7.appspot.com/o/Screenshot%202023-12-09%20at%204.33.43%20PM.png?alt=media&token=ced15002-f3f9-47c1-a77a-cb0e203dccb6';
 export const VIDEO_URL =
@@ -13,4 +11,4 @@ export const dateOptions: Intl.DateTimeFormatOptions | undefined = {
 
 export const DEFAULT_PAGE = 1;
 export const DEFAULT_PER_PAGE = 5;
-export const DEFAULT_SORT_BY: SortBy = 'latest';
+export const DEFAULT_SORT_BY: 'latest' | 'oldest' = 'latest';

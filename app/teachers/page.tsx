@@ -1,12 +1,14 @@
 import React, { Suspense } from 'react';
-import TeachersTable, { columns } from '@/components/TeachersTable';
+import TeachersTable, {
+  TeachersSortOptions,
+  columns,
+} from '@/components/TeachersTable';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
-import { SortBy } from '@/components/SortBtn';
 
 function TeachersTableSkeleton() {
   const rows = 3;
@@ -43,7 +45,7 @@ async function TeachersPage({
   searchParams: {
     page: string;
     per_page: string;
-    sort_by: SortBy;
+    sort_by: TeachersSortOptions;
   };
 }) {
   return (
