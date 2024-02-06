@@ -1,6 +1,6 @@
 import Section from './Section';
 import { Avatar, AvatarFallback } from './ui/avatar';
-import { getAvatarName, upperFirst } from '@/lib/utils';
+import { cn, getAvatarName, upperFirst } from '@/lib/utils';
 import { Separator } from './ui/separator';
 import { cached_contacts } from '@/prisma/db-calls';
 import { getServerSession } from 'next-auth';

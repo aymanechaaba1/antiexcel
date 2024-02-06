@@ -13,12 +13,14 @@ async function Hero() {
         Store your school data on the web
       </p>
       <div className="flex items-center gap-3 max-2xl justify-center my-3">
-        <Button
-          className="bg-purple-500 py-2 px-5 rounded-lg font-medium text-center text-white hover:bg-purple-600"
-          asChild
-        >
-          <Link href={`/api/auth/signin`}>Get Started</Link>
-        </Button>
+        {!session && (
+          <Button
+            className="bg-purple-500 py-2 px-5 rounded-lg font-medium text-center text-white hover:bg-purple-600"
+            asChild
+          >
+            <Link href={`/api/auth/signin`}>Get Started</Link>
+          </Button>
+        )}
         {session && (
           <Button className="" variant={'secondary'} asChild>
             <Link href={`/dashboard`}>Dashboard</Link>

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { Separator } from './ui/separator';
-import { formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
-import { cached_students, uncached_students } from '@/prisma/db-calls';
+import { cn, formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
+import { cached_students } from '@/prisma/db-calls';
 import Section from './Section';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -15,11 +15,9 @@ export const columns = [
   'Avatar',
   'Firstname',
   'Lastname',
-  'Gender',
   'Grade',
   'School',
-  'Teacher',
-];
+] as const;
 
 async function StudentsTable({
   page,
