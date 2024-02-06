@@ -49,7 +49,12 @@ async function StudentsTable({
             {columns.map((field, i) => (
               <p
                 key={i}
-                className="font-bold tracking-tight scroll-m-20 text-md text-gray-500"
+                className={cn(
+                  'font-bold tracking-tight scroll-m-20 text-md text-gray-500 text-right',
+                  {
+                    'text-left': field === 'Avatar',
+                  }
+                )}
               >
                 {field}
               </p>
@@ -69,12 +74,10 @@ async function StudentsTable({
                     {getAvatarName(student.firstname, student.lastname)}
                   </AvatarFallback>
                 </Avatar>
-                <p className="">{student.firstname}</p>
-                <p className="">{student.lastname}</p>
-                <p>{upperFirst(student.gender)}</p>
-                <p className="">{student.grade}</p>
-                <p className="">{formatSchool(student.school)}</p>
-                <p className="">{student.teacher?.name}</p>
+                <p className="text-right">{student.firstname}</p>
+                <p className="text-right">{student.lastname}</p>
+                <p className="text-right">{student.grade}</p>
+                <p className="text-right">{formatSchool(student.school)}</p>
               </Link>
             </>
           ))}
