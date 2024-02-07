@@ -12,13 +12,13 @@ import {
 
 function ShadcnSelectComponent({
   onValueChange,
-  defaultValue,
+  value,
   options,
   placeholder,
   label,
 }: {
   onValueChange: (value: string) => void;
-  defaultValue: string | undefined;
+  value: string | '';
   options: readonly string[];
   placeholder: string;
   label: string;
@@ -28,7 +28,7 @@ function ShadcnSelectComponent({
       onValueChange={(val) => {
         onValueChange(val);
       }}
-      defaultValue={defaultValue}
+      value={value}
     >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={placeholder} />

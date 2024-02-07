@@ -13,6 +13,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
+import ResetFiltersBtn from './ResetFiltersBtn';
+import { Button } from './ui/button';
+import { RotateCw } from 'lucide-react';
 
 const grades = ['1', '2', '3', '4', '5', '6'] as const;
 type Grade = '1' | '2' | '3' | '4' | '5' | '6';
@@ -41,27 +44,31 @@ function StudentsFilterBtns({
 }: {
   teachers: Awaited<ReturnType<typeof getTeacherIds>>;
 }) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [grade, setGrade] = useState<string | ''>('');
   const [gender, setGender] = useState<string | ''>('');
   const [school, setSchool] = useState<string | ''>('');
   const [teacher, setTeacher] = useState<string | ''>('');
 
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
-
   useEffect(() => {
-    const page = searchParams.get('page');
-    const per_page = searchParams.get('per_page');
+    const params = new URLSearchParams(searchParams);
 
-    const newSearchParams = new URLSearchParams(searchParams);
+    if (grade) params.set('grade', grade);
+    else params.delete('grade');
 
-    if (grade) newSearchParams.set('grade', grade);
-    if (gender) newSearchParams.set('gender', gender);
-    if (school) newSearchParams.set('school', school);
-    if (teacher) newSearchParams.set('teacher', teacher);
+    if (gender) params.set('gender', gender);
+    else params.delete('gender');
 
-    router.replace(`${pathname}/?${newSearchParams.toString()}`);
+    if (school) params.set('school', school);
+    else params.delete('school');
+
+    if (teacher) params.set('teacher', teacher);
+    else params.delete('teacher');
+
+    router.replace(`${pathname}?${params.toString()}`);
   }, [grade, gender, school, teacher]);
 
   return (
@@ -69,29 +76,44 @@ function StudentsFilterBtns({
       <p className="tracking-tight font-semibold text-gray-500 mb-3 text-right">
         Filter By
       </p>
+      <Button
+        variant={'outline'}
+        className="flex items-center justify-center mr-3 float-left"
+        onClick={() => {
+          setGrade('');
+          setGender('');
+          setSchool('');
+          setTeacher('');
+        }}
+      >
+        <RotateCw size={18} className="" />
+        <p className="sr-only text-sm tracking-tight font-semibold text-center">
+          Reset Filters
+        </p>
+      </Button>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2">
         <ShadcnSelectComponent
           onValueChange={setGrade}
-          defaultValue=""
+          value={grade}
           options={grades}
           placeholder="Grade"
           label="Grade"
         />
         <ShadcnSelectComponent
           onValueChange={setGender}
-          defaultValue=""
+          value={gender}
           options={genders}
           placeholder="Gender"
           label="Gender"
         />
         <ShadcnSelectComponent
           onValueChange={setSchool}
-          defaultValue=""
+          value={school}
           options={schools}
           placeholder="School"
           label="School"
         />
-        <Select onValueChange={setTeacher} defaultValue={''}>
+        <Select onValueChange={setTeacher} value={teacher}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder={'Teacher'} />
           </SelectTrigger>

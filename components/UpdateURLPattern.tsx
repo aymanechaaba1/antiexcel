@@ -14,25 +14,21 @@ function UpdateURLPattern({ children }: { children: ReactNode }) {
   const sort_by = searchParams.get('sort_by');
 
   useEffect(() => {
-    let newSearchParams: URLSearchParams;
-
-    if (page && per_page) newSearchParams = new URLSearchParams(searchParams);
-
-    if (!page || !per_page) {
-      newSearchParams = new URLSearchParams();
-      if (
-        pathname === '/students' ||
-        pathname === '/teachers' ||
-        pathname === '/contacts'
-      ) {
-        newSearchParams.set('page', DEFAULT_PAGE.toString());
-        newSearchParams.set('per_page', DEFAULT_PER_PAGE.toString());
-
-        if (!sort_by) newSearchParams.set('sort_by', DEFAULT_SORT_BY);
-
-        router.replace(`${pathname}/?${newSearchParams.toString()}`);
-      }
-    }
+    // let newSearchParams: URLSearchParams;
+    // if (page || per_page) newSearchParams = new URLSearchParams(searchParams);
+    // if (!page || !per_page) {
+    //   newSearchParams = new URLSearchParams();
+    //   if (
+    //     pathname === '/students' ||
+    //     pathname === '/teachers' ||
+    //     pathname === '/contacts'
+    //   ) {
+    //     newSearchParams.set('page', DEFAULT_PAGE.toString());
+    //     newSearchParams.set('per_page', DEFAULT_PER_PAGE.toString());
+    //     if (!sort_by) newSearchParams.set('sort_by', DEFAULT_SORT_BY);
+    //     router.replace(`${pathname}/?${newSearchParams.toString()}`);
+    //   }
+    // }
   }, [pathname, page, per_page, sort_by]);
 
   return <>{children}</>;
