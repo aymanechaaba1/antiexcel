@@ -20,12 +20,26 @@ export const uncached_user = async () => {
   });
 };
 
+type Grade = '1' | '2' | '3' | '4' | '5' | '6';
+type Gender = 'male' | 'female';
+type School =
+  | 'chkail'
+  | 'henri_matisse'
+  | 'le_bougeoir'
+  | 'diwan'
+  | 'wlad_slama'
+  | 'al_wahda';
+
 export const cached_students = unstable_cache(
   async (
     user_id: string,
     page: number,
     per_page: number,
-    sort_by: StudentsSortOptions
+    sort_by: StudentsSortOptions,
+    grade?: Grade,
+    gender?: Gender,
+    school?: School,
+    teacher?: string
   ) =>
     await prisma.student.findMany({
       orderBy: {
@@ -39,6 +53,24 @@ export const cached_students = unstable_cache(
       },
       where: {
         user_id,
+        ...(grade && {
+          grade: {
+            equals: +grade,
+          },
+        }),
+        ...(gender && {
+          gender: {
+            equals: gender,
+          },
+        }),
+        ...(school && {
+          school: {
+            equals: school,
+          },
+        }),
+        ...(teacher && {
+          teacher_id: teacher,
+        }),
       },
       take: per_page,
       skip: (page - 1) * per_page,
@@ -227,3 +259,11 @@ export const cached_contact = unstable_cache(
   ['contacts'],
   { tags: ['contacts'], revalidate: 60 }
 );
+
+export const getTeacherIds = async () =>
+  await prisma.teacher.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+  });

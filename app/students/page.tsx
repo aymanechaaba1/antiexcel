@@ -9,6 +9,11 @@ import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { getTeacherIds } from '@/prisma/db-calls';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { redirect } from 'next/navigation';
+import StudentsFilterBtns from '@/components/StudentsFilterBtns';
 
 function StudentsTableSkeleton() {
   const rows = 3;
@@ -39,15 +44,37 @@ function StudentsTableSkeleton() {
   );
 }
 
+export type StudentsFilterOption = 'grade' | 'gender' | 'school' | 'teacher';
+const studentsFilterOptions = ['grade', 'gender', 'school', 'teacher'] as const;
+
+type Grade = '1' | '2' | '3' | '4' | '5' | '6';
+type Gender = 'male' | 'female';
+type School =
+  | 'chkail'
+  | 'henri_matisse'
+  | 'le_bougeoir'
+  | 'diwan'
+  | 'wlad_slama'
+  | 'al_wahda';
+
 async function StudentsPage({
-  searchParams: { page, per_page, sort_by },
+  searchParams: { page, per_page, sort_by, grade, gender, school, teacher },
 }: {
   searchParams: {
     page: string;
     per_page: string;
     sort_by: StudentsSortOptions;
+    grade?: Grade;
+    gender?: Gender;
+    school?: School;
+    teacher?: string;
   };
 }) {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
+  const teachers = await getTeacherIds();
+
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
@@ -55,12 +82,20 @@ async function StudentsPage({
           <Link href={`/students/add`}>Add Student</Link>
         </Button>
       </div>
+      <div className="flex justify-end gap-4 my-4">
+        <StudentsFilterBtns teachers={teachers} />
+      </div>
+
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<StudentsTableSkeleton />}>
           <StudentsTable
             page={+page || DEFAULT_PAGE}
             per_page={+per_page || DEFAULT_PER_PAGE}
             sort_by={sort_by || DEFAULT_SORT_BY}
+            grade={grade}
+            gender={gender}
+            school={school}
+            teacher={teacher}
           />
         </Suspense>
       </ErrorBoundary>

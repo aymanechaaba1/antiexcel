@@ -23,8 +23,6 @@ function UpdateContactButton({ contact_id }: { contact_id: string }) {
     staleTime: Infinity,
   });
 
-  console.log(contact);
-
   return (
     <div className="flex justify-end">
       <Dialog open={openForm} onOpenChange={setOpenForm}>

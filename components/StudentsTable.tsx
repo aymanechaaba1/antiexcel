@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Separator } from './ui/separator';
-import { cn, formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
+import { cn, formatSchool, getAvatarName } from '@/lib/utils';
 import { cached_students } from '@/prisma/db-calls';
 import Section from './Section';
 import { getServerSession } from 'next-auth';
@@ -22,21 +22,48 @@ export const columns = [
 export type StudentsSortOptions = 'latest' | 'oldest' | 'grade';
 const studentsSortOptions = ['latest', 'oldest', 'grade'] as const;
 
+type Grade = '1' | '2' | '3' | '4' | '5' | '6';
+type Gender = 'male' | 'female';
+type School =
+  | 'chkail'
+  | 'henri_matisse'
+  | 'le_bougeoir'
+  | 'diwan'
+  | 'wlad_slama'
+  | 'al_wahda';
+
 async function StudentsTable({
   page,
   per_page,
   sort_by,
+  grade,
+  gender,
+  school,
+  teacher,
 }: {
   page: number;
   per_page: number;
   sort_by: StudentsSortOptions;
+  grade?: Grade;
+  gender?: Gender;
+  school?: School;
+  teacher?: string;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalStudents, students] = await Promise.all([
     prisma.student.count(),
-    cached_students(session.user.id, page, per_page, sort_by),
+    cached_students(
+      session.user.id,
+      page,
+      per_page,
+      sort_by,
+      grade,
+      gender,
+      school,
+      teacher
+    ),
   ]);
 
   if (!students || !students.length)
@@ -48,7 +75,7 @@ async function StudentsTable({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-4 my-4">
         <SortBtn sortOptions={studentsSortOptions} />
       </div>
       <Section title="Students" className="flex-1">
