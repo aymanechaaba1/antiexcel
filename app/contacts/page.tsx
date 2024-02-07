@@ -8,6 +8,7 @@ import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
+import ContactsFilterBtns from '@/components/ContactsFilterBtns';
 
 function ContactsTableSkeleton() {
   const rows = 3;
@@ -38,24 +39,31 @@ function ContactsTableSkeleton() {
   );
 }
 
+type Relationship = 'mother' | 'father' | 'brother' | 'sister';
+
 async function ContactsPage({
-  searchParams: { page, per_page, sort_by },
+  searchParams: { page, per_page, sort_by, relationship },
 }: {
   searchParams: {
     page: string;
     per_page: string;
     sort_by: ContactsSortOptions;
+    relationship?: Relationship;
   };
 }) {
   return (
     <div className="space-y-4">
       <AddContactButton />
+      <div className="flex justify-end gap-4 my-4">
+        <ContactsFilterBtns />
+      </div>
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<ContactsTableSkeleton />}>
           <ContactsList
             page={+page || DEFAULT_PAGE}
             per_page={+per_page || DEFAULT_PER_PAGE}
             sort_by={sort_by || DEFAULT_SORT_BY}
+            relationship={relationship}
           />
         </Suspense>
       </ErrorBoundary>

@@ -208,12 +208,14 @@ export const uncached_teacher = async (id: string) =>
     },
   });
 
+type Relationship = 'mother' | 'father' | 'brother' | 'sister';
 export const cached_contacts = unstable_cache(
   async (
     user_id: string,
     page: number,
     per_page: number,
-    sort_by: ContactsSortOptions
+    sort_by: ContactsSortOptions,
+    relationship?: Relationship
   ) =>
     await prisma.contact.findMany({
       orderBy: {
@@ -221,6 +223,11 @@ export const cached_contacts = unstable_cache(
       },
       where: {
         user_id,
+        ...(relationship && {
+          relationship: {
+            equals: relationship,
+          },
+        }),
       },
       include: {
         students: true,
