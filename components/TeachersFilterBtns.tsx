@@ -16,8 +16,14 @@ function TeachersFilterBtns() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const newSearchParams = new URLSearchParams(searchParams);
+    const newSearchParams = new URLSearchParams();
+    const page = searchParams.get('page');
+    const per_page = searchParams.get('page');
+    const sort_by = searchParams.get('sort_by');
 
+    if (page) newSearchParams.set('page', page);
+    if (per_page) newSearchParams.set('per_page', per_page);
+    if (sort_by) newSearchParams.set('sort_by', sort_by);
     if (gender) newSearchParams.set('gender', gender);
     if (subject) newSearchParams.set('subject', subject);
 
