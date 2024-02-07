@@ -13,6 +13,9 @@ import SortBtn from './SortBtn';
 
 export const columns = ['Avatar', 'Name', 'Subject'] as const;
 
+type Gender = 'male' | 'female';
+type Subject = 'maths' | 'physics' | 'french';
+
 export type TeachersSortOptions = 'latest' | 'oldest' | 'nb_students';
 const teachersSortOptions = ['latest', 'oldest', 'nb_students'] as const;
 
@@ -20,17 +23,21 @@ async function TeachersTable({
   page,
   per_page,
   sort_by,
+  gender,
+  subject,
 }: {
   page: number;
   per_page: number;
   sort_by: TeachersSortOptions;
+  gender?: Gender;
+  subject?: Subject;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalTeachers, teachers] = await Promise.all([
     prisma.teacher.count(),
-    cached_teachers(session.user.id, page, per_page, sort_by),
+    cached_teachers(session.user.id, page, per_page, sort_by, gender, subject),
   ]);
   if (!teachers || !teachers.length)
     return (

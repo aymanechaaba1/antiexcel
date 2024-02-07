@@ -9,6 +9,7 @@ import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
+import TeachersFilterBtns from '@/components/TeachersFilterBtns';
 
 function TeachersTableSkeleton() {
   const rows = 3;
@@ -39,13 +40,18 @@ function TeachersTableSkeleton() {
   );
 }
 
+type Gender = 'male' | 'female';
+type Subject = 'maths' | 'physics' | 'french';
+
 async function TeachersPage({
-  searchParams: { page, per_page, sort_by },
+  searchParams: { page, per_page, sort_by, gender, subject },
 }: {
   searchParams: {
     page: string;
     per_page: string;
     sort_by: TeachersSortOptions;
+    gender?: Gender;
+    subject?: Subject;
   };
 }) {
   return (
@@ -55,12 +61,17 @@ async function TeachersPage({
           <Link href={`/teachers/add`}>Add Teacher</Link>
         </Button>
       </div>
+      <div className="flex justify-end gap-4 my-4">
+        <TeachersFilterBtns />
+      </div>
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<TeachersTableSkeleton />}>
           <TeachersTable
             page={+page || DEFAULT_PAGE}
             per_page={+per_page || DEFAULT_PER_PAGE}
             sort_by={sort_by || DEFAULT_SORT_BY}
+            gender={gender}
+            subject={subject}
           />
         </Suspense>
       </ErrorBoundary>

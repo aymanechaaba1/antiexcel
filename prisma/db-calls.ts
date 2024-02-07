@@ -122,12 +122,15 @@ export const uncached_student = async (id: string) =>
     },
   });
 
+type Subject = 'maths' | 'physics' | 'french';
 export const cached_teachers = unstable_cache(
   async (
     user_id: string,
     page: number,
     per_page: number,
-    sort_by: TeachersSortOptions
+    sort_by: TeachersSortOptions,
+    gender?: Gender,
+    subject?: Subject
   ) =>
     await prisma.teacher.findMany({
       orderBy: {
@@ -145,6 +148,16 @@ export const cached_teachers = unstable_cache(
       },
       where: {
         user_id,
+        ...(gender && {
+          gender: {
+            equals: gender,
+          },
+        }),
+        ...(subject && {
+          subject: {
+            equals: subject,
+          },
+        }),
       },
       take: per_page,
       skip: (page - 1) * per_page,
