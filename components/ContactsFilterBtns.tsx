@@ -28,7 +28,7 @@ function ContactsFilterBtns() {
       </p>
       <ShadcnSelectComponent
         onValueChange={setRelationship}
-        defaultValue={relationship}
+        value={relationship}
         options={relationships}
         placeholder="Relationship"
         label="Relationship"

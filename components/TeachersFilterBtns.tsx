@@ -38,14 +38,14 @@ function TeachersFilterBtns() {
       <div className="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-3">
         <ShadcnSelectComponent
           onValueChange={setGender}
-          defaultValue={gender}
+          value={gender}
           options={genders}
           placeholder="Gender"
           label="Gender"
         />
         <ShadcnSelectComponent
           onValueChange={setSubject}
-          defaultValue={subject}
+          value={subject}
           options={subjects}
           placeholder="Subject"
           label="Subject"

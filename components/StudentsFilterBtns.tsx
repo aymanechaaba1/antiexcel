@@ -13,7 +13,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
-import ResetFiltersBtn from './ResetFiltersBtn';
 import { Button } from './ui/button';
 import { RotateCw } from 'lucide-react';
 
@@ -48,10 +47,18 @@ function StudentsFilterBtns({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [grade, setGrade] = useState<string | ''>('');
-  const [gender, setGender] = useState<string | ''>('');
-  const [school, setSchool] = useState<string | ''>('');
-  const [teacher, setTeacher] = useState<string | ''>('');
+  const [grade, setGrade] = useState<string | ''>(
+    searchParams.get('grade')?.toString() || ''
+  );
+  const [gender, setGender] = useState<string | ''>(
+    searchParams.get('gender')?.toString() || ''
+  );
+  const [school, setSchool] = useState<string | ''>(
+    searchParams.get('school')?.toString() || ''
+  );
+  const [teacher, setTeacher] = useState<string | ''>(
+    searchParams.get('teacher')?.toString() || ''
+  );
 
   useEffect(() => {
     const params = new URLSearchParams(searchParams);
