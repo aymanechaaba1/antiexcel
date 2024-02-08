@@ -12,12 +12,14 @@ function SearchBar() {
   const [_, startTransition] = useTransition();
 
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
+    startTransition(() => {
+      const params = new URLSearchParams(searchParams);
 
-    if (searchQuery) params.set('query', searchQuery);
-    else params.delete('query');
+      if (searchQuery) params.set('query', searchQuery);
+      else params.delete('query');
 
-    router.replace(`${pathname}?${params.toString()}`);
+      router.replace(`${pathname}?${params.toString()}`);
+    });
   }, [searchQuery]);
 
   return (
@@ -25,9 +27,7 @@ function SearchBar() {
       <Search size={18} />
       <input
         onChange={(e) => {
-          startTransition(() => {
-            setSearchQuery(e.target.value);
-          });
+          setSearchQuery(e.target.value);
         }}
         value={searchQuery}
         className="border-0 bg-transparent flex-1 outline-none text-sm"
