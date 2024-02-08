@@ -15,6 +15,7 @@ import {
 } from './ui/select';
 import { Button } from './ui/button';
 import { RotateCw } from 'lucide-react';
+import ResetFiltersBtn from './ResetFiltersBtn';
 
 const grades = ['1', '2', '3', '4', '5', '6'] as const;
 type Grade = '1' | '2' | '3' | '4' | '5' | '6';
@@ -47,16 +48,16 @@ function StudentsFilterBtns({
   const router = useRouter();
   const pathname = usePathname();
 
-  const [grade, setGrade] = useState<string | ''>(
+  const [grade, setGrade] = useState<string>(
     searchParams.get('grade')?.toString() || ''
   );
-  const [gender, setGender] = useState<string | ''>(
+  const [gender, setGender] = useState<string>(
     searchParams.get('gender')?.toString() || ''
   );
-  const [school, setSchool] = useState<string | ''>(
+  const [school, setSchool] = useState<string>(
     searchParams.get('school')?.toString() || ''
   );
-  const [teacher, setTeacher] = useState<string | ''>(
+  const [teacher, setTeacher] = useState<string>(
     searchParams.get('teacher')?.toString() || ''
   );
 
@@ -83,21 +84,14 @@ function StudentsFilterBtns({
       <p className="tracking-tight font-semibold text-gray-500 mb-3 text-right">
         Filter By
       </p>
-      <Button
-        variant={'outline'}
-        className="flex items-center justify-center mr-3 float-left"
+      <ResetFiltersBtn
         onClick={() => {
           setGrade('');
           setGender('');
           setSchool('');
           setTeacher('');
         }}
-      >
-        <RotateCw size={18} className="" />
-        <p className="sr-only text-sm tracking-tight font-semibold text-center">
-          Reset Filters
-        </p>
-      </Button>
+      />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2">
         <ShadcnSelectComponent
           onValueChange={setGrade}

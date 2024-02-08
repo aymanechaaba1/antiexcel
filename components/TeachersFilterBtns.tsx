@@ -3,31 +3,33 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ShadcnSelectComponent from './ShadcnSelectComponent';
+import ResetFiltersBtn from './ResetFiltersBtn';
 
 const genders = ['male', 'female'] as const;
 const subjects = ['physics', 'maths', 'french'] as const;
 
 function TeachersFilterBtns() {
-  const [gender, setGender] = useState<string>('');
-  const [subject, setSubject] = useState<string>();
-
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
+  const [gender, setGender] = useState<string>(
+    searchParams.get('gender')?.toString() || ''
+  );
+  const [subject, setSubject] = useState<string>(
+    searchParams.get('subject')?.toString() || ''
+  );
+
   useEffect(() => {
-    const newSearchParams = new URLSearchParams();
-    const page = searchParams.get('page');
-    const per_page = searchParams.get('page');
-    const sort_by = searchParams.get('sort_by');
+    const params = new URLSearchParams(searchParams);
 
-    if (page) newSearchParams.set('page', page);
-    if (per_page) newSearchParams.set('per_page', per_page);
-    if (sort_by) newSearchParams.set('sort_by', sort_by);
-    if (gender) newSearchParams.set('gender', gender);
-    if (subject) newSearchParams.set('subject', subject);
+    if (gender) params.set('gender', gender);
+    else params.delete('gender');
 
-    router.replace(`${pathname}/?${newSearchParams.toString()}`);
+    if (subject) params.set('subject', subject);
+    else params.delete('subject');
+
+    router.replace(`${pathname}?${params.toString()}`);
   }, [gender, subject]);
 
   return (
@@ -35,6 +37,12 @@ function TeachersFilterBtns() {
       <p className="tracking-tight font-semibold text-gray-500 mb-3 text-right">
         Filter By
       </p>
+      <ResetFiltersBtn
+        onClick={() => {
+          setGender('');
+          setSubject('');
+        }}
+      />
       <div className="grid grid-cols-1 gap-y-3 md:grid-cols-2 md:gap-x-3">
         <ShadcnSelectComponent
           onValueChange={setGender}
