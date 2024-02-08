@@ -14,6 +14,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import StudentsFilterBtns from '@/components/StudentsFilterBtns';
+import SearchBar from '@/components/SearchBar';
+import SortBtn from '@/components/SortBtn';
 
 function StudentsTableSkeleton() {
   const rows = 3;
@@ -45,7 +47,6 @@ function StudentsTableSkeleton() {
 }
 
 export type StudentsFilterOption = 'grade' | 'gender' | 'school' | 'teacher';
-const studentsFilterOptions = ['grade', 'gender', 'school', 'teacher'] as const;
 
 type Grade = '1' | '2' | '3' | '4' | '5' | '6';
 type Gender = 'male' | 'female';
@@ -57,8 +58,19 @@ type School =
   | 'wlad_slama'
   | 'al_wahda';
 
+const studentsSortOptions = ['latest', 'oldest', 'grade'] as const;
+
 async function StudentsPage({
-  searchParams: { page, per_page, sort_by, grade, gender, school, teacher },
+  searchParams: {
+    page,
+    per_page,
+    sort_by,
+    grade,
+    gender,
+    school,
+    teacher,
+    query,
+  },
 }: {
   searchParams: {
     page: string;
@@ -68,6 +80,7 @@ async function StudentsPage({
     gender?: Gender;
     school?: School;
     teacher?: string;
+    query?: string;
   };
 }) {
   const session = await getServerSession(authOptions);
@@ -83,8 +96,13 @@ async function StudentsPage({
         </Button>
       </div>
       <div className="flex justify-end gap-4 my-4">
+        <SortBtn sortOptions={studentsSortOptions} />
+      </div>
+      <div className="flex justify-end gap-4 my-4">
         <StudentsFilterBtns teachers={teachers} />
       </div>
+
+      <SearchBar />
 
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<StudentsTableSkeleton />}>
@@ -96,6 +114,7 @@ async function StudentsPage({
             gender={gender}
             school={school}
             teacher={teacher}
+            query={query}
           />
         </Suspense>
       </ErrorBoundary>

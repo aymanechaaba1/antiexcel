@@ -39,7 +39,8 @@ export const cached_students = unstable_cache(
     grade?: Grade,
     gender?: Gender,
     school?: School,
-    teacher?: string
+    teacher?: string,
+    query?: string
   ) =>
     await prisma.student.findMany({
       orderBy: {
@@ -70,6 +71,20 @@ export const cached_students = unstable_cache(
         }),
         ...(teacher && {
           teacher_id: teacher,
+        }),
+        ...(query && {
+          OR: [
+            {
+              firstname: {
+                startsWith: query,
+              },
+            },
+            {
+              lastname: {
+                startsWith: query,
+              },
+            },
+          ],
         }),
       },
       take: per_page,
@@ -287,3 +302,24 @@ export const getTeacherIds = async () =>
       name: true,
     },
   });
+
+export const searchStudents = async (query: string) => {
+  const students = await prisma.student.findMany({
+    where: {
+      OR: [
+        {
+          firstname: {
+            startsWith: query,
+          },
+        },
+        {
+          lastname: {
+            startsWith: query,
+          },
+        },
+      ],
+    },
+  });
+
+  return students;
+};

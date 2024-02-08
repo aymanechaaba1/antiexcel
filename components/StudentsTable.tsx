@@ -20,7 +20,6 @@ export const columns = [
 ] as const;
 
 export type StudentsSortOptions = 'latest' | 'oldest' | 'grade';
-const studentsSortOptions = ['latest', 'oldest', 'grade'] as const;
 
 type Grade = '1' | '2' | '3' | '4' | '5' | '6';
 type Gender = 'male' | 'female';
@@ -40,6 +39,7 @@ async function StudentsTable({
   gender,
   school,
   teacher,
+  query,
 }: {
   page: number;
   per_page: number;
@@ -48,6 +48,7 @@ async function StudentsTable({
   gender?: Gender;
   school?: School;
   teacher?: string;
+  query?: string;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
@@ -62,7 +63,8 @@ async function StudentsTable({
       grade,
       gender,
       school,
-      teacher
+      teacher,
+      query
     ),
   ]);
 
@@ -75,9 +77,6 @@ async function StudentsTable({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex justify-end gap-4 my-4">
-        <SortBtn sortOptions={studentsSortOptions} />
-      </div>
       <Section title="Students" className="flex-1">
         <div className="space-y-3 mt-5">
           <div className={`grid grid-cols-${columns.length} gap-x-4 gap-y-6`}>
