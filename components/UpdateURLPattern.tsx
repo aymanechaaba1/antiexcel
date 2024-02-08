@@ -29,7 +29,7 @@ function UpdateURLPattern({ children }: { children: ReactNode }) {
     //     router.replace(`${pathname}/?${newSearchParams.toString()}`);
     //   }
     // }
-  }, [pathname, page, per_page, sort_by]);
+  }, []);
 
   return <>{children}</>;
 }
