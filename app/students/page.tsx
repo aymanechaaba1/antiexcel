@@ -101,9 +101,7 @@ async function StudentsPage({
       <div className="flex justify-end gap-4 my-4">
         <StudentsFilterBtns teachers={teachers} />
       </div>
-
       <SearchBar />
-
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<StudentsTableSkeleton />}>
           <StudentsTable

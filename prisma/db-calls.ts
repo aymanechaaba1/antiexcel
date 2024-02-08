@@ -145,7 +145,8 @@ export const cached_teachers = unstable_cache(
     per_page: number,
     sort_by: TeachersSortOptions,
     gender?: Gender,
-    subject?: Subject
+    subject?: Subject,
+    query?: string
   ) =>
     await prisma.teacher.findMany({
       orderBy: {
@@ -172,6 +173,15 @@ export const cached_teachers = unstable_cache(
           subject: {
             equals: subject,
           },
+        }),
+        ...(query && {
+          OR: [
+            {
+              name: {
+                startsWith: query,
+              },
+            },
+          ],
         }),
       },
       take: per_page,
