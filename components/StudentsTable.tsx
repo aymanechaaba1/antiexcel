@@ -99,6 +99,7 @@ async function StudentsTable({
             <>
               <Separator />
               <Link
+                prefetch={false}
                 key={student.id}
                 href={`/students/${student.id}`}
                 className={`grid grid-cols-${columns.length} items-center gap-x-4 dark:hover:bg-gray-900 hover:bg-gray-100 px-4 py-2 rounded-lg`}

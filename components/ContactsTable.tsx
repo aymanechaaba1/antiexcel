@@ -9,7 +9,6 @@ import UpdateContactButton from './UpdateContactButton';
 import { redirect } from 'next/navigation';
 import prisma from '@/prisma/prismaClient';
 import DataPagination from './DataPagination';
-import SortBtn from './SortBtn';
 
 export const columns = ['Avatar', 'Name', 'Phone', 'Relationship'] as const;
 
@@ -23,25 +22,31 @@ async function ContactsTable({
   per_page,
   sort_by,
   relationship,
+  query,
 }: {
   page: number;
   per_page: number;
   sort_by: ContactsSortOptions;
   relationship?: Relationship;
+  query?: string;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalContacts, contacts] = await Promise.all([
     prisma.contact.count(),
-    cached_contacts(session.user.id, page, per_page, sort_by, relationship),
+    cached_contacts(
+      session.user.id,
+      page,
+      per_page,
+      sort_by,
+      relationship,
+      query
+    ),
   ]);
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex justify-end">
-        <SortBtn sortOptions={contactsSortOptions} />
-      </div>
       <Section title="Contacts" className="flex-1">
         <div className="space-y-4">
           <div className={'grid grid-cols-5'}>

@@ -9,6 +9,9 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import ContactsFilterBtns from '@/components/ContactsFilterBtns';
+import SearchBar from '@/components/SearchBar';
+import SortBtn from '@/components/SortBtn';
+import prisma from '@/prisma/prismaClient';
 
 function ContactsTableSkeleton() {
   const rows = 3;
@@ -40,23 +43,29 @@ function ContactsTableSkeleton() {
 }
 
 type Relationship = 'mother' | 'father' | 'brother' | 'sister';
+const contactsSortOptions = ['latest', 'oldest'] as const;
 
 async function ContactsPage({
-  searchParams: { page, per_page, sort_by, relationship },
+  searchParams: { page, per_page, sort_by, relationship, query },
 }: {
   searchParams: {
     page: string;
     per_page: string;
     sort_by: ContactsSortOptions;
     relationship?: Relationship;
+    query?: string;
   };
 }) {
   return (
     <div className="space-y-4">
       <AddContactButton />
+      <div className="flex justify-end">
+        <SortBtn sortOptions={contactsSortOptions} />
+      </div>
       <div className="flex justify-end gap-4 my-4">
         <ContactsFilterBtns />
       </div>
+      <SearchBar />
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<ContactsTableSkeleton />}>
           <ContactsList
@@ -64,6 +73,7 @@ async function ContactsPage({
             per_page={+per_page || DEFAULT_PER_PAGE}
             sort_by={sort_by || DEFAULT_SORT_BY}
             relationship={relationship}
+            query={query}
           />
         </Suspense>
       </ErrorBoundary>

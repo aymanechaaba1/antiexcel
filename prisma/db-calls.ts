@@ -240,7 +240,8 @@ export const cached_contacts = unstable_cache(
     page: number,
     per_page: number,
     sort_by: ContactsSortOptions,
-    relationship?: Relationship
+    relationship?: Relationship,
+    query?: string
   ) =>
     await prisma.contact.findMany({
       orderBy: {
@@ -251,6 +252,11 @@ export const cached_contacts = unstable_cache(
         ...(relationship && {
           relationship: {
             equals: relationship,
+          },
+        }),
+        ...(query && {
+          name: {
+            startsWith: query,
           },
         }),
       },

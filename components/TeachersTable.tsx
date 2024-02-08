@@ -9,7 +9,6 @@ import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import DataPagination from './DataPagination';
 import prisma from '@/prisma/prismaClient';
-import SortBtn from './SortBtn';
 
 export const columns = ['Avatar', 'Name', 'Subject'] as const;
 
@@ -75,6 +74,7 @@ async function TeachersTable({
               <>
                 <Separator />
                 <Link
+                  prefetch={false}
                   key={teacher.id}
                   href={`/teachers/${teacher.id}`}
                   className={`grid grid-cols-${columns.length} gap-x-4 dark:hover:bg-gray-900 items-center hover:bg-gray-100 px-4 py-2 rounded-lg`}
