@@ -1,102 +1,42 @@
 'use client';
 
-import { useToast } from '@/components/ui/use-toast';
-import { fetchNewAccessToken } from '@/lib/utils';
 import { uncached_user } from '@/prisma/db-calls';
-import {
-  useAccessTokenStore,
-  useSubscriptionsStore,
-  useTransactionsStore,
-} from '@/store/store';
-import { useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import { useSubscriptionsStore } from '@/store/store';
+import React, { ReactNode, useEffect } from 'react';
 
 function SubscriptionProvider({
   children,
   user,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   user: Awaited<ReturnType<typeof uncached_user>>;
 }) {
-  const { data: session } = useSession();
-  if (!session) return <>{children}</>;
-
-  const { toast } = useToast();
-
-  const { access_token, setAccessToken } = useAccessTokenStore(
-    (state) => state
-  );
-  const { subscription, setSubscription } = useSubscriptionsStore(
-    (state) => state
-  );
-  const { setTransactions } = useTransactionsStore((state) => state);
+  const subscription = useSubscriptionsStore((state) => state);
 
   useEffect(() => {
     if (!user) return;
 
-    // const three_min = 3 * 60 * 1000;
-    const one_week = 7 * 24 * 60 * 60 * 1000;
-    const limitIntervalId = setInterval(async () => {}, one_week);
-
-    if (!user.subscription_id) return setSubscription(undefined);
-    fetchNewAccessToken()
-      .then((result) => {
-        setAccessToken(result.access_token);
-        return fetch(
-          `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${user.subscription_id}`,
-          {
-            headers: {
-              Authorization: `Bearer ${result.access_token}`,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-            cache: 'no-store',
-          }
-        );
-      })
-      .then((res) => {
-        if (!res.ok) throw new Error(`Failed fetching subscription.`);
-        return res.json();
-      })
-      .then((subscription: Subscription) => {
-        setSubscription(subscription);
-
-        return fetch(
-          `https://api-m.sandbox.paypal.com/v1/billing/subscriptions/${
-            subscription.id
-          }/transactions?start_time=${
-            subscription.start_time
-          }&end_time=${new Date().toISOString()}`,
-          {
-            headers: {
-              Authorization: `Bearer ${access_token}`,
-              'Content-Type': 'application/json',
-              Accept: 'application/json',
-            },
-          }
-        );
-      })
-      .then((transactionsRes) => {
-        if (!transactionsRes?.ok)
-          throw new Error(`Failed fetching subscription transactions.`);
-        return transactionsRes.json();
-      })
-      .then((transactions) => {
-        setTransactions(transactions.transactions);
-      })
-      .catch((error: Error) => {
-        toast({
-          title: `${error.message}`,
-          variant: 'destructive',
-        });
+    if (
+      user.stripe_subscription_id &&
+      user.stripe_customer_id &&
+      user.stripe_price_id &&
+      user.stripe_current_period_end
+    )
+      subscription.setSubscription({
+        id: user.stripe_subscription_id,
+        customer_id: user.stripe_customer_id,
+        price_id: user.stripe_price_id,
+        current_period_end: user.stripe_current_period_end,
+        cancel_at: user.cancel_at || null,
       });
+    else subscription.setSubscription(undefined);
 
-    return () => {
-      [limitIntervalId].forEach((id) => {
-        clearInterval(id);
-      });
-    };
-  }, [user, access_token, setAccessToken, setSubscription, setTransactions]);
+    const today = new Date();
+
+    if (user.cancel_at) {
+      if (today === user.cancel_at) subscription.setSubscription(undefined);
+    }
+  }, [user]);
 
   return <>{children}</>;
 }

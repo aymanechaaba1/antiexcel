@@ -45,11 +45,21 @@ export function UserDropdown() {
               onClick={() => {
                 setOpenDropdown(false);
               }}
+              href={'/billing'}
+            >
+              Billing
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Settings className="mr-2 h-4 w-4" />
+            <Link
+              onClick={() => {
+                setOpenDropdown(false);
+              }}
               href={'/settings/plan'}
             >
               Settings
             </Link>
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />

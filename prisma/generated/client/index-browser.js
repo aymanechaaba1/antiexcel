@@ -7,7 +7,7 @@ const {
   makeStrictEnum,
   Public,
   detectRuntime,
-} = require('./runtime/index-browser')
+} = require('./runtime/index-browser.js')
 
 
 const Prisma = {}
@@ -16,37 +16,37 @@ exports.Prisma = Prisma
 exports.$Enums = {}
 
 /**
- * Prisma Client JS version: 5.7.1
- * Query Engine version: 0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5
+ * Prisma Client JS version: 5.9.1
+ * Query Engine version: 23fdc5965b1e05fc54e5f26ed3de66776b93de64
  */
 Prisma.prismaVersion = {
-  client: "5.7.1",
-  engine: "0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5"
+  client: "5.9.1",
+  engine: "23fdc5965b1e05fc54e5f26ed3de66776b93de64"
 }
 
 Prisma.PrismaClientKnownRequestError = () => {
   throw new Error(`PrismaClientKnownRequestError is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )};
 Prisma.PrismaClientUnknownRequestError = () => {
   throw new Error(`PrismaClientUnknownRequestError is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.PrismaClientRustPanicError = () => {
   throw new Error(`PrismaClientRustPanicError is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.PrismaClientInitializationError = () => {
   throw new Error(`PrismaClientInitializationError is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.PrismaClientValidationError = () => {
   throw new Error(`PrismaClientValidationError is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.NotFoundError = () => {
   throw new Error(`NotFoundError is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.Decimal = Decimal
 
@@ -55,19 +55,19 @@ Prisma.Decimal = Decimal
  */
 Prisma.sql = () => {
   throw new Error(`sqltag is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.empty = () => {
   throw new Error(`empty is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.join = () => {
   throw new Error(`join is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.raw = () => {
   throw new Error(`raw is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.validator = Public.validator
 
@@ -76,11 +76,11 @@ Prisma.validator = Public.validator
 */
 Prisma.getExtensionContext = () => {
   throw new Error(`Extensions.getExtensionContext is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 Prisma.defineExtension = () => {
   throw new Error(`Extensions.defineExtension is unable to be run ${runtimeDescription}.
-In case this error is unexpected for you, please report it in https://github.com/prisma/prisma/issues`,
+In case this error is unexpected for you, please report it in https://pris.ly/prisma-prisma-bug-report`,
 )}
 
 /**
@@ -135,7 +135,11 @@ exports.Prisma.UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
-  subscription_id: 'subscription_id'
+  stripe_customer_id: 'stripe_customer_id',
+  stripe_subscription_id: 'stripe_subscription_id',
+  stripe_price_id: 'stripe_price_id',
+  stripe_current_period_end: 'stripe_current_period_end',
+  cancel_at: 'cancel_at'
 };
 
 exports.Prisma.VerificationTokenScalarFieldEnum = {
@@ -196,64 +200,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
-exports.Prisma.AccountOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refresh_token: 'refresh_token',
-  access_token: 'access_token',
-  token_type: 'token_type',
-  scope: 'scope',
-  id_token: 'id_token',
-  session_state: 'session_state'
-};
-
-exports.Prisma.SessionOrderByRelevanceFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken',
-  userId: 'userId'
-};
-
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  image: 'image',
-  subscription_id: 'subscription_id'
-};
-
-exports.Prisma.VerificationTokenOrderByRelevanceFieldEnum = {
-  identifier: 'identifier',
-  token: 'token'
-};
-
-exports.Prisma.StudentOrderByRelevanceFieldEnum = {
-  id: 'id',
-  firstname: 'firstname',
-  lastname: 'lastname',
-  user_id: 'user_id',
-  teacher_id: 'teacher_id',
-  contact_id: 'contact_id'
-};
-
-exports.Prisma.ContactOrderByRelevanceFieldEnum = {
-  id: 'id',
-  email: 'email',
-  phone: 'phone',
-  name: 'name',
-  user_id: 'user_id'
-};
-
-exports.Prisma.TeacherOrderByRelevanceFieldEnum = {
-  id: 'id',
-  email: 'email',
-  phone: 'phone',
-  name: 'name',
-  user_id: 'user_id'
-};
 exports.Gender = exports.$Enums.Gender = {
   male: 'male',
   female: 'female'
@@ -303,7 +249,7 @@ class PrismaClient {
           'workerd': 'Cloudflare Workers',
           'deno': 'Deno and Deno Deploy',
           'netlify': 'Netlify Edge Functions',
-          'edge-light': 'Vercel Edge Functions',
+          'edge-light': 'Vercel Edge Functions or Edge Middleware',
         }[runtime]
 
         let message = 'PrismaClient is unable to run in '
@@ -314,7 +260,7 @@ class PrismaClient {
         }
         
         message += `
-If this is unexpected, please open an issue: https://github.com/prisma/prisma/issues`
+If this is unexpected, please open an issue: https://pris.ly/prisma-prisma-bug-report`
 
         throw new Error(message)
       }

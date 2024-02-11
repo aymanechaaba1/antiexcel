@@ -17,3 +17,5 @@ export const DEFAULT_SORT_BY: 'latest' | 'oldest' = 'latest';
 
 export const DEFAULT_FILTER_STUDENTS_BY: StudentsFilterOption = 'grade';
 export const DEFAULT_FILTER_STUDENTS_GRADE = '';
+
+export const FREE_PLAN_LIMIT: number = 3;

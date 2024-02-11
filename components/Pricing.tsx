@@ -3,105 +3,94 @@
 import { Check } from 'lucide-react';
 import { Card } from './ui/card';
 import { Separator } from './ui/separator';
+import { plans } from '@/plans';
+import Section from './Section';
+import { formatPrice } from '@/lib/utils';
 import { Button } from './ui/button';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { createStipeSession } from '@/actions';
+import { useToast } from './ui/use-toast';
 import { useSubscriptionsStore } from '@/store/store';
 import Link from 'next/link';
-import { plans } from '@/plans';
-import { signIn } from 'next-auth/react';
-import Section from './Section';
-import CheckoutButton from './CheckoutButton';
-import { Session } from 'next-auth';
 
-function Pricing({ session }: { session: Session | null }) {
+function Pricing() {
+  const router = useRouter();
+  const { toast } = useToast();
   const { subscription } = useSubscriptionsStore((state) => state);
 
   return (
-    <Section title="Pricing" className="my-5 mx-auto max-w-3xl">
-      <div className="flex flex-col md:flex-row gap-3 py-4">
-        <Card className="border rounded-lg p-4 space-y-3">
-          <div>
-            <h1 className="text-xl font-bold">{plans[0].name}</h1>
-            <p className="text-gray-500">{plans[0].description}</p>
-          </div>
-          <Separator />
-          <div>
-            <h1>
-              <span className="font-bold text-3xl">$0</span>
-            </h1>
-          </div>
-          <Separator />
-          <div>
-            {plans[0].features.map((feature, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <Check className="text-purple-500" />
-                <p className="font-medium text-sm">{feature}</p>
-              </div>
-            ))}
-          </div>
-          <Separator />
-          {!session && (
-            <Button
-              onClick={() => {
-                signIn();
-              }}
-            >
-              Sign In
-            </Button>
-          )}
-          {session && (
-            <Button asChild>
-              <Link href={`/dashboard`}>Dashboard</Link>
-            </Button>
-          )}
-        </Card>
-        <Card className="border rounded-lg p-4 space-y-3">
-          <div>
-            <h1 className="text-xl font-bold">{plans[1].name}</h1>
-            <p className="text-gray-500">{plans[1].description}</p>
-          </div>
-          <Separator />
-          <div>
-            <h1>
-              {plans[1].billing_cycles && (
-                <span className="font-bold text-3xl">
-                  ${plans[1].billing_cycles[0].pricing_scheme.fixed_price.value}
-                </span>
-              )}
-              <span className="ml-2 text-xs text-gray-500">per month</span>
-            </h1>
-          </div>
-          <Separator />
-          <div>
-            {plans[1].features.map((feature, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <Check className="text-purple-500" />
-                <p className="font-medium text-sm">{feature}</p>
-              </div>
-            ))}
-          </div>
-          <Separator />
-          {!session ? (
-            <Button
-              onClick={() => {
-                signIn();
-              }}
-            >
-              Sign In
-            </Button>
-          ) : session && !subscription ? (
-            <CheckoutButton session={session} />
-          ) : (
-            <>
-              <p className="text-gray-500 text-xs">
-                You&apos;re a PRO memeber!
+    <Section className="flex flex-col gap-y-4 md:flex-row md:gap-x-10">
+      {plans.map((plan, i) => (
+        <Card key={i} className="p-4">
+          <h3 className="h3">{plan.name}</h3>
+          <p className="text-gray-500 mt-1">{plan.slug}</p>
+          <Separator className="my-3" />
+          <p className="text-2xl font-semibold">
+            {formatPrice(plan.price.amount)}
+          </p>
+          {plan.features.map((feature, i) => (
+            <div key={i} className="flex items-center gap-x-3 mt-2">
+              <Check size={13} className="text-purple-500" />
+              <p className="text-sm text-gray-900 dark:text-gray-200">
+                {feature}
               </p>
-              <Button asChild>
-                <Link href={`/dashboard`}>Dashboard</Link>
+            </div>
+          ))}
+          {plan.name === 'Free Plan' && !subscription && (
+            <>
+              <Button
+                onClick={async (e) => {
+                  try {
+                    await createStipeSession();
+                  } catch (err) {
+                    toast({
+                      title: 'Something Went Wrong!',
+                      variant: 'destructive',
+                    });
+                  }
+                }}
+                className="bg-purple-500 hover:bg-purple-600 text-white mt-3"
+              >
+                Become a Pro!
               </Button>
+              <p className="text-gray-500 mt-3 text-sm tracking-tight scroll-m-20 font-semibold">
+                You are on the Free plan
+              </p>
             </>
           )}
+
+          {plan.name === 'Pro Plan' &&
+            (!subscription ? (
+              <Button
+                onClick={async (e) => {
+                  try {
+                    await createStipeSession();
+                  } catch (err) {
+                    toast({
+                      title: 'Something Went Wrong!',
+                      variant: 'destructive',
+                    });
+                  }
+                }}
+                className="bg-purple-500 hover:bg-purple-600 text-white mt-3"
+              >
+                Become a Pro!
+              </Button>
+            ) : (
+              <>
+                <Button
+                  className="bg-purple-500 hover:bg-purple-600 text-white mt-3"
+                  asChild
+                >
+                  <Link href={`/dashboard`}>Dashboard</Link>
+                </Button>
+                <p className="text-gray-500 mt-3 text-sm tracking-tight scroll-m-20 font-semibold">
+                  You are on the Pro plan
+                </p>
+              </>
+            ))}
         </Card>
-      </div>
+      ))}
     </Section>
   );
 }

@@ -1,7 +1,7 @@
 import PlanDetails from '@/components/PlanDetails';
 
 function PlanPage() {
-  return <PlanDetails />;
+  return <></>;
 }
 
 export default PlanPage;

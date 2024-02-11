@@ -14,7 +14,7 @@ function Section({
 }) {
   return (
     <div className={`${className}`}>
-      <h1 className="text-3xl tracking-tight font-semibold scroll-m-20 mb-5">
+      <h1 className="text-3xl tracking-tight font-semibold scroll-m-20">
         {title}
       </h1>
       <p className="text-gray-400">{description}</p>

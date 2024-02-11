@@ -109,3 +109,9 @@ export const isoToString = (isoDate: Date) => {
 
   return `${yyyy}-${mm}-${dd}`;
 };
+
+export const formatPrice = (amount: number) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);

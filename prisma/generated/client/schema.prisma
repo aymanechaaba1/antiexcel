@@ -6,7 +6,6 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
   output   = "./generated/client"
-  previewFeatures = ["fullTextSearch"]
 }
 
 model Account {
@@ -37,17 +36,21 @@ model Session {
 }
 
 model User {
-  id              String    @id @default(cuid())
-  name            String?
-  email           String?   @unique
-  emailVerified   DateTime?
-  image           String?
-  accounts        Account[]
-  sessions        Session[]
-  students        Student[]
-  teachers        Teacher[]
-  contacts        Contact[]
-  subscription_id String?   @unique
+  id                        String    @id @default(cuid())
+  name                      String?
+  email                     String?   @unique
+  emailVerified             DateTime?
+  image                     String?
+  accounts                  Account[]
+  sessions                  Session[]
+  students                  Student[]
+  teachers                  Teacher[]
+  contacts                  Contact[]
+  stripe_customer_id        String?   @unique
+  stripe_subscription_id    String?   @unique
+  stripe_price_id           String?   @unique
+  stripe_current_period_end DateTime?
+  cancel_at                 DateTime?
 }
 
 model VerificationToken {
@@ -82,11 +85,11 @@ model Student {
   grade      Int
   birthdate  DateTime
   school     School
-  user      User      @relation(fields: [user_id], references: [id])
+  user       User      @relation(fields: [user_id], references: [id])
   user_id    String
   teacher    Teacher?  @relation(fields: [teacher_id], references: [id])
   teacher_id String
-  contact    Contact?   @relation(fields: [contact_id], references: [id], onDelete: Cascade)
+  contact    Contact?  @relation(fields: [contact_id], references: [id], onDelete: Cascade)
   contact_id String?
 }
 
@@ -98,15 +101,15 @@ enum Relationship {
 }
 
 model Contact {
-  id           String    @id @default(cuid())
-  created_at   DateTime? @default(now())
-  updated_at   DateTime? @updatedAt
-  email        String    @unique
-  phone        String    @unique
+  id           String       @id @default(cuid())
+  created_at   DateTime?    @default(now())
+  updated_at   DateTime?    @updatedAt
+  email        String       @unique
+  phone        String       @unique
   name         String
   relationship Relationship
   students     Student[]
-  user         User      @relation(fields: [user_id], references: [id])
+  user         User         @relation(fields: [user_id], references: [id])
   user_id      String
 }
 

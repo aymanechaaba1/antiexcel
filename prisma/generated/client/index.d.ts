@@ -3,7 +3,7 @@
  * Client
 **/
 
-import * as runtime from './runtime/library';
+import * as runtime from './runtime/library.js';
 import $Types = runtime.Types // general types
 import $Public = runtime.Types.Public
 import $Utils = runtime.Types.Utils
@@ -357,8 +357,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 5.7.1
-   * Query Engine version: 0ca5ccbcfa6bdc81c003cf549abe4269f59c41e5
+   * Prisma Client JS version: 5.9.1
+   * Query Engine version: 23fdc5965b1e05fc54e5f26ed3de66776b93de64
    */
   export type PrismaVersion = {
     client: string
@@ -1680,7 +1680,7 @@ export namespace Prisma {
      * 
      * Determine the order of Accounts to fetch.
      */
-    orderBy?: AccountOrderByWithRelationAndSearchRelevanceInput | AccountOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -1852,7 +1852,7 @@ export namespace Prisma {
   type AccountGetPayload<S extends boolean | null | undefined | AccountDefaultArgs> = $Result.GetResult<Prisma.$AccountPayload, S>
 
   type AccountCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<AccountFindManyArgs, 'select' | 'include' | 'distinct' > & {
+    Omit<AccountFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: AccountCountAggregateInputType | true
     }
 
@@ -2315,7 +2315,7 @@ export namespace Prisma {
      * 
      * Determine the order of Accounts to fetch.
      */
-    orderBy?: AccountOrderByWithRelationAndSearchRelevanceInput | AccountOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -2364,7 +2364,7 @@ export namespace Prisma {
      * 
      * Determine the order of Accounts to fetch.
      */
-    orderBy?: AccountOrderByWithRelationAndSearchRelevanceInput | AccountOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -2413,7 +2413,7 @@ export namespace Prisma {
      * 
      * Determine the order of Accounts to fetch.
      */
-    orderBy?: AccountOrderByWithRelationAndSearchRelevanceInput | AccountOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -2643,7 +2643,7 @@ export namespace Prisma {
      * 
      * Determine the order of Sessions to fetch.
      */
-    orderBy?: SessionOrderByWithRelationAndSearchRelevanceInput | SessionOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -2767,7 +2767,7 @@ export namespace Prisma {
   type SessionGetPayload<S extends boolean | null | undefined | SessionDefaultArgs> = $Result.GetResult<Prisma.$SessionPayload, S>
 
   type SessionCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<SessionFindManyArgs, 'select' | 'include' | 'distinct' > & {
+    Omit<SessionFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: SessionCountAggregateInputType | true
     }
 
@@ -3222,7 +3222,7 @@ export namespace Prisma {
      * 
      * Determine the order of Sessions to fetch.
      */
-    orderBy?: SessionOrderByWithRelationAndSearchRelevanceInput | SessionOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -3271,7 +3271,7 @@ export namespace Prisma {
      * 
      * Determine the order of Sessions to fetch.
      */
-    orderBy?: SessionOrderByWithRelationAndSearchRelevanceInput | SessionOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -3320,7 +3320,7 @@ export namespace Prisma {
      * 
      * Determine the order of Sessions to fetch.
      */
-    orderBy?: SessionOrderByWithRelationAndSearchRelevanceInput | SessionOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -3501,7 +3501,11 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
-    subscription_id: string | null
+    stripe_customer_id: string | null
+    stripe_subscription_id: string | null
+    stripe_price_id: string | null
+    stripe_current_period_end: Date | null
+    cancel_at: Date | null
   }
 
   export type UserMaxAggregateOutputType = {
@@ -3510,7 +3514,11 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
-    subscription_id: string | null
+    stripe_customer_id: string | null
+    stripe_subscription_id: string | null
+    stripe_price_id: string | null
+    stripe_current_period_end: Date | null
+    cancel_at: Date | null
   }
 
   export type UserCountAggregateOutputType = {
@@ -3519,7 +3527,11 @@ export namespace Prisma {
     email: number
     emailVerified: number
     image: number
-    subscription_id: number
+    stripe_customer_id: number
+    stripe_subscription_id: number
+    stripe_price_id: number
+    stripe_current_period_end: number
+    cancel_at: number
     _all: number
   }
 
@@ -3530,7 +3542,11 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
-    subscription_id?: true
+    stripe_customer_id?: true
+    stripe_subscription_id?: true
+    stripe_price_id?: true
+    stripe_current_period_end?: true
+    cancel_at?: true
   }
 
   export type UserMaxAggregateInputType = {
@@ -3539,7 +3555,11 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
-    subscription_id?: true
+    stripe_customer_id?: true
+    stripe_subscription_id?: true
+    stripe_price_id?: true
+    stripe_current_period_end?: true
+    cancel_at?: true
   }
 
   export type UserCountAggregateInputType = {
@@ -3548,7 +3568,11 @@ export namespace Prisma {
     email?: true
     emailVerified?: true
     image?: true
-    subscription_id?: true
+    stripe_customer_id?: true
+    stripe_subscription_id?: true
+    stripe_price_id?: true
+    stripe_current_period_end?: true
+    cancel_at?: true
     _all?: true
   }
 
@@ -3562,7 +3586,7 @@ export namespace Prisma {
      * 
      * Determine the order of Users to fetch.
      */
-    orderBy?: UserOrderByWithRelationAndSearchRelevanceInput | UserOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -3630,7 +3654,11 @@ export namespace Prisma {
     email: string | null
     emailVerified: Date | null
     image: string | null
-    subscription_id: string | null
+    stripe_customer_id: string | null
+    stripe_subscription_id: string | null
+    stripe_price_id: string | null
+    stripe_current_period_end: Date | null
+    cancel_at: Date | null
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
     _max: UserMaxAggregateOutputType | null
@@ -3656,7 +3684,11 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
-    subscription_id?: boolean
+    stripe_customer_id?: boolean
+    stripe_subscription_id?: boolean
+    stripe_price_id?: boolean
+    stripe_current_period_end?: boolean
+    cancel_at?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
     students?: boolean | User$studentsArgs<ExtArgs>
@@ -3671,7 +3703,11 @@ export namespace Prisma {
     email?: boolean
     emailVerified?: boolean
     image?: boolean
-    subscription_id?: boolean
+    stripe_customer_id?: boolean
+    stripe_subscription_id?: boolean
+    stripe_price_id?: boolean
+    stripe_current_period_end?: boolean
+    cancel_at?: boolean
   }
 
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3699,7 +3735,11 @@ export namespace Prisma {
       email: string | null
       emailVerified: Date | null
       image: string | null
-      subscription_id: string | null
+      stripe_customer_id: string | null
+      stripe_subscription_id: string | null
+      stripe_price_id: string | null
+      stripe_current_period_end: Date | null
+      cancel_at: Date | null
     }, ExtArgs["result"]["user"]>
     composites: {}
   }
@@ -3708,7 +3748,7 @@ export namespace Prisma {
   type UserGetPayload<S extends boolean | null | undefined | UserDefaultArgs> = $Result.GetResult<Prisma.$UserPayload, S>
 
   type UserCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<UserFindManyArgs, 'select' | 'include' | 'distinct' > & {
+    Omit<UserFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: UserCountAggregateInputType | true
     }
 
@@ -4108,7 +4148,11 @@ export namespace Prisma {
     readonly email: FieldRef<"User", 'String'>
     readonly emailVerified: FieldRef<"User", 'DateTime'>
     readonly image: FieldRef<"User", 'String'>
-    readonly subscription_id: FieldRef<"User", 'String'>
+    readonly stripe_customer_id: FieldRef<"User", 'String'>
+    readonly stripe_subscription_id: FieldRef<"User", 'String'>
+    readonly stripe_price_id: FieldRef<"User", 'String'>
+    readonly stripe_current_period_end: FieldRef<"User", 'DateTime'>
+    readonly cancel_at: FieldRef<"User", 'DateTime'>
   }
     
 
@@ -4173,7 +4217,7 @@ export namespace Prisma {
      * 
      * Determine the order of Users to fetch.
      */
-    orderBy?: UserOrderByWithRelationAndSearchRelevanceInput | UserOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -4222,7 +4266,7 @@ export namespace Prisma {
      * 
      * Determine the order of Users to fetch.
      */
-    orderBy?: UserOrderByWithRelationAndSearchRelevanceInput | UserOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -4271,7 +4315,7 @@ export namespace Prisma {
      * 
      * Determine the order of Users to fetch.
      */
-    orderBy?: UserOrderByWithRelationAndSearchRelevanceInput | UserOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -4433,7 +4477,7 @@ export namespace Prisma {
      */
     include?: AccountInclude<ExtArgs> | null
     where?: AccountWhereInput
-    orderBy?: AccountOrderByWithRelationAndSearchRelevanceInput | AccountOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     cursor?: AccountWhereUniqueInput
     take?: number
     skip?: number
@@ -4454,7 +4498,7 @@ export namespace Prisma {
      */
     include?: SessionInclude<ExtArgs> | null
     where?: SessionWhereInput
-    orderBy?: SessionOrderByWithRelationAndSearchRelevanceInput | SessionOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: SessionOrderByWithRelationInput | SessionOrderByWithRelationInput[]
     cursor?: SessionWhereUniqueInput
     take?: number
     skip?: number
@@ -4475,7 +4519,7 @@ export namespace Prisma {
      */
     include?: StudentInclude<ExtArgs> | null
     where?: StudentWhereInput
-    orderBy?: StudentOrderByWithRelationAndSearchRelevanceInput | StudentOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     cursor?: StudentWhereUniqueInput
     take?: number
     skip?: number
@@ -4496,7 +4540,7 @@ export namespace Prisma {
      */
     include?: TeacherInclude<ExtArgs> | null
     where?: TeacherWhereInput
-    orderBy?: TeacherOrderByWithRelationAndSearchRelevanceInput | TeacherOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: TeacherOrderByWithRelationInput | TeacherOrderByWithRelationInput[]
     cursor?: TeacherWhereUniqueInput
     take?: number
     skip?: number
@@ -4517,7 +4561,7 @@ export namespace Prisma {
      */
     include?: ContactInclude<ExtArgs> | null
     where?: ContactWhereInput
-    orderBy?: ContactOrderByWithRelationAndSearchRelevanceInput | ContactOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
     cursor?: ContactWhereUniqueInput
     take?: number
     skip?: number
@@ -4600,7 +4644,7 @@ export namespace Prisma {
      * 
      * Determine the order of VerificationTokens to fetch.
      */
-    orderBy?: VerificationTokenOrderByWithRelationAndSearchRelevanceInput | VerificationTokenOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -4713,7 +4757,7 @@ export namespace Prisma {
   type VerificationTokenGetPayload<S extends boolean | null | undefined | VerificationTokenDefaultArgs> = $Result.GetResult<Prisma.$VerificationTokenPayload, S>
 
   type VerificationTokenCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<VerificationTokenFindManyArgs, 'select' | 'include' | 'distinct' > & {
+    Omit<VerificationTokenFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: VerificationTokenCountAggregateInputType | true
     }
 
@@ -5154,7 +5198,7 @@ export namespace Prisma {
      * 
      * Determine the order of VerificationTokens to fetch.
      */
-    orderBy?: VerificationTokenOrderByWithRelationAndSearchRelevanceInput | VerificationTokenOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -5199,7 +5243,7 @@ export namespace Prisma {
      * 
      * Determine the order of VerificationTokens to fetch.
      */
-    orderBy?: VerificationTokenOrderByWithRelationAndSearchRelevanceInput | VerificationTokenOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -5244,7 +5288,7 @@ export namespace Prisma {
      * 
      * Determine the order of VerificationTokens to fetch.
      */
-    orderBy?: VerificationTokenOrderByWithRelationAndSearchRelevanceInput | VerificationTokenOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: VerificationTokenOrderByWithRelationInput | VerificationTokenOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -5520,7 +5564,7 @@ export namespace Prisma {
      * 
      * Determine the order of Students to fetch.
      */
-    orderBy?: StudentOrderByWithRelationAndSearchRelevanceInput | StudentOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -5698,7 +5742,7 @@ export namespace Prisma {
   type StudentGetPayload<S extends boolean | null | undefined | StudentDefaultArgs> = $Result.GetResult<Prisma.$StudentPayload, S>
 
   type StudentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<StudentFindManyArgs, 'select' | 'include' | 'distinct' > & {
+    Omit<StudentFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: StudentCountAggregateInputType | true
     }
 
@@ -6165,7 +6209,7 @@ export namespace Prisma {
      * 
      * Determine the order of Students to fetch.
      */
-    orderBy?: StudentOrderByWithRelationAndSearchRelevanceInput | StudentOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -6214,7 +6258,7 @@ export namespace Prisma {
      * 
      * Determine the order of Students to fetch.
      */
-    orderBy?: StudentOrderByWithRelationAndSearchRelevanceInput | StudentOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -6263,7 +6307,7 @@ export namespace Prisma {
      * 
      * Determine the order of Students to fetch.
      */
-    orderBy?: StudentOrderByWithRelationAndSearchRelevanceInput | StudentOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -6549,7 +6593,7 @@ export namespace Prisma {
      * 
      * Determine the order of Contacts to fetch.
      */
-    orderBy?: ContactOrderByWithRelationAndSearchRelevanceInput | ContactOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -6694,7 +6738,7 @@ export namespace Prisma {
   type ContactGetPayload<S extends boolean | null | undefined | ContactDefaultArgs> = $Result.GetResult<Prisma.$ContactPayload, S>
 
   type ContactCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<ContactFindManyArgs, 'select' | 'include' | 'distinct' > & {
+    Omit<ContactFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: ContactCountAggregateInputType | true
     }
 
@@ -7155,7 +7199,7 @@ export namespace Prisma {
      * 
      * Determine the order of Contacts to fetch.
      */
-    orderBy?: ContactOrderByWithRelationAndSearchRelevanceInput | ContactOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -7204,7 +7248,7 @@ export namespace Prisma {
      * 
      * Determine the order of Contacts to fetch.
      */
-    orderBy?: ContactOrderByWithRelationAndSearchRelevanceInput | ContactOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -7253,7 +7297,7 @@ export namespace Prisma {
      * 
      * Determine the order of Contacts to fetch.
      */
-    orderBy?: ContactOrderByWithRelationAndSearchRelevanceInput | ContactOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: ContactOrderByWithRelationInput | ContactOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -7415,7 +7459,7 @@ export namespace Prisma {
      */
     include?: StudentInclude<ExtArgs> | null
     where?: StudentWhereInput
-    orderBy?: StudentOrderByWithRelationAndSearchRelevanceInput | StudentOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     cursor?: StudentWhereUniqueInput
     take?: number
     skip?: number
@@ -7534,7 +7578,7 @@ export namespace Prisma {
      * 
      * Determine the order of Teachers to fetch.
      */
-    orderBy?: TeacherOrderByWithRelationAndSearchRelevanceInput | TeacherOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: TeacherOrderByWithRelationInput | TeacherOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -7683,7 +7727,7 @@ export namespace Prisma {
   type TeacherGetPayload<S extends boolean | null | undefined | TeacherDefaultArgs> = $Result.GetResult<Prisma.$TeacherPayload, S>
 
   type TeacherCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = 
-    Omit<TeacherFindManyArgs, 'select' | 'include' | 'distinct' > & {
+    Omit<TeacherFindManyArgs, 'select' | 'include' | 'distinct'> & {
       select?: TeacherCountAggregateInputType | true
     }
 
@@ -8145,7 +8189,7 @@ export namespace Prisma {
      * 
      * Determine the order of Teachers to fetch.
      */
-    orderBy?: TeacherOrderByWithRelationAndSearchRelevanceInput | TeacherOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: TeacherOrderByWithRelationInput | TeacherOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -8194,7 +8238,7 @@ export namespace Prisma {
      * 
      * Determine the order of Teachers to fetch.
      */
-    orderBy?: TeacherOrderByWithRelationAndSearchRelevanceInput | TeacherOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: TeacherOrderByWithRelationInput | TeacherOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -8243,7 +8287,7 @@ export namespace Prisma {
      * 
      * Determine the order of Teachers to fetch.
      */
-    orderBy?: TeacherOrderByWithRelationAndSearchRelevanceInput | TeacherOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: TeacherOrderByWithRelationInput | TeacherOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
      * 
@@ -8405,7 +8449,7 @@ export namespace Prisma {
      */
     include?: StudentInclude<ExtArgs> | null
     where?: StudentWhereInput
-    orderBy?: StudentOrderByWithRelationAndSearchRelevanceInput | StudentOrderByWithRelationAndSearchRelevanceInput[]
+    orderBy?: StudentOrderByWithRelationInput | StudentOrderByWithRelationInput[]
     cursor?: StudentWhereUniqueInput
     take?: number
     skip?: number
@@ -8477,7 +8521,11 @@ export namespace Prisma {
     email: 'email',
     emailVerified: 'emailVerified',
     image: 'image',
-    subscription_id: 'subscription_id'
+    stripe_customer_id: 'stripe_customer_id',
+    stripe_subscription_id: 'stripe_subscription_id',
+    stripe_price_id: 'stripe_price_id',
+    stripe_current_period_end: 'stripe_current_period_end',
+    cancel_at: 'cancel_at'
   };
 
   export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
@@ -8561,85 +8609,6 @@ export namespace Prisma {
   };
 
   export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
-  export const AccountOrderByRelevanceFieldEnum: {
-    id: 'id',
-    userId: 'userId',
-    type: 'type',
-    provider: 'provider',
-    providerAccountId: 'providerAccountId',
-    refresh_token: 'refresh_token',
-    access_token: 'access_token',
-    token_type: 'token_type',
-    scope: 'scope',
-    id_token: 'id_token',
-    session_state: 'session_state'
-  };
-
-  export type AccountOrderByRelevanceFieldEnum = (typeof AccountOrderByRelevanceFieldEnum)[keyof typeof AccountOrderByRelevanceFieldEnum]
-
-
-  export const SessionOrderByRelevanceFieldEnum: {
-    id: 'id',
-    sessionToken: 'sessionToken',
-    userId: 'userId'
-  };
-
-  export type SessionOrderByRelevanceFieldEnum = (typeof SessionOrderByRelevanceFieldEnum)[keyof typeof SessionOrderByRelevanceFieldEnum]
-
-
-  export const UserOrderByRelevanceFieldEnum: {
-    id: 'id',
-    name: 'name',
-    email: 'email',
-    image: 'image',
-    subscription_id: 'subscription_id'
-  };
-
-  export type UserOrderByRelevanceFieldEnum = (typeof UserOrderByRelevanceFieldEnum)[keyof typeof UserOrderByRelevanceFieldEnum]
-
-
-  export const VerificationTokenOrderByRelevanceFieldEnum: {
-    identifier: 'identifier',
-    token: 'token'
-  };
-
-  export type VerificationTokenOrderByRelevanceFieldEnum = (typeof VerificationTokenOrderByRelevanceFieldEnum)[keyof typeof VerificationTokenOrderByRelevanceFieldEnum]
-
-
-  export const StudentOrderByRelevanceFieldEnum: {
-    id: 'id',
-    firstname: 'firstname',
-    lastname: 'lastname',
-    user_id: 'user_id',
-    teacher_id: 'teacher_id',
-    contact_id: 'contact_id'
-  };
-
-  export type StudentOrderByRelevanceFieldEnum = (typeof StudentOrderByRelevanceFieldEnum)[keyof typeof StudentOrderByRelevanceFieldEnum]
-
-
-  export const ContactOrderByRelevanceFieldEnum: {
-    id: 'id',
-    email: 'email',
-    phone: 'phone',
-    name: 'name',
-    user_id: 'user_id'
-  };
-
-  export type ContactOrderByRelevanceFieldEnum = (typeof ContactOrderByRelevanceFieldEnum)[keyof typeof ContactOrderByRelevanceFieldEnum]
-
-
-  export const TeacherOrderByRelevanceFieldEnum: {
-    id: 'id',
-    email: 'email',
-    phone: 'phone',
-    name: 'name',
-    user_id: 'user_id'
-  };
-
-  export type TeacherOrderByRelevanceFieldEnum = (typeof TeacherOrderByRelevanceFieldEnum)[keyof typeof TeacherOrderByRelevanceFieldEnum]
 
 
   /**
@@ -8781,7 +8750,7 @@ export namespace Prisma {
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
 
-  export type AccountOrderByWithRelationAndSearchRelevanceInput = {
+  export type AccountOrderByWithRelationInput = {
     id?: SortOrder
     userId?: SortOrder
     type?: SortOrder
@@ -8794,8 +8763,7 @@ export namespace Prisma {
     scope?: SortOrderInput | SortOrder
     id_token?: SortOrderInput | SortOrder
     session_state?: SortOrderInput | SortOrder
-    user?: UserOrderByWithRelationAndSearchRelevanceInput
-    _relevance?: AccountOrderByRelevanceInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type AccountWhereUniqueInput = Prisma.AtLeast<{
@@ -8867,13 +8835,12 @@ export namespace Prisma {
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
 
-  export type SessionOrderByWithRelationAndSearchRelevanceInput = {
+  export type SessionOrderByWithRelationInput = {
     id?: SortOrder
     sessionToken?: SortOrder
     userId?: SortOrder
     expires?: SortOrder
-    user?: UserOrderByWithRelationAndSearchRelevanceInput
-    _relevance?: SessionOrderByRelevanceInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type SessionWhereUniqueInput = Prisma.AtLeast<{
@@ -8916,7 +8883,11 @@ export namespace Prisma {
     email?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
-    subscription_id?: StringNullableFilter<"User"> | string | null
+    stripe_customer_id?: StringNullableFilter<"User"> | string | null
+    stripe_subscription_id?: StringNullableFilter<"User"> | string | null
+    stripe_price_id?: StringNullableFilter<"User"> | string | null
+    stripe_current_period_end?: DateTimeNullableFilter<"User"> | Date | string | null
+    cancel_at?: DateTimeNullableFilter<"User"> | Date | string | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     students?: StudentListRelationFilter
@@ -8924,37 +8895,44 @@ export namespace Prisma {
     contacts?: ContactListRelationFilter
   }
 
-  export type UserOrderByWithRelationAndSearchRelevanceInput = {
+  export type UserOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
-    subscription_id?: SortOrderInput | SortOrder
+    stripe_customer_id?: SortOrderInput | SortOrder
+    stripe_subscription_id?: SortOrderInput | SortOrder
+    stripe_price_id?: SortOrderInput | SortOrder
+    stripe_current_period_end?: SortOrderInput | SortOrder
+    cancel_at?: SortOrderInput | SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
     students?: StudentOrderByRelationAggregateInput
     teachers?: TeacherOrderByRelationAggregateInput
     contacts?: ContactOrderByRelationAggregateInput
-    _relevance?: UserOrderByRelevanceInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
-    subscription_id?: string
+    stripe_customer_id?: string
+    stripe_subscription_id?: string
+    stripe_price_id?: string
     AND?: UserWhereInput | UserWhereInput[]
     OR?: UserWhereInput[]
     NOT?: UserWhereInput | UserWhereInput[]
     name?: StringNullableFilter<"User"> | string | null
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
+    stripe_current_period_end?: DateTimeNullableFilter<"User"> | Date | string | null
+    cancel_at?: DateTimeNullableFilter<"User"> | Date | string | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
     students?: StudentListRelationFilter
     teachers?: TeacherListRelationFilter
     contacts?: ContactListRelationFilter
-  }, "id" | "email" | "subscription_id">
+  }, "id" | "email" | "stripe_customer_id" | "stripe_subscription_id" | "stripe_price_id">
 
   export type UserOrderByWithAggregationInput = {
     id?: SortOrder
@@ -8962,7 +8940,11 @@ export namespace Prisma {
     email?: SortOrderInput | SortOrder
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
-    subscription_id?: SortOrderInput | SortOrder
+    stripe_customer_id?: SortOrderInput | SortOrder
+    stripe_subscription_id?: SortOrderInput | SortOrder
+    stripe_price_id?: SortOrderInput | SortOrder
+    stripe_current_period_end?: SortOrderInput | SortOrder
+    cancel_at?: SortOrderInput | SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
     _min?: UserMinOrderByAggregateInput
@@ -8977,7 +8959,11 @@ export namespace Prisma {
     email?: StringNullableWithAggregatesFilter<"User"> | string | null
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
-    subscription_id?: StringNullableWithAggregatesFilter<"User"> | string | null
+    stripe_customer_id?: StringNullableWithAggregatesFilter<"User"> | string | null
+    stripe_subscription_id?: StringNullableWithAggregatesFilter<"User"> | string | null
+    stripe_price_id?: StringNullableWithAggregatesFilter<"User"> | string | null
+    stripe_current_period_end?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
+    cancel_at?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   }
 
   export type VerificationTokenWhereInput = {
@@ -8989,11 +8975,10 @@ export namespace Prisma {
     expires?: DateTimeFilter<"VerificationToken"> | Date | string
   }
 
-  export type VerificationTokenOrderByWithRelationAndSearchRelevanceInput = {
+  export type VerificationTokenOrderByWithRelationInput = {
     identifier?: SortOrder
     token?: SortOrder
     expires?: SortOrder
-    _relevance?: VerificationTokenOrderByRelevanceInput
   }
 
   export type VerificationTokenWhereUniqueInput = Prisma.AtLeast<{
@@ -9045,7 +9030,7 @@ export namespace Prisma {
     contact?: XOR<ContactNullableRelationFilter, ContactWhereInput> | null
   }
 
-  export type StudentOrderByWithRelationAndSearchRelevanceInput = {
+  export type StudentOrderByWithRelationInput = {
     id?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -9058,10 +9043,9 @@ export namespace Prisma {
     user_id?: SortOrder
     teacher_id?: SortOrder
     contact_id?: SortOrderInput | SortOrder
-    user?: UserOrderByWithRelationAndSearchRelevanceInput
-    teacher?: TeacherOrderByWithRelationAndSearchRelevanceInput
-    contact?: ContactOrderByWithRelationAndSearchRelevanceInput
-    _relevance?: StudentOrderByRelevanceInput
+    user?: UserOrderByWithRelationInput
+    teacher?: TeacherOrderByWithRelationInput
+    contact?: ContactOrderByWithRelationInput
   }
 
   export type StudentWhereUniqueInput = Prisma.AtLeast<{
@@ -9139,7 +9123,7 @@ export namespace Prisma {
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
 
-  export type ContactOrderByWithRelationAndSearchRelevanceInput = {
+  export type ContactOrderByWithRelationInput = {
     id?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -9149,8 +9133,7 @@ export namespace Prisma {
     relationship?: SortOrder
     user_id?: SortOrder
     students?: StudentOrderByRelationAggregateInput
-    user?: UserOrderByWithRelationAndSearchRelevanceInput
-    _relevance?: ContactOrderByRelevanceInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type ContactWhereUniqueInput = Prisma.AtLeast<{
@@ -9214,7 +9197,7 @@ export namespace Prisma {
     user?: XOR<UserRelationFilter, UserWhereInput>
   }
 
-  export type TeacherOrderByWithRelationAndSearchRelevanceInput = {
+  export type TeacherOrderByWithRelationInput = {
     id?: SortOrder
     created_at?: SortOrderInput | SortOrder
     updated_at?: SortOrderInput | SortOrder
@@ -9225,8 +9208,7 @@ export namespace Prisma {
     subject?: SortOrder
     user_id?: SortOrder
     students?: StudentOrderByRelationAggregateInput
-    user?: UserOrderByWithRelationAndSearchRelevanceInput
-    _relevance?: TeacherOrderByRelevanceInput
+    user?: UserOrderByWithRelationInput
   }
 
   export type TeacherWhereUniqueInput = Prisma.AtLeast<{
@@ -9434,7 +9416,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     students?: StudentCreateNestedManyWithoutUserInput
@@ -9448,7 +9434,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     students?: StudentUncheckedCreateNestedManyWithoutUserInput
@@ -9462,7 +9452,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     students?: StudentUpdateManyWithoutUserNestedInput
@@ -9476,7 +9470,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     students?: StudentUncheckedUpdateManyWithoutUserNestedInput
@@ -9490,7 +9488,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
   }
 
   export type UserUpdateManyMutationInput = {
@@ -9499,7 +9501,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type UserUncheckedUpdateManyInput = {
@@ -9508,7 +9514,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type VerificationTokenCreateInput = {
@@ -9833,7 +9843,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
     mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
   }
@@ -9849,7 +9858,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
     mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
@@ -9873,12 +9881,6 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
-  }
-
-  export type AccountOrderByRelevanceInput = {
-    fields: AccountOrderByRelevanceFieldEnum | AccountOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
   }
 
   export type AccountProviderProviderAccountIdCompoundUniqueInput = {
@@ -9950,7 +9952,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
     mode?: QueryMode
     not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
     _count?: NestedIntFilter<$PrismaModel>
@@ -9969,7 +9970,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
     mode?: QueryMode
     not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
@@ -10002,12 +10002,6 @@ export namespace Prisma {
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
-  }
-
-  export type SessionOrderByRelevanceInput = {
-    fields: SessionOrderByRelevanceFieldEnum | SessionOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
   }
 
   export type SessionCountOrderByAggregateInput = {
@@ -10106,19 +10100,17 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type UserOrderByRelevanceInput = {
-    fields: UserOrderByRelevanceFieldEnum | UserOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
   export type UserCountOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
-    subscription_id?: SortOrder
+    stripe_customer_id?: SortOrder
+    stripe_subscription_id?: SortOrder
+    stripe_price_id?: SortOrder
+    stripe_current_period_end?: SortOrder
+    cancel_at?: SortOrder
   }
 
   export type UserMaxOrderByAggregateInput = {
@@ -10127,7 +10119,11 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
-    subscription_id?: SortOrder
+    stripe_customer_id?: SortOrder
+    stripe_subscription_id?: SortOrder
+    stripe_price_id?: SortOrder
+    stripe_current_period_end?: SortOrder
+    cancel_at?: SortOrder
   }
 
   export type UserMinOrderByAggregateInput = {
@@ -10136,7 +10132,11 @@ export namespace Prisma {
     email?: SortOrder
     emailVerified?: SortOrder
     image?: SortOrder
-    subscription_id?: SortOrder
+    stripe_customer_id?: SortOrder
+    stripe_subscription_id?: SortOrder
+    stripe_price_id?: SortOrder
+    stripe_current_period_end?: SortOrder
+    cancel_at?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -10151,12 +10151,6 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedDateTimeNullableFilter<$PrismaModel>
     _max?: NestedDateTimeNullableFilter<$PrismaModel>
-  }
-
-  export type VerificationTokenOrderByRelevanceInput = {
-    fields: VerificationTokenOrderByRelevanceFieldEnum | VerificationTokenOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
   }
 
   export type VerificationTokenIdentifierTokenCompoundUniqueInput = {
@@ -10215,12 +10209,6 @@ export namespace Prisma {
   export type ContactNullableRelationFilter = {
     is?: ContactWhereInput | null
     isNot?: ContactWhereInput | null
-  }
-
-  export type StudentOrderByRelevanceInput = {
-    fields: StudentOrderByRelevanceFieldEnum | StudentOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
   }
 
   export type StudentCountOrderByAggregateInput = {
@@ -10319,12 +10307,6 @@ export namespace Prisma {
     not?: NestedEnumRelationshipFilter<$PrismaModel> | $Enums.Relationship
   }
 
-  export type ContactOrderByRelevanceInput = {
-    fields: ContactOrderByRelevanceFieldEnum | ContactOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
   export type ContactCountOrderByAggregateInput = {
     id?: SortOrder
     created_at?: SortOrder
@@ -10373,12 +10355,6 @@ export namespace Prisma {
     in?: $Enums.Subject[] | ListEnumSubjectFieldRefInput<$PrismaModel>
     notIn?: $Enums.Subject[] | ListEnumSubjectFieldRefInput<$PrismaModel>
     not?: NestedEnumSubjectFilter<$PrismaModel> | $Enums.Subject
-  }
-
-  export type TeacherOrderByRelevanceInput = {
-    fields: TeacherOrderByRelevanceFieldEnum | TeacherOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
   }
 
   export type TeacherCountOrderByAggregateInput = {
@@ -10882,7 +10858,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
@@ -10897,7 +10872,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
@@ -10923,7 +10897,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
     not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
@@ -10952,7 +10925,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
     not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
@@ -11137,7 +11109,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     sessions?: SessionCreateNestedManyWithoutUserInput
     students?: StudentCreateNestedManyWithoutUserInput
     teachers?: TeacherCreateNestedManyWithoutUserInput
@@ -11150,7 +11126,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     students?: StudentUncheckedCreateNestedManyWithoutUserInput
     teachers?: TeacherUncheckedCreateNestedManyWithoutUserInput
@@ -11179,7 +11159,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sessions?: SessionUpdateManyWithoutUserNestedInput
     students?: StudentUpdateManyWithoutUserNestedInput
     teachers?: TeacherUpdateManyWithoutUserNestedInput
@@ -11192,7 +11176,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     students?: StudentUncheckedUpdateManyWithoutUserNestedInput
     teachers?: TeacherUncheckedUpdateManyWithoutUserNestedInput
@@ -11205,7 +11193,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     students?: StudentCreateNestedManyWithoutUserInput
     teachers?: TeacherCreateNestedManyWithoutUserInput
@@ -11218,7 +11210,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     students?: StudentUncheckedCreateNestedManyWithoutUserInput
     teachers?: TeacherUncheckedCreateNestedManyWithoutUserInput
@@ -11247,7 +11243,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     students?: StudentUpdateManyWithoutUserNestedInput
     teachers?: TeacherUpdateManyWithoutUserNestedInput
@@ -11260,7 +11260,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     students?: StudentUncheckedUpdateManyWithoutUserNestedInput
     teachers?: TeacherUncheckedUpdateManyWithoutUserNestedInput
@@ -11592,7 +11596,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     teachers?: TeacherCreateNestedManyWithoutUserInput
@@ -11605,7 +11613,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     teachers?: TeacherUncheckedCreateNestedManyWithoutUserInput
@@ -11690,7 +11702,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     teachers?: TeacherUpdateManyWithoutUserNestedInput
@@ -11703,7 +11719,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     teachers?: TeacherUncheckedUpdateManyWithoutUserNestedInput
@@ -11822,7 +11842,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     students?: StudentCreateNestedManyWithoutUserInput
@@ -11835,7 +11859,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     students?: StudentUncheckedCreateNestedManyWithoutUserInput
@@ -11880,7 +11908,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     students?: StudentUpdateManyWithoutUserNestedInput
@@ -11893,7 +11925,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     students?: StudentUncheckedUpdateManyWithoutUserNestedInput
@@ -11944,7 +11980,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
     students?: StudentCreateNestedManyWithoutUserInput
@@ -11957,7 +11997,11 @@ export namespace Prisma {
     email?: string | null
     emailVerified?: Date | string | null
     image?: string | null
-    subscription_id?: string | null
+    stripe_customer_id?: string | null
+    stripe_subscription_id?: string | null
+    stripe_price_id?: string | null
+    stripe_current_period_end?: Date | string | null
+    cancel_at?: Date | string | null
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     students?: StudentUncheckedCreateNestedManyWithoutUserInput
@@ -12002,7 +12046,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
     students?: StudentUpdateManyWithoutUserNestedInput
@@ -12015,7 +12063,11 @@ export namespace Prisma {
     email?: NullableStringFieldUpdateOperationsInput | string | null
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
-    subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_customer_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_subscription_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_price_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stripe_current_period_end?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancel_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     students?: StudentUncheckedUpdateManyWithoutUserNestedInput
