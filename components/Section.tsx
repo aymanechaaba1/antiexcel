@@ -13,7 +13,7 @@ function Section({
   className?: string;
 }) {
   return (
-    <div className={`${className}`}>
+    <div className={`space-y-4 ${className}`}>
       <h1 className="text-3xl tracking-tight font-semibold scroll-m-20">
         {title}
       </h1>

@@ -9,13 +9,14 @@ import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { getTeacherIds } from '@/prisma/db-calls';
+import { countStudents, getTeacherIds } from '@/prisma/db-calls';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import StudentsFilterBtns from '@/components/StudentsFilterBtns';
 import SearchBar from '@/components/SearchBar';
 import SortBtn from '@/components/SortBtn';
+import AddStudentBtn from '@/components/AddStudentBtn';
 
 function StudentsTableSkeleton() {
   const rows = 3;
@@ -83,17 +84,15 @@ async function StudentsPage({
     query?: string;
   };
 }) {
-  const session = await getServerSession(authOptions);
-  if (!session) redirect(`/api/auth/signin`);
-
-  const teachers = await getTeacherIds();
+  const [teachers, totalStudents] = await Promise.all([
+    getTeacherIds(),
+    countStudents(),
+  ]);
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button asChild>
-          <Link href={`/students/add`}>Add Student</Link>
-        </Button>
+        <AddStudentBtn totalStudents={totalStudents} />
       </div>
       <div className="flex justify-end gap-4 my-4">
         <SortBtn sortOptions={studentsSortOptions} />

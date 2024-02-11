@@ -134,6 +134,8 @@ export const uncached_student = async (id: string) =>
     },
   });
 
+export const countStudents = async () => await prisma.student.count();
+
 type Subject = 'maths' | 'physics' | 'french';
 export const cached_teachers = unstable_cache(
   async (
@@ -229,6 +231,8 @@ export const uncached_teacher = async (id: string) =>
       students: true,
     },
   });
+
+export const countTeachers = async () => await prisma.teacher.count();
 
 type Relationship = 'mother' | 'father' | 'brother' | 'sister';
 export const cached_contacts = unstable_cache(

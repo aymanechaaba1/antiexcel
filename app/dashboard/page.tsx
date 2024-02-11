@@ -10,7 +10,15 @@ import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import DashboardChart from '@/components/DashboardChart';
 
-async function DashboardPage() {
+async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: {
+    subscribed: 'true' | 'false';
+  };
+}) {
+  const isPro = Boolean(searchParams.subscribed);
+
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
@@ -25,7 +33,7 @@ async function DashboardPage() {
   return (
     <div className="space-y-4">
       <StudentsOverview students={students} />
-      <TeachersOverview teachers={teachers} />
+      {isPro && <TeachersOverview teachers={teachers} />}
       <DashboardChart students={students} />
 
       <div className="flex flex-col md:flex-row gap-4">
@@ -34,7 +42,7 @@ async function DashboardPage() {
       </div>
       <div className="flex flex-col md:flex-row gap-4">
         <LatestStudents students={students} />
-        <LatestTeachers teachers={teachers} />
+        {isPro && <LatestTeachers teachers={teachers} />}
       </div>
     </div>
   );

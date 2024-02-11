@@ -12,6 +12,8 @@ import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import TeachersFilterBtns from '@/components/TeachersFilterBtns';
 import SearchBar from '@/components/SearchBar';
 import SortBtn from '@/components/SortBtn';
+import AddTeacherBtn from '@/components/AddTeacherBtn';
+import { countTeachers } from '@/prisma/db-calls';
 
 function TeachersTableSkeleton() {
   const rows = 3;
@@ -59,12 +61,12 @@ async function TeachersPage({
     query?: string;
   };
 }) {
+  const totalTeachers = await countTeachers();
+
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button asChild>
-          <Link href={`/teachers/add`}>Add Teacher</Link>
-        </Button>
+        <AddTeacherBtn totalTeachers={totalTeachers} />
       </div>
       <div className="flex justify-end gap-4 my-4">
         <SortBtn sortOptions={teachersSortOptions} />
