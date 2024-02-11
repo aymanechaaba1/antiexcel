@@ -15,7 +15,7 @@ function UpdateURL({ children }: { children: ReactNode }) {
     if (pathname === '/dashboard') {
       const params = new URLSearchParams(searchParams);
       if (subscription) params.set('subscribed', 'true');
-      else if (!subscription) params.set('subscribed', 'false');
+      else params.set('subscribed', 'false');
       router.replace(`${pathname}?${params.toString()}`);
     }
   }, [pathname]);

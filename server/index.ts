@@ -16,22 +16,6 @@ export const appRouter = router({
       },
     });
   }),
-  updateUser: privateProcedure
-    .input(
-      z.object({
-        subscription_id: z.string().startsWith('I-').optional().nullable(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      await prisma.user.update({
-        where: {
-          id: ctx.user_id,
-        },
-        data: {
-          subscription_id: input.subscription_id,
-        },
-      });
-    }),
   getStudent: privateProcedure
     .input(
       z.object({

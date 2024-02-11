@@ -11,7 +11,9 @@ function SubscriptionProvider({
   children: ReactNode;
   user: Awaited<ReturnType<typeof uncached_user>>;
 }) {
-  const subscription = useSubscriptionsStore((state) => state);
+  const setSubscription = useSubscriptionsStore(
+    (state) => state.setSubscription
+  );
 
   useEffect(() => {
     if (!user) return;
@@ -22,19 +24,19 @@ function SubscriptionProvider({
       user.stripe_price_id &&
       user.stripe_current_period_end
     )
-      subscription.setSubscription({
+      setSubscription({
         id: user.stripe_subscription_id,
         customer_id: user.stripe_customer_id,
         price_id: user.stripe_price_id,
         current_period_end: user.stripe_current_period_end,
         cancel_at: user.cancel_at || null,
       });
-    else subscription.setSubscription(undefined);
+    else setSubscription(undefined);
 
     const today = new Date();
 
     if (user.cancel_at) {
-      if (today === user.cancel_at) subscription.setSubscription(undefined);
+      if (today === user.cancel_at) setSubscription(undefined);
     }
   }, [user]);
 
