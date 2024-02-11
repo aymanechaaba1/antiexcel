@@ -68,7 +68,7 @@
     "tailwind-merge": "^1.14.0",
     "tailwindcss-animate": "^1.0.7",
     "uuid": "^9.0.1",
-    "vercel": "^32.3.0",
+    "vercel": "^33.5.0",
     "zod": "^3.22.4",
     "zustand": "^4.4.6"
   },
