@@ -303,7 +303,10 @@ export const createStipeSession = async () => {
     },
   });
 
-  const url = `http://localhost:3000`;
+  const url =
+    process.env.VERCEL_ENV === 'production'
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
 
   const stripeSession = await stripe.checkout.sessions.create({
     customer_email: session.user.email!,
@@ -338,9 +341,14 @@ export const createPortalSession = async () => {
 
   if (!user || !user.stripe_customer_id) return;
 
+  const url =
+    process.env.VERCEL_ENV === 'production'
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: user.stripe_customer_id,
-    return_url: `http://localhost:3000/billing`,
+    return_url: `${url}/billing`,
   });
 
   redirect(portalSession.url);
