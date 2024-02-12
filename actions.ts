@@ -331,7 +331,7 @@ export const createStipeSession = async () => {
 
 export const createPortalSession = async () => {
   const session = await getServerSession(authOptions);
-  if (!session) return;
+  if (!session) redirect('/');
 
   const user = await prisma.user.findUnique({
     where: {
