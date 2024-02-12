@@ -31,7 +31,10 @@ export function UserDropdown() {
         <UserAvatar />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
-        <DropdownMenuLabel>{session?.user.name}</DropdownMenuLabel>
+        <DropdownMenuLabel>
+          <p>{session?.user.name}</p>
+          <p className="text-gray-500 text-sm">{session.user.email}</p>
+        </DropdownMenuLabel>
         {subscription && (
           <div className="font-bold text-white rounded-sm py-1 px-3 text-xs bg-gradient-to-r from-[#5C258D] to-[#4389A2]">
             PRO Member
@@ -56,7 +59,7 @@ export function UserDropdown() {
               onClick={() => {
                 setOpenDropdown(false);
               }}
-              href={'/settings/plan'}
+              href={'/settings/account'}
             >
               Settings
             </Link>

@@ -11,7 +11,6 @@ import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import ContactsFilterBtns from '@/components/ContactsFilterBtns';
 import SearchBar from '@/components/SearchBar';
 import SortBtn from '@/components/SortBtn';
-import prisma from '@/prisma/prismaClient';
 
 function ContactsTableSkeleton() {
   const rows = 3;

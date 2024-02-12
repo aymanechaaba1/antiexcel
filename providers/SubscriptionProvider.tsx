@@ -2,6 +2,8 @@
 
 import { uncached_user } from '@/prisma/db-calls';
 import { useSubscriptionsStore } from '@/store/store';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
 import React, { ReactNode, useEffect } from 'react';
 
 function SubscriptionProvider({
@@ -9,13 +11,14 @@ function SubscriptionProvider({
   user,
 }: {
   children: ReactNode;
-  user: Awaited<ReturnType<typeof uncached_user>>;
+  user: Awaited<ReturnType<typeof uncached_user>> | undefined;
 }) {
   const setSubscription = useSubscriptionsStore(
     (state) => state.setSubscription
   );
 
   useEffect(() => {
+    console.log(user);
     if (!user) return;
 
     if (

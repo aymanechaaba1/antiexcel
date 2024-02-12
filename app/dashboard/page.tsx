@@ -7,8 +7,8 @@ import LatestTeachers from '@/components/LatestTeachers';
 import { uncached_students, uncached_teachers } from '@/prisma/db-calls';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { redirect } from 'next/navigation';
 import DashboardChart from '@/components/DashboardChart';
+import { redirect } from 'next/navigation';
 
 async function DashboardPage({
   searchParams,

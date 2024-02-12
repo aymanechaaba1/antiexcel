@@ -1,11 +1,10 @@
 import { unstable_cache } from 'next/cache';
 import prisma from './prismaClient';
-import { getServerSession } from 'next-auth';
 import { StudentsSortOptions } from '@/components/StudentsTable';
 import { TeachersSortOptions } from '@/components/TeachersTable';
 import { ContactsSortOptions } from '@/components/ContactsTable';
 
-export const uncached_user = async (id: string) => {
+export const uncached_user = async (id: string | undefined) => {
   return await prisma.user.findUnique({
     where: {
       id,

@@ -17,10 +17,48 @@ import { createStipeSession } from '@/actions';
 import { useToast } from './ui/use-toast';
 import { useSubscriptionsStore } from '@/store/store';
 import Link from 'next/link';
+import { signIn, useSession } from 'next-auth/react';
+
+function SignInBtn() {
+  return (
+    <Button
+      className="my-3"
+      onClick={async () => {
+        await signIn();
+      }}
+    >
+      Sign In
+    </Button>
+  );
+}
+
+function BecomeProBtn() {
+  return (
+    <Button
+      onClick={async () => {
+        await createStipeSession();
+      }}
+      className="my-3 bg-purple-500 hover:bg-purple-600 text-white text-center"
+    >
+      Become Pro
+    </Button>
+  );
+}
+
+function DashboardBtn() {
+  return (
+    <Button
+      className="my-3 bg-purple-500 hover:bg-purple-600 text-white text-center"
+      asChild
+    >
+      <Link href={`/dashboard`}>Dashboard</Link>
+    </Button>
+  );
+}
 
 function Pricing() {
-  const { toast } = useToast();
-  const { subscription } = useSubscriptionsStore((state) => state);
+  const subscription = useSubscriptionsStore((state) => state.subscription);
+  const { data: session } = useSession();
 
   return (
     <Section className="flex flex-col gap-y-4 md:flex-row md:gap-x-10">
@@ -43,59 +81,19 @@ function Pricing() {
                 </p>
               </div>
             ))}
-            {plan.name === 'Free Plan' && !subscription && (
-              <>
-                <Button
-                  onClick={async (e) => {
-                    try {
-                      await createStipeSession();
-                    } catch (err) {
-                      toast({
-                        title: 'Something Went Wrong!',
-                        variant: 'destructive',
-                      });
-                    }
-                  }}
-                  className="bg-purple-500 hover:bg-purple-600 text-white mt-3"
-                >
-                  Become a Pro!
-                </Button>
-                <p className="text-gray-500 mt-3 text-sm tracking-tight scroll-m-20 font-semibold">
-                  You are on the Free plan
-                </p>
-              </>
+            {!session && <SignInBtn />}
+            {session && !subscription && <BecomeProBtn />}
+            {session && subscription && <DashboardBtn />}
+            {plan.name === 'Free Plan' && session && !subscription && (
+              <p className="text-gray-500 text-sm tracking-tight scroll-m-20 font-semibold">
+                You are on the Free plan
+              </p>
             )}
-
-            {plan.name === 'Pro Plan' &&
-              (!subscription ? (
-                <Button
-                  onClick={async (e) => {
-                    try {
-                      await createStipeSession();
-                    } catch (err) {
-                      toast({
-                        title: 'Something Went Wrong!',
-                        variant: 'destructive',
-                      });
-                    }
-                  }}
-                  className="bg-purple-500 hover:bg-purple-600 text-white mt-3"
-                >
-                  Become a Pro!
-                </Button>
-              ) : (
-                <>
-                  <Button
-                    className="bg-purple-500 hover:bg-purple-600 text-white mt-3"
-                    asChild
-                  >
-                    <Link href={`/dashboard`}>Dashboard</Link>
-                  </Button>
-                  <p className="text-gray-500 mt-3 text-sm tracking-tight scroll-m-20 font-semibold">
-                    You are on the Pro plan
-                  </p>
-                </>
-              ))}
+            {plan.name === 'Pro Plan' && session && subscription && (
+              <p className="text-gray-500 text-sm tracking-tight scroll-m-20 font-semibold">
+                You are on the Pro plan
+              </p>
+            )}
           </CardContent>
         </Card>
       ))}
