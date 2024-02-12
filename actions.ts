@@ -304,7 +304,7 @@ export const createStipeSession = async () => {
   });
 
   const url =
-    process.env.VERCEL_ENV === 'production'
+    process.env.VERCEL_ENV === 'production' || 'preview'
       ? `https://${process.env.VERCEL_URL}`
       : 'http://localhost:3000';
 
@@ -342,7 +342,7 @@ export const createPortalSession = async () => {
   if (!user || !user.stripe_customer_id) return;
 
   const url =
-    process.env.VERCEL_ENV === 'production'
+    process.env.VERCEL_ENV === 'production' || 'preview'
       ? `https://${process.env.VERCEL_URL}`
       : 'http://localhost:3000';
 
