@@ -2,8 +2,29 @@ import UpdateTeacherForm from '@/components/UpdateTeacherForm';
 import { cached_teacher } from '@/prisma/db-calls';
 import { notFound } from 'next/navigation';
 import { Suspense } from 'react';
+import type { Metadata, ResolvingMetadata } from 'next';
+import prisma from '@/prisma/prismaClient';
 
 // dynamic metadata
+type Props = {
+  params: { teacher_id: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const teacher = await prisma.teacher.findUnique({
+    where: {
+      id: params.teacher_id,
+    },
+  });
+
+  return {
+    title: `${teacher?.name}`,
+  };
+}
 
 function UpdateTeacherFormSkeleton() {
   const rows = 5;

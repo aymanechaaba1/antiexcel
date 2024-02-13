@@ -1,15 +1,31 @@
 import UpdateStudentForm from '@/components/UpdateStudentForm';
 import { authOptions } from '@/lib/auth';
-import {
-  cached_student,
-  cached_teachers,
-  uncached_contacts,
-  uncached_student,
-  uncached_teachers,
-} from '@/prisma/db-calls';
+import { uncached_student, uncached_teachers } from '@/prisma/db-calls';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { Suspense } from 'react';
+import type { Metadata, ResolvingMetadata } from 'next';
+import prisma from '@/prisma/prismaClient';
+
+type Props = {
+  params: { student_id: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const student = await prisma.student.findUnique({
+    where: {
+      id: params.student_id,
+    },
+  });
+
+  return {
+    title: `${student?.firstname} ${student?.lastname}`,
+  };
+}
 
 function UpdateStudentFormSkeleton() {
   const rows = 6;
