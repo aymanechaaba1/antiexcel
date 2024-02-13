@@ -11,6 +11,7 @@ import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import ContactsFilterBtns from '@/components/ContactsFilterBtns';
 import SearchBar from '@/components/SearchBar';
 import SortBtn from '@/components/SortBtn';
+import { DateRangePicker } from '@/components/DateRangePicker';
 
 function ContactsTableSkeleton() {
   const rows = 3;
@@ -45,7 +46,7 @@ type Relationship = 'mother' | 'father' | 'brother' | 'sister';
 const contactsSortOptions = ['latest', 'oldest'] as const;
 
 async function ContactsPage({
-  searchParams: { page, per_page, sort_by, relationship, query },
+  searchParams: { page, per_page, sort_by, relationship, query, from, to },
 }: {
   searchParams: {
     page: string;
@@ -53,6 +54,8 @@ async function ContactsPage({
     sort_by: ContactsSortOptions;
     relationship?: Relationship;
     query?: string;
+    from?: string;
+    to?: string;
   };
 }) {
   return (
@@ -64,6 +67,9 @@ async function ContactsPage({
       <div className="flex justify-end gap-4 my-4">
         <ContactsFilterBtns />
       </div>
+      <div className="flex justify-end gap-4 my-4">
+        <DateRangePicker className="flex items-center" />
+      </div>
       <SearchBar />
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<ContactsTableSkeleton />}>
@@ -73,6 +79,8 @@ async function ContactsPage({
             sort_by={sort_by || DEFAULT_SORT_BY}
             relationship={relationship}
             query={query}
+            from={Number(from)}
+            to={Number(to)}
           />
         </Suspense>
       </ErrorBoundary>

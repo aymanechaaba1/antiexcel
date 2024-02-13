@@ -259,7 +259,9 @@ export const cached_contacts = unstable_cache(
     per_page: number,
     sort_by: ContactsSortOptions,
     relationship?: Relationship,
-    query?: string
+    query?: string,
+    from?: number,
+    to?: number
   ) =>
     await prisma.contact.findMany({
       orderBy: {
@@ -277,6 +279,13 @@ export const cached_contacts = unstable_cache(
             startsWith: query,
           },
         }),
+        ...(from &&
+          to && {
+            created_at: {
+              gte: new Date(from),
+              lte: new Date(to),
+            },
+          }),
       },
       include: {
         students: true,

@@ -23,12 +23,16 @@ async function ContactsTable({
   sort_by,
   relationship,
   query,
+  from,
+  to,
 }: {
   page: number;
   per_page: number;
   sort_by: ContactsSortOptions;
   relationship?: Relationship;
   query?: string;
+  from?: number;
+  to?: number;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
@@ -41,7 +45,9 @@ async function ContactsTable({
       per_page,
       sort_by,
       relationship,
-      query
+      query,
+      from,
+      to
     ),
   ]);
 
