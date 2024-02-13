@@ -3,8 +3,6 @@ import TeachersTable, {
   TeachersSortOptions,
   columns,
 } from '@/components/TeachersTable';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
@@ -14,6 +12,7 @@ import SearchBar from '@/components/SearchBar';
 import SortBtn from '@/components/SortBtn';
 import AddTeacherBtn from '@/components/AddTeacherBtn';
 import { countTeachers } from '@/prisma/db-calls';
+import { DateRangePicker } from '@/components/DateRangePicker';
 
 function TeachersTableSkeleton() {
   const rows = 3;
@@ -50,7 +49,7 @@ type Subject = 'maths' | 'physics' | 'french';
 const teachersSortOptions = ['latest', 'oldest', 'nb_students'] as const;
 
 async function TeachersPage({
-  searchParams: { page, per_page, sort_by, gender, subject, query },
+  searchParams: { page, per_page, sort_by, gender, subject, query, from, to },
 }: {
   searchParams: {
     page: string;
@@ -59,6 +58,8 @@ async function TeachersPage({
     gender?: Gender;
     subject?: Subject;
     query?: string;
+    from?: string;
+    to?: string;
   };
 }) {
   const totalTeachers = await countTeachers();
@@ -74,6 +75,9 @@ async function TeachersPage({
       <div className="flex justify-end gap-4 my-4">
         <TeachersFilterBtns />
       </div>
+      <div className="flex justify-end gap-4 my-4">
+        <DateRangePicker className="flex items-center" />
+      </div>
       <SearchBar />
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<TeachersTableSkeleton />}>
@@ -84,6 +88,8 @@ async function TeachersPage({
             gender={gender}
             subject={subject}
             query={query}
+            from={Number(from)}
+            to={Number(to)}
           />
         </Suspense>
       </ErrorBoundary>

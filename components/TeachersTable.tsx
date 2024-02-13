@@ -25,6 +25,8 @@ async function TeachersTable({
   gender,
   subject,
   query,
+  from,
+  to,
 }: {
   page: number;
   per_page: number;
@@ -32,6 +34,8 @@ async function TeachersTable({
   gender?: Gender;
   subject?: Subject;
   query?: string;
+  from?: number;
+  to?: number;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
@@ -45,7 +49,9 @@ async function TeachersTable({
       sort_by,
       gender,
       subject,
-      query
+      query,
+      from,
+      to
     ),
   ]);
   if (!teachers || !teachers.length)
