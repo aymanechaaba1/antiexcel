@@ -3,7 +3,7 @@
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ShadcnSelectComponent from './ShadcnSelectComponent';
-import ResetFiltersBtn from './ResetFiltersBtn';
+import ResetFiltersBtn from './ResetBtn';
 
 const relationships = ['mother', 'father', 'brother', 'sister'] as const;
 

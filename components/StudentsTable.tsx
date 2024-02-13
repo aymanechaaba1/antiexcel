@@ -40,6 +40,8 @@ async function StudentsTable({
   school,
   teacher,
   query,
+  from,
+  to,
 }: {
   page: number;
   per_page: number;
@@ -49,6 +51,8 @@ async function StudentsTable({
   school?: School;
   teacher?: string;
   query?: string;
+  from?: number;
+  to?: number;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
@@ -64,7 +68,9 @@ async function StudentsTable({
       gender,
       school,
       teacher,
-      query
+      query,
+      from,
+      to
     ),
   ]);
 

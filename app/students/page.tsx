@@ -15,6 +15,7 @@ import AddStudentBtn from '@/components/AddStudentBtn';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { DateRangePicker } from '@/components/DateRangePicker';
 
 function StudentsTableSkeleton() {
   const rows = 3;
@@ -69,6 +70,8 @@ async function StudentsPage({
     school,
     teacher,
     query,
+    from,
+    to,
   },
 }: {
   searchParams: {
@@ -80,6 +83,8 @@ async function StudentsPage({
     school?: School;
     teacher?: string;
     query?: string;
+    from?: string;
+    to?: string;
   };
 }) {
   const session = await getServerSession(authOptions);
@@ -89,6 +94,8 @@ async function StudentsPage({
     getTeacherIds(),
     countStudents(),
   ]);
+
+  console.log(Number(from), Number(to));
 
   return (
     <div className="space-y-4">
@@ -100,6 +107,9 @@ async function StudentsPage({
       </div>
       <div className="flex justify-end gap-4 my-4">
         <StudentsFilterBtns teachers={teachers} />
+      </div>
+      <div className="flex justify-end gap-4 my-4">
+        <DateRangePicker className="flex items-center" />
       </div>
       <SearchBar />
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
@@ -113,6 +123,8 @@ async function StudentsPage({
             school={school}
             teacher={teacher}
             query={query}
+            from={Number(from)}
+            to={Number(to)}
           />
         </Suspense>
       </ErrorBoundary>

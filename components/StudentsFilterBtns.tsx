@@ -15,7 +15,7 @@ import {
 } from './ui/select';
 import { Button } from './ui/button';
 import { RotateCw } from 'lucide-react';
-import ResetFiltersBtn from './ResetFiltersBtn';
+import ResetFiltersBtn from './ResetBtn';
 
 const grades = ['1', '2', '3', '4', '5', '6'] as const;
 type Grade = '1' | '2' | '3' | '4' | '5' | '6';

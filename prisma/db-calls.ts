@@ -36,7 +36,9 @@ export const cached_students = unstable_cache(
     gender?: Gender,
     school?: School,
     teacher?: string,
-    query?: string
+    query?: string,
+    from?: number,
+    to?: number
   ) =>
     await prisma.student.findMany({
       orderBy: {
@@ -82,6 +84,13 @@ export const cached_students = unstable_cache(
             },
           ],
         }),
+        ...(from &&
+          to && {
+            created_at: {
+              gte: new Date(from),
+              lte: new Date(to),
+            },
+          }),
       },
       take: per_page,
       skip: (page - 1) * per_page,
