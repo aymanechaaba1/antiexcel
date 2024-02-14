@@ -9,8 +9,8 @@ function SignInBtn({ className }: { className?: string }) {
       onClick={async () => {
         await signIn();
       }}
+      className={className}
     >
-      className={`${className}`}
       Get Started
     </Button>
   );
