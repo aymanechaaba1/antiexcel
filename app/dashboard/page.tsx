@@ -40,7 +40,7 @@ async function DashboardPage({
         <GradesDonutChart students={students} />
         <SubjectsDonutChart teachers={teachers} />
       </div>
-      <div className="flex flex-col md:flex-row gap-4">
+      <div className="flex flex-col md:flex-row items-start gap-4">
         <LatestStudents students={students} />
         {isPro && <LatestTeachers teachers={teachers} />}
       </div>

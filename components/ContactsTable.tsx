@@ -53,7 +53,7 @@ async function ContactsTable({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Section title="Contacts" className="flex-1">
+      <Section className="flex-1">
         <div className="space-y-4">
           <div className={'grid grid-cols-5'}>
             {columns.map((column, i) => (

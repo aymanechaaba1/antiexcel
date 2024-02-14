@@ -11,15 +11,10 @@ async function LatestStudents({
 }) {
   return (
     <div className="p-4 border rounded-lg flex-grow space-y-3">
-      <h3 className="text-2xl tracking-tight font-semibold scroll-m-20">
-        Latest Students
-      </h3>
+      <h3 className="h3">Latest Students</h3>
       <div className="space-y-4 overflow-y-scroll">
         {students?.map((student) => (
-          <div
-            key={student.id}
-            className="flex items-center justify-between gap-4"
-          >
+          <div key={student.id} className="flex items-center gap-x-3">
             <Avatar>
               <AvatarFallback>
                 {getAvatarName(student.firstname, student.lastname)}

@@ -64,7 +64,7 @@ async function TeachersTable({
   if (teachers && teachers.length)
     return (
       <div className="flex flex-col min-h-screen">
-        <Section title="Teachers" className="flex-1">
+        <Section className="flex-1">
           <div className="space-y-3 mt-5">
             <div className={`grid grid-cols-${columns.length} px-4 gap-x-4`}>
               {columns.map((field, i) => (
