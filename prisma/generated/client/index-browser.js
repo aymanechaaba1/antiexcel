@@ -196,64 +196,6 @@ exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
 };
-
-exports.Prisma.AccountOrderByRelevanceFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  type: 'type',
-  provider: 'provider',
-  providerAccountId: 'providerAccountId',
-  refresh_token: 'refresh_token',
-  access_token: 'access_token',
-  token_type: 'token_type',
-  scope: 'scope',
-  id_token: 'id_token',
-  session_state: 'session_state'
-};
-
-exports.Prisma.SessionOrderByRelevanceFieldEnum = {
-  id: 'id',
-  sessionToken: 'sessionToken',
-  userId: 'userId'
-};
-
-exports.Prisma.UserOrderByRelevanceFieldEnum = {
-  id: 'id',
-  name: 'name',
-  email: 'email',
-  image: 'image',
-  subscription_id: 'subscription_id'
-};
-
-exports.Prisma.VerificationTokenOrderByRelevanceFieldEnum = {
-  identifier: 'identifier',
-  token: 'token'
-};
-
-exports.Prisma.StudentOrderByRelevanceFieldEnum = {
-  id: 'id',
-  firstname: 'firstname',
-  lastname: 'lastname',
-  user_id: 'user_id',
-  teacher_id: 'teacher_id',
-  contact_id: 'contact_id'
-};
-
-exports.Prisma.ContactOrderByRelevanceFieldEnum = {
-  id: 'id',
-  email: 'email',
-  phone: 'phone',
-  name: 'name',
-  user_id: 'user_id'
-};
-
-exports.Prisma.TeacherOrderByRelevanceFieldEnum = {
-  id: 'id',
-  email: 'email',
-  phone: 'phone',
-  name: 'name',
-  user_id: 'user_id'
-};
 exports.Gender = exports.$Enums.Gender = {
   male: 'male',
   female: 'female'
