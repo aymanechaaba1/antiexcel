@@ -20,7 +20,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await getServerSession();
-  const user = await uncached_user();
 
   return (
     <ReactQueryClientProvider>
@@ -36,11 +35,9 @@ export default async function RootLayout({
               <PaypalProvider>
                 <UpdateURLPattern>
                   <Header />
-                  <SubscriptionProvider user={user}>
-                    <UpgradeBanner />
-                    <main className="p-4">{children}</main>
-                    <Toaster />
-                  </SubscriptionProvider>
+                  <UpgradeBanner />
+                  <main className="p-4">{children}</main>
+                  <Toaster />
                 </UpdateURLPattern>
               </PaypalProvider>
             </ThemeProvider>
