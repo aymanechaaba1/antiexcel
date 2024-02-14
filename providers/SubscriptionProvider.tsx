@@ -16,7 +16,6 @@ function SubscriptionProvider({
   );
 
   useEffect(() => {
-    console.log(user);
     if (!user) return;
 
     if (

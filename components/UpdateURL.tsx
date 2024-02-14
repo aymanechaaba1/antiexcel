@@ -12,12 +12,22 @@ function UpdateURL({ children }: { children: ReactNode }) {
   const subscription = useSubscriptionsStore((state) => state.subscription);
 
   useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+
     if (pathname === '/dashboard') {
-      const params = new URLSearchParams(searchParams);
       if (subscription) params.set('subscribed', 'true');
       else params.set('subscribed', 'false');
-      router.replace(`${pathname}?${params.toString()}`);
     }
+
+    if (pathname === '/students') {
+      const currentPage = params.get('page');
+      const currentPerPage = params.get('per_page');
+
+      if (!currentPage) params.set('page', '1');
+      if (!currentPerPage) params.set('per_page', '3');
+    }
+
+    router.replace(`${pathname}?${params.toString()}`);
   }, [pathname]);
 
   return <>{children}</>;
