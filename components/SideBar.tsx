@@ -59,6 +59,7 @@ function SideBar() {
       <div className="space-y-4 flex-1 mt-5">
         {navLinks.map(({ path, label, icon }, i) => (
           <Link
+            key={i}
             href={path}
             className={cn(
               'flex items-center justify-center gap-x-3 py-3 hover:bg-gray-200 dark:hover:bg-gray-900 px-5 rounded-lg',
