@@ -8,18 +8,6 @@ function SettingsLayout({ children }: { children: React.ReactNode }) {
       title: 'Account',
       link: '/settings/account',
     },
-    {
-      title: 'Plan',
-      link: '/settings/plan',
-    },
-    {
-      title: 'Subscription',
-      link: '/settings/subscription',
-    },
-    {
-      title: 'Transactions',
-      link: '/settings/transactions',
-    },
   ];
 
   return (

@@ -1,11 +1,13 @@
 'use server';
 
+import { plans } from '@/plans';
 import prisma from './prisma/prismaClient';
 import { revalidateTag } from 'next/cache';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './lib/auth';
 import { contactSchema, studentSchema, teacherSchema } from './zod/schemas';
 import { redirect } from 'next/navigation';
+import stripe from './lib/stripe';
 
 export const addStudent = async (prevState: any, formData: FormData) => {
   const session = await getServerSession(authOptions);
@@ -290,3 +292,64 @@ export const uncached_contact = async (id: string) =>
       students: true,
     },
   });
+
+export const createStipeSession = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session) return;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: session.user.id,
+    },
+  });
+
+  const url =
+    process.env.VERCEL_ENV === 'production' || 'preview'
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+
+  const stripeSession = await stripe.checkout.sessions.create({
+    customer_email: session.user.email!,
+    success_url: `${url}/billing`,
+    cancel_url: `${url}`,
+    payment_method_types: ['card', 'paypal'],
+    mode: 'subscription',
+    billing_address_collection: 'auto',
+    line_items: [
+      {
+        price: plans[1].price.id,
+        quantity: 1,
+      },
+    ],
+    metadata: {
+      user_id: session.user.id,
+    },
+  });
+
+  if (stripeSession.url) redirect(stripeSession.url);
+};
+
+export const createPortalSession = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect('/');
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session.user.id,
+    },
+  });
+
+  if (!user || !user.stripe_customer_id) return;
+
+  const url =
+    process.env.VERCEL_ENV === 'production' || 'preview'
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000';
+
+  const portalSession = await stripe.billingPortal.sessions.create({
+    customer: user.stripe_customer_id,
+    return_url: `${url}/billing`,
+  });
+
+  redirect(portalSession.url);
+};

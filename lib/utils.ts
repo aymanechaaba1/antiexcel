@@ -1,8 +1,6 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { PayPalAccessTokenResponse } from '@/types/paypal-accesstoken-response';
-import { z } from 'zod';
-import { Dispatch, SetStateAction } from 'react';
 import { PrismaStudents, PrismaTeachers } from '@/types/prismaTypes';
 
 export function cn(...inputs: ClassValue[]) {
@@ -109,3 +107,9 @@ export const isoToString = (isoDate: Date) => {
 
   return `${yyyy}-${mm}-${dd}`;
 };
+
+export const formatPrice = (amount: number) =>
+  new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);

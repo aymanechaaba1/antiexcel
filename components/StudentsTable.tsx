@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { Separator } from './ui/separator';
-import { cn, formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
+import { cn, formatSchool, getAvatarName } from '@/lib/utils';
 import { cached_students } from '@/prisma/db-calls';
 import Section from './Section';
 import { getServerSession } from 'next-auth';
@@ -20,23 +20,58 @@ export const columns = [
 ] as const;
 
 export type StudentsSortOptions = 'latest' | 'oldest' | 'grade';
-const studentsSortOptions = ['latest', 'oldest', 'grade'] as const;
+
+type Grade = '1' | '2' | '3' | '4' | '5' | '6';
+type Gender = 'male' | 'female';
+type School =
+  | 'chkail'
+  | 'henri_matisse'
+  | 'le_bougeoir'
+  | 'diwan'
+  | 'wlad_slama'
+  | 'al_wahda';
 
 async function StudentsTable({
   page,
   per_page,
   sort_by,
+  grade,
+  gender,
+  school,
+  teacher,
+  query,
+  from,
+  to,
 }: {
   page: number;
   per_page: number;
   sort_by: StudentsSortOptions;
+  grade?: Grade;
+  gender?: Gender;
+  school?: School;
+  teacher?: string;
+  query?: string;
+  from?: number;
+  to?: number;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalStudents, students] = await Promise.all([
     prisma.student.count(),
-    cached_students(session.user.id, page, per_page, sort_by),
+    cached_students(
+      session.user.id,
+      page,
+      per_page,
+      sort_by,
+      grade,
+      gender,
+      school,
+      teacher,
+      query,
+      from,
+      to
+    ),
   ]);
 
   if (!students || !students.length)
@@ -48,9 +83,6 @@ async function StudentsTable({
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex justify-end">
-        <SortBtn sortOptions={studentsSortOptions} />
-      </div>
       <Section title="Students" className="flex-1">
         <div className="space-y-3 mt-5">
           <div className={`grid grid-cols-${columns.length} gap-x-4 gap-y-6`}>
@@ -73,6 +105,7 @@ async function StudentsTable({
             <>
               <Separator />
               <Link
+                prefetch={false}
                 key={student.id}
                 href={`/students/${student.id}`}
                 className={`grid grid-cols-${columns.length} items-center gap-x-4 dark:hover:bg-gray-900 hover:bg-gray-100 px-4 py-2 rounded-lg`}

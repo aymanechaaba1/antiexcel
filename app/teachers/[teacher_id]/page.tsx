@@ -3,6 +3,28 @@ import TeacherDetails from '@/components/TeacherDetails';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Suspense } from 'react';
+import prisma from '@/prisma/prismaClient';
+import type { Metadata, ResolvingMetadata } from 'next';
+
+type Props = {
+  params: { teacher_id: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const teacher = await prisma.teacher.findUnique({
+    where: {
+      id: params.teacher_id,
+    },
+  });
+
+  return {
+    title: `${teacher?.name}`,
+  };
+}
 
 function TeacherDetailsSkeleton() {
   return (

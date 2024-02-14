@@ -9,9 +9,10 @@ import UpdateContactButton from './UpdateContactButton';
 import { redirect } from 'next/navigation';
 import prisma from '@/prisma/prismaClient';
 import DataPagination from './DataPagination';
-import SortBtn from './SortBtn';
 
 export const columns = ['Avatar', 'Name', 'Phone', 'Relationship'] as const;
+
+type Relationship = 'mother' | 'father' | 'brother' | 'sister';
 
 export type ContactsSortOptions = 'latest' | 'oldest';
 const contactsSortOptions = ['latest', 'oldest'] as const;
@@ -20,24 +21,38 @@ async function ContactsTable({
   page,
   per_page,
   sort_by,
+  relationship,
+  query,
+  from,
+  to,
 }: {
   page: number;
   per_page: number;
   sort_by: ContactsSortOptions;
+  relationship?: Relationship;
+  query?: string;
+  from?: number;
+  to?: number;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalContacts, contacts] = await Promise.all([
     prisma.contact.count(),
-    cached_contacts(session.user.id, page, per_page, sort_by),
+    cached_contacts(
+      session.user.id,
+      page,
+      per_page,
+      sort_by,
+      relationship,
+      query,
+      from,
+      to
+    ),
   ]);
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex justify-end">
-        <SortBtn sortOptions={contactsSortOptions} />
-      </div>
       <Section title="Contacts" className="flex-1">
         <div className="space-y-4">
           <div className={'grid grid-cols-5'}>

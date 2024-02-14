@@ -9,9 +9,11 @@ import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import DataPagination from './DataPagination';
 import prisma from '@/prisma/prismaClient';
-import SortBtn from './SortBtn';
 
 export const columns = ['Avatar', 'Name', 'Subject'] as const;
+
+type Gender = 'male' | 'female';
+type Subject = 'maths' | 'physics' | 'french';
 
 export type TeachersSortOptions = 'latest' | 'oldest' | 'nb_students';
 const teachersSortOptions = ['latest', 'oldest', 'nb_students'] as const;
@@ -20,17 +22,37 @@ async function TeachersTable({
   page,
   per_page,
   sort_by,
+  gender,
+  subject,
+  query,
+  from,
+  to,
 }: {
   page: number;
   per_page: number;
   sort_by: TeachersSortOptions;
+  gender?: Gender;
+  subject?: Subject;
+  query?: string;
+  from?: number;
+  to?: number;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalTeachers, teachers] = await Promise.all([
     prisma.teacher.count(),
-    cached_teachers(session.user.id, page, per_page, sort_by),
+    cached_teachers(
+      session.user.id,
+      page,
+      per_page,
+      sort_by,
+      gender,
+      subject,
+      query,
+      from,
+      to
+    ),
   ]);
   if (!teachers || !teachers.length)
     return (
@@ -42,9 +64,6 @@ async function TeachersTable({
   if (teachers && teachers.length)
     return (
       <div className="flex flex-col min-h-screen">
-        <div className="flex justify-end">
-          <SortBtn sortOptions={teachersSortOptions} />
-        </div>
         <Section title="Teachers" className="flex-1">
           <div className="space-y-3 mt-5">
             <div className={`grid grid-cols-${columns.length} px-4 gap-x-4`}>
@@ -61,6 +80,7 @@ async function TeachersTable({
               <>
                 <Separator />
                 <Link
+                  prefetch={false}
                   key={teacher.id}
                   href={`/teachers/${teacher.id}`}
                   className={`grid grid-cols-${columns.length} gap-x-4 dark:hover:bg-gray-900 items-center hover:bg-gray-100 px-4 py-2 rounded-lg`}

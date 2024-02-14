@@ -14,27 +14,25 @@ import { DEFAULT_SORT_BY } from '@/lib/config';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 function SortBtn({ sortOptions }: { sortOptions: readonly string[] }) {
-  const [sortBy, setSortBy] = useState<string>(DEFAULT_SORT_BY);
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
+  const [sort_by, setSortBy] = useState<string>(
+    searchParams.get('sort_by') || ''
+  );
+
   useEffect(() => {
-    const page = searchParams.get('page');
-    const per_page = searchParams.get('per_page');
+    const params = new URLSearchParams(searchParams);
 
-    if (!page || !per_page) return;
+    if (sort_by) params.set('sort_by', sort_by);
+    else params.delete('sort_by');
 
-    const newSearchParams = new URLSearchParams();
-    newSearchParams.set('page', page);
-    newSearchParams.set('per_page', per_page);
-    newSearchParams.set('sort_by', sortBy);
-
-    router.replace(`${pathname}/?${newSearchParams.toString()}`);
-  }, [sortBy]);
+    router.replace(`${pathname}/?${params.toString()}`);
+  }, [sort_by]);
 
   return (
-    <Select onValueChange={setSortBy} defaultValue={DEFAULT_SORT_BY}>
+    <Select onValueChange={setSortBy} value={sort_by}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Sort By" />
       </SelectTrigger>

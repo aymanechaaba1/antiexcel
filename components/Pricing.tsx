@@ -1,107 +1,102 @@
 'use client';
 
 import { Check } from 'lucide-react';
-import { Card } from './ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from './ui/card';
 import { Separator } from './ui/separator';
+import { plans } from '@/plans';
+import Section from './Section';
+import { formatPrice } from '@/lib/utils';
 import { Button } from './ui/button';
+import { createStipeSession } from '@/actions';
+import { useToast } from './ui/use-toast';
 import { useSubscriptionsStore } from '@/store/store';
 import Link from 'next/link';
-import { plans } from '@/plans';
-import { signIn } from 'next-auth/react';
-import Section from './Section';
-import CheckoutButton from './CheckoutButton';
-import { Session } from 'next-auth';
+import { signIn, useSession } from 'next-auth/react';
 
-function Pricing({ session }: { session: Session | null }) {
-  const { subscription } = useSubscriptionsStore((state) => state);
+function SignInBtn() {
+  return (
+    <Button
+      className="my-3"
+      onClick={async () => {
+        await signIn();
+      }}
+    >
+      Sign In
+    </Button>
+  );
+}
+
+function BecomeProBtn() {
+  return (
+    <Button
+      onClick={async () => {
+        await createStipeSession();
+      }}
+      className="my-3 bg-purple-500 hover:bg-purple-600 text-white text-center"
+    >
+      Become Pro
+    </Button>
+  );
+}
+
+function DashboardBtn() {
+  return (
+    <Button
+      className="my-3 bg-purple-500 hover:bg-purple-600 text-white text-center"
+      asChild
+    >
+      <Link href={`/dashboard`}>Dashboard</Link>
+    </Button>
+  );
+}
+
+function Pricing() {
+  const subscription = useSubscriptionsStore((state) => state.subscription);
+  const { data: session } = useSession();
 
   return (
-    <Section title="Pricing" className="my-5 mx-auto max-w-3xl">
-      <div className="flex flex-col md:flex-row gap-3 py-4">
-        <Card className="border rounded-lg p-4 space-y-3">
-          <div>
-            <h1 className="text-xl font-bold">{plans[0].name}</h1>
-            <p className="text-gray-500">{plans[0].description}</p>
-          </div>
-          <Separator />
-          <div>
-            <h1>
-              <span className="font-bold text-3xl">$0</span>
-            </h1>
-          </div>
-          <Separator />
-          <div>
-            {plans[0].features.map((feature, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <Check className="text-purple-500" />
-                <p className="font-medium text-sm">{feature}</p>
+    <Section className="flex flex-col gap-y-4 md:flex-row md:gap-x-10">
+      {plans.map((plan, i) => (
+        <Card key={i}>
+          <CardHeader>
+            <CardTitle>{plan.name}</CardTitle>
+            <CardDescription>{plan.slug}</CardDescription>
+          </CardHeader>
+          <Separator className="my-3" />
+          <CardContent>
+            <p className="text-2xl font-semibold">
+              {formatPrice(plan.price.amount)}
+            </p>
+            {plan.features.map((feature, i) => (
+              <div key={i} className="flex items-center gap-x-3 mt-2">
+                <Check size={13} className="text-purple-500" />
+                <p className="text-sm text-gray-900 dark:text-gray-200">
+                  {feature}
+                </p>
               </div>
             ))}
-          </div>
-          <Separator />
-          {!session && (
-            <Button
-              onClick={() => {
-                signIn();
-              }}
-            >
-              Sign In
-            </Button>
-          )}
-          {session && (
-            <Button asChild>
-              <Link href={`/dashboard`}>Dashboard</Link>
-            </Button>
-          )}
-        </Card>
-        <Card className="border rounded-lg p-4 space-y-3">
-          <div>
-            <h1 className="text-xl font-bold">{plans[1].name}</h1>
-            <p className="text-gray-500">{plans[1].description}</p>
-          </div>
-          <Separator />
-          <div>
-            <h1>
-              {plans[1].billing_cycles && (
-                <span className="font-bold text-3xl">
-                  ${plans[1].billing_cycles[0].pricing_scheme.fixed_price.value}
-                </span>
-              )}
-              <span className="ml-2 text-xs text-gray-500">per month</span>
-            </h1>
-          </div>
-          <Separator />
-          <div>
-            {plans[1].features.map((feature, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <Check className="text-purple-500" />
-                <p className="font-medium text-sm">{feature}</p>
-              </div>
-            ))}
-          </div>
-          <Separator />
-          {!session ? (
-            <Button
-              onClick={() => {
-                signIn();
-              }}
-            >
-              Sign In
-            </Button>
-          ) : session && !subscription ? (
-            <CheckoutButton session={session} />
-          ) : (
-            <>
-              <p className="text-gray-500 text-xs">
-                You&apos;re a PRO memeber!
+            {!session && <SignInBtn />}
+            {session && !subscription && <BecomeProBtn />}
+            {session && subscription && <DashboardBtn />}
+            {plan.name === 'Free Plan' && session && !subscription && (
+              <p className="text-gray-500 text-sm tracking-tight scroll-m-20 font-semibold">
+                You are on the Free plan
               </p>
-              <Button asChild>
-                <Link href={`/dashboard`}>Dashboard</Link>
-              </Button>
-            </>
-          )}
+            )}
+            {plan.name === 'Pro Plan' && session && subscription && (
+              <p className="text-gray-500 text-sm tracking-tight scroll-m-20 font-semibold">
+                You are on the Pro plan
+              </p>
+            )}
+          </CardContent>
         </Card>
-      </div>
+      ))}
     </Section>
   );
 }

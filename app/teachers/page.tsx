@@ -3,12 +3,16 @@ import TeachersTable, {
   TeachersSortOptions,
   columns,
 } from '@/components/TeachersTable';
-import { Button } from '@/components/ui/button';
-import Link from 'next/link';
 import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
 import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
+import TeachersFilterBtns from '@/components/TeachersFilterBtns';
+import SearchBar from '@/components/SearchBar';
+import SortBtn from '@/components/SortBtn';
+import AddTeacherBtn from '@/components/AddTeacherBtn';
+import { countTeachers } from '@/prisma/db-calls';
+import { DateRangePicker } from '@/components/DateRangePicker';
 
 function TeachersTableSkeleton() {
   const rows = 3;
@@ -39,28 +43,53 @@ function TeachersTableSkeleton() {
   );
 }
 
+type Gender = 'male' | 'female';
+type Subject = 'maths' | 'physics' | 'french';
+
+const teachersSortOptions = ['latest', 'oldest', 'nb_students'] as const;
+
 async function TeachersPage({
-  searchParams: { page, per_page, sort_by },
+  searchParams: { page, per_page, sort_by, gender, subject, query, from, to },
 }: {
   searchParams: {
     page: string;
     per_page: string;
     sort_by: TeachersSortOptions;
+    gender?: Gender;
+    subject?: Subject;
+    query?: string;
+    from?: string;
+    to?: string;
   };
 }) {
+  const totalTeachers = await countTeachers();
+
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <Button asChild>
-          <Link href={`/teachers/add`}>Add Teacher</Link>
-        </Button>
+        <AddTeacherBtn totalTeachers={totalTeachers} />
       </div>
+      <div className="flex justify-end gap-4 my-4">
+        <SortBtn sortOptions={teachersSortOptions} />
+      </div>
+      <div className="flex justify-end gap-4 my-4">
+        <TeachersFilterBtns />
+      </div>
+      <div className="flex justify-end gap-4 my-4">
+        <DateRangePicker className="flex items-center" />
+      </div>
+      <SearchBar />
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<TeachersTableSkeleton />}>
           <TeachersTable
             page={+page || DEFAULT_PAGE}
             per_page={+per_page || DEFAULT_PER_PAGE}
             sort_by={sort_by || DEFAULT_SORT_BY}
+            gender={gender}
+            subject={subject}
+            query={query}
+            from={Number(from)}
+            to={Number(to)}
           />
         </Suspense>
       </ErrorBoundary>

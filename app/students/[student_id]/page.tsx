@@ -1,8 +1,31 @@
 import Section from '@/components/Section';
 import StudentDetails from '@/components/StudentDetails';
 import { Button } from '@/components/ui/button';
+import { uncached_student } from '@/prisma/db-calls';
+import prisma from '@/prisma/prismaClient';
+import type { Metadata, ResolvingMetadata } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
+
+type Props = {
+  params: { student_id: string };
+};
+
+export async function generateMetadata(
+  { params }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  // fetch data
+  const student = await prisma.student.findUnique({
+    where: {
+      id: params.student_id,
+    },
+  });
+
+  return {
+    title: `${student?.firstname} ${student?.lastname}`,
+  };
+}
 
 function StudentDetailsSkeleton() {
   return (
