@@ -32,15 +32,6 @@ function PaypalButtonsWrapper({
     });
   }, [type]);
 
-  const { mutate: updateUser } = trpc.updateUser.useMutation({
-    onSuccess: () => {
-      utils.getUser.invalidate();
-      toast({
-        title: "You're a PRO Member!",
-      });
-    },
-  });
-
   return (
     <PaypalButtons
       style={{
@@ -60,9 +51,9 @@ function PaypalButtonsWrapper({
       onApprove={async (data) => {
         if (!data.subscriptionID) return;
 
-        updateUser({
-          subscription_id: data.subscriptionID,
-        });
+        // updateUser({
+        //   subscription_id: data.subscriptionID,
+        // });
       }}
     />
   );

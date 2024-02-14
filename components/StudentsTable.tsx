@@ -1,39 +1,42 @@
 import Link from 'next/link';
 import { Separator } from './ui/separator';
-import { formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
-import { cached_students, uncached_students } from '@/prisma/db-calls';
+import { cn, formatSchool, getAvatarName, upperFirst } from '@/lib/utils';
+import { cached_students } from '@/prisma/db-calls';
 import Section from './Section';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { Avatar, AvatarFallback } from './ui/avatar';
-import { cache } from 'react';
 import prisma from '@/prisma/prismaClient';
 import DataPagination from './DataPagination';
+import SortBtn from './SortBtn';
 
 export const columns = [
   'Avatar',
   'Firstname',
   'Lastname',
-  'Gender',
   'Grade',
   'School',
-  'Teacher',
-];
+] as const;
+
+export type StudentsSortOptions = 'latest' | 'oldest' | 'grade';
+const studentsSortOptions = ['latest', 'oldest', 'grade'] as const;
 
 async function StudentsTable({
   page,
   per_page,
+  sort_by,
 }: {
   page: number;
   per_page: number;
+  sort_by: StudentsSortOptions;
 }) {
   const session = await getServerSession(authOptions);
   if (!session) redirect(`/api/auth/signin`);
 
   const [totalStudents, students] = await Promise.all([
     prisma.student.count(),
-    cached_students(session.user.id, page, per_page),
+    cached_students(session.user.id, page, per_page, sort_by),
   ]);
 
   if (!students || !students.length)
@@ -45,13 +48,21 @@ async function StudentsTable({
 
   return (
     <div className="flex flex-col min-h-screen">
+      <div className="flex justify-end">
+        <SortBtn sortOptions={studentsSortOptions} />
+      </div>
       <Section title="Students" className="flex-1">
         <div className="space-y-3 mt-5">
           <div className={`grid grid-cols-${columns.length} gap-x-4 gap-y-6`}>
             {columns.map((field, i) => (
               <p
                 key={i}
-                className="font-bold tracking-tight scroll-m-20 text-md text-gray-500"
+                className={cn(
+                  'font-bold tracking-tight scroll-m-20 text-md text-gray-500 text-right',
+                  {
+                    'text-left': field === 'Avatar',
+                  }
+                )}
               >
                 {field}
               </p>
@@ -71,12 +82,10 @@ async function StudentsTable({
                     {getAvatarName(student.firstname, student.lastname)}
                   </AvatarFallback>
                 </Avatar>
-                <p className="">{student.firstname}</p>
-                <p className="">{student.lastname}</p>
-                <p>{upperFirst(student.gender)}</p>
-                <p className="">{student.grade}</p>
-                <p className="">{formatSchool(student.school)}</p>
-                <p className="">{student.teacher?.name}</p>
+                <p className="text-right">{student.firstname}</p>
+                <p className="text-right">{student.lastname}</p>
+                <p className="text-right">{student.grade}</p>
+                <p className="text-right">{formatSchool(student.school)}</p>
               </Link>
             </>
           ))}

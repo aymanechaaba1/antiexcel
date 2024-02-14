@@ -11,3 +11,4 @@ export const dateOptions: Intl.DateTimeFormatOptions | undefined = {
 
 export const DEFAULT_PAGE = 1;
 export const DEFAULT_PER_PAGE = 5;
+export const DEFAULT_SORT_BY: 'latest' | 'oldest' = 'latest';

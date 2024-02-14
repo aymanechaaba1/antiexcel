@@ -1,8 +1,11 @@
 import ErrorFallBack from '@/components/ErrorFallBack';
 import Section from '@/components/Section';
-import StudentsTable, { columns } from '@/components/StudentsTable';
+import StudentsTable, {
+  StudentsSortOptions,
+  columns,
+} from '@/components/StudentsTable';
 import { Button } from '@/components/ui/button';
-import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '@/lib/config';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import Link from 'next/link';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -37,15 +40,16 @@ function StudentsTableSkeleton() {
 }
 
 async function StudentsPage({
-  searchParams: { page, per_page },
+  searchParams: { page, per_page, sort_by },
 }: {
   searchParams: {
     page: string;
     per_page: string;
+    sort_by: StudentsSortOptions;
   };
 }) {
   return (
-    <>
+    <div className="space-y-4">
       <div className="flex justify-end">
         <Button asChild>
           <Link href={`/students/add`}>Add Student</Link>
@@ -56,10 +60,11 @@ async function StudentsPage({
           <StudentsTable
             page={+page || DEFAULT_PAGE}
             per_page={+per_page || DEFAULT_PER_PAGE}
+            sort_by={sort_by || DEFAULT_SORT_BY}
           />
         </Suspense>
       </ErrorBoundary>
-    </>
+    </div>
   );
 }
 

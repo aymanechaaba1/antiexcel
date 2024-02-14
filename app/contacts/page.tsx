@@ -1,10 +1,13 @@
-import ContactsList, { columns } from '@/components/ContactsTable';
+import ContactsList, {
+  ContactsSortOptions,
+  columns,
+} from '@/components/ContactsTable';
 import { Suspense } from 'react';
 import AddContactButton from '@/components/AddContactButton';
 import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
-import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '@/lib/config';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 
 function ContactsTableSkeleton() {
   const rows = 3;
@@ -36,25 +39,27 @@ function ContactsTableSkeleton() {
 }
 
 async function ContactsPage({
-  searchParams: { page, per_page },
+  searchParams: { page, per_page, sort_by },
 }: {
   searchParams: {
     page: string;
     per_page: string;
+    sort_by: ContactsSortOptions;
   };
 }) {
   return (
-    <>
+    <div className="space-y-4">
       <AddContactButton />
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<ContactsTableSkeleton />}>
           <ContactsList
             page={+page || DEFAULT_PAGE}
             per_page={+per_page || DEFAULT_PER_PAGE}
+            sort_by={sort_by || DEFAULT_SORT_BY}
           />
         </Suspense>
       </ErrorBoundary>
-    </>
+    </div>
   );
 }
 

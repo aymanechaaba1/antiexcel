@@ -1,11 +1,14 @@
 import React, { Suspense } from 'react';
-import TeachersTable, { columns } from '@/components/TeachersTable';
+import TeachersTable, {
+  TeachersSortOptions,
+  columns,
+} from '@/components/TeachersTable';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Section from '@/components/Section';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorFallBack from '@/components/ErrorFallBack';
-import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '@/lib/config';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 
 function TeachersTableSkeleton() {
   const rows = 3;
@@ -37,15 +40,16 @@ function TeachersTableSkeleton() {
 }
 
 async function TeachersPage({
-  searchParams: { page, per_page },
+  searchParams: { page, per_page, sort_by },
 }: {
   searchParams: {
     page: string;
     per_page: string;
+    sort_by: TeachersSortOptions;
   };
 }) {
   return (
-    <>
+    <div className="space-y-4">
       <div className="flex justify-end">
         <Button asChild>
           <Link href={`/teachers/add`}>Add Teacher</Link>
@@ -56,10 +60,11 @@ async function TeachersPage({
           <TeachersTable
             page={+page || DEFAULT_PAGE}
             per_page={+per_page || DEFAULT_PER_PAGE}
+            sort_by={sort_by || DEFAULT_SORT_BY}
           />
         </Suspense>
       </ErrorBoundary>
-    </>
+    </div>
   );
 }
 

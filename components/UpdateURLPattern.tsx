@@ -1,6 +1,6 @@
 'use client';
 
-import { DEFAULT_PAGE, DEFAULT_PER_PAGE } from '@/lib/config';
+import { DEFAULT_PAGE, DEFAULT_PER_PAGE, DEFAULT_SORT_BY } from '@/lib/config';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 
@@ -10,9 +10,10 @@ function UpdateURLPattern({ children }: { children: ReactNode }) {
   const searchParams = useSearchParams();
   const page = searchParams.get('page');
   const per_page = searchParams.get('per_page');
+  const sort_by = searchParams.get('sort_by');
 
   useEffect(() => {
-    if (page || per_page) return;
+    if (page || per_page || sort_by) return;
 
     if (
       pathname === '/students' ||
@@ -22,6 +23,7 @@ function UpdateURLPattern({ children }: { children: ReactNode }) {
       const searchParams = new URLSearchParams();
       searchParams.set('page', DEFAULT_PAGE.toString());
       searchParams.set('per_page', DEFAULT_PER_PAGE.toString());
+      searchParams.set('sort_by', DEFAULT_SORT_BY);
 
       router.replace(`${pathname}?${searchParams.toString()}`);
     }
