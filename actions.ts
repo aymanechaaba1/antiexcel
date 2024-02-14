@@ -348,7 +348,7 @@ export const createPortalSession = async () => {
 
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: user.stripe_customer_id,
-    return_url: `${url}/billing`,
+    return_url: `${url || 'antiexcel.vercel.app'}/billing`,
   });
 
   redirect(portalSession.url);

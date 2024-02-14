@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Button } from './ui/button';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import SignInBtn from './SignInBtn';
 
 async function Hero() {
   const session = await getServerSession(authOptions);
@@ -14,12 +15,7 @@ async function Hero() {
       </p>
       <div className="flex items-center gap-3 max-2xl justify-center my-3">
         {!session && (
-          <Button
-            className="bg-purple-500 py-2 px-5 rounded-lg font-medium text-center text-white hover:bg-purple-600"
-            asChild
-          >
-            <Link href={`/api/auth/signin`}>Get Started</Link>
-          </Button>
+          <SignInBtn className="bg-purple-500 py-2 px-5 rounded-lg font-medium text-center text-white hover:bg-purple-600" />
         )}
         {session && (
           <Button className="" variant={'secondary'} asChild>

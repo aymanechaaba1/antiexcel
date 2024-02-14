@@ -75,8 +75,8 @@ export function UserDropdown() {
     </DropdownMenu>
   ) : (
     <Button
-      onClick={() => {
-        signIn();
+      onClick={async () => {
+        await signIn();
       }}
     >
       Sign In

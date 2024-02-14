@@ -16,15 +16,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-<<<<<<< HEAD
-  const session = await getServerSession();
-=======
   const session = await getServerSession(authOptions);
 
   let user: Awaited<ReturnType<typeof uncached_user>> | undefined;
   if (session) user = await uncached_user(session.user.id);
   else user = undefined;
->>>>>>> filter-by-date-range
 
   return (
     <ReactQueryClientProvider>
@@ -42,15 +38,9 @@ export default async function RootLayout({
                   <Header />
                   <UpgradeBanner />
                   <main className="p-4">{children}</main>
-<<<<<<< HEAD
-                  <Toaster />
-                </UpdateURLPattern>
-              </PaypalProvider>
-=======
                 </UpdateURL>
               </SubscriptionProvider>
               <Toaster />
->>>>>>> filter-by-date-range
             </ThemeProvider>
           </body>
         </html>
