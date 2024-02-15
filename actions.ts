@@ -304,14 +304,14 @@ export const createStipeSession = async () => {
   });
 
   const url =
-    process.env.VERCEL_ENV === 'production' || 'preview'
-      ? `https://${process.env.VERCEL_URL}`
+    process.env.VERCEL_ENV === 'production'
+      ? `https://${process.env.VERCEL_URL || 'antiexcel.vercel.app'}`
       : 'http://localhost:3000';
 
   const stripeSession = await stripe.checkout.sessions.create({
     customer_email: session.user.email!,
     success_url: `${url}/billing`,
-    cancel_url: `${url}`,
+    cancel_url: `${url}/billing`,
     payment_method_types: ['card', 'paypal'],
     mode: 'subscription',
     billing_address_collection: 'auto',
@@ -342,13 +342,13 @@ export const createPortalSession = async () => {
   if (!user || !user.stripe_customer_id) return;
 
   const url =
-    process.env.VERCEL_ENV === 'production' || 'preview'
-      ? `https://${process.env.VERCEL_URL}`
+    process.env.VERCEL_ENV === 'production'
+      ? `https://${process.env.VERCEL_URL || 'antiexcel.vercel.app'}`
       : 'http://localhost:3000';
 
   const portalSession = await stripe.billingPortal.sessions.create({
     customer: user.stripe_customer_id,
-    return_url: `${url || 'antiexcel.vercel.app'}/billing`,
+    return_url: `${url}/billing`,
   });
 
   redirect(portalSession.url);
