@@ -142,7 +142,12 @@ export const uncached_student = async (id: string) =>
     },
   });
 
-export const countStudents = async () => await prisma.student.count();
+export const countStudents = async (user_id: string) =>
+  await prisma.student.count({
+    where: {
+      id: user_id,
+    },
+  });
 
 type Subject = 'maths' | 'physics' | 'french';
 export const cached_teachers = unstable_cache(
@@ -249,7 +254,12 @@ export const uncached_teacher = async (id: string) =>
     },
   });
 
-export const countTeachers = async () => await prisma.teacher.count();
+export const countTeachers = async (user_id: string) =>
+  await prisma.teacher.count({
+    where: {
+      id: user_id,
+    },
+  });
 
 type Relationship = 'mother' | 'father' | 'brother' | 'sister';
 export const cached_contacts = unstable_cache(
@@ -337,6 +347,13 @@ export const cached_contact = unstable_cache(
   ['contacts'],
   { tags: ['contacts'], revalidate: 60 }
 );
+
+export const countContacts = async (user_id: string) =>
+  await prisma.contact.count({
+    where: {
+      id: user_id,
+    },
+  });
 
 export const getTeacherIds = async () =>
   await prisma.teacher.findMany({

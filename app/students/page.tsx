@@ -92,7 +92,7 @@ async function StudentsPage({
 
   const [teachers, totalStudents] = await Promise.all([
     getTeacherIds(),
-    countStudents(),
+    countStudents(session.user.id),
   ]);
 
   return (
@@ -100,16 +100,20 @@ async function StudentsPage({
       <div className="flex justify-end">
         <AddStudentBtn totalStudents={totalStudents} />
       </div>
-      <div className="flex justify-end gap-4 my-4">
-        <SortBtn sortOptions={studentsSortOptions} />
-      </div>
-      <div className="flex justify-end gap-4 my-4">
-        <StudentsFilterBtns teachers={teachers} />
-      </div>
-      <div className="flex justify-end gap-4 my-4">
-        <DateRangePicker className="flex items-center" />
-      </div>
-      <SearchBar />
+      {totalStudents > 0 && (
+        <>
+          <div className="flex justify-end gap-4 my-4">
+            <SortBtn sortOptions={studentsSortOptions} />
+          </div>
+          <div className="flex justify-end gap-4 my-4">
+            <StudentsFilterBtns teachers={teachers} />
+          </div>
+          <div className="flex justify-end gap-4 my-4">
+            <DateRangePicker className="flex items-center" />
+          </div>
+          <SearchBar />
+        </>
+      )}
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<StudentsTableSkeleton />}>
           <StudentsTable

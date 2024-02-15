@@ -13,6 +13,9 @@ import SortBtn from '@/components/SortBtn';
 import AddTeacherBtn from '@/components/AddTeacherBtn';
 import { countTeachers } from '@/prisma/db-calls';
 import { DateRangePicker } from '@/components/DateRangePicker';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { authOptions } from '@/lib/auth';
 
 function TeachersTableSkeleton() {
   const rows = 3;
@@ -62,23 +65,30 @@ async function TeachersPage({
     to?: string;
   };
 }) {
-  const totalTeachers = await countTeachers();
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
+  const totalTeachers = await countTeachers(session.user.id);
 
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
         <AddTeacherBtn totalTeachers={totalTeachers} />
       </div>
-      <div className="flex justify-end gap-4 my-4">
-        <SortBtn sortOptions={teachersSortOptions} />
-      </div>
-      <div className="flex justify-end gap-4 my-4">
-        <TeachersFilterBtns />
-      </div>
-      <div className="flex justify-end gap-4 my-4">
-        <DateRangePicker className="flex items-center" />
-      </div>
-      <SearchBar />
+      {totalTeachers > 0 && (
+        <>
+          <div className="flex justify-end gap-4 my-4">
+            <SortBtn sortOptions={teachersSortOptions} />
+          </div>
+          <div className="flex justify-end gap-4 my-4">
+            <TeachersFilterBtns />
+          </div>
+          <div className="flex justify-end gap-4 my-4">
+            <DateRangePicker className="flex items-center" />
+          </div>
+          <SearchBar />
+        </>
+      )}
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<TeachersTableSkeleton />}>
           <TeachersTable

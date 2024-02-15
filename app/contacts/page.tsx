@@ -12,6 +12,10 @@ import ContactsFilterBtns from '@/components/ContactsFilterBtns';
 import SearchBar from '@/components/SearchBar';
 import SortBtn from '@/components/SortBtn';
 import { DateRangePicker } from '@/components/DateRangePicker';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
+import { authOptions } from '@/lib/auth';
+import { countContacts } from '@/prisma/db-calls';
 
 function ContactsTableSkeleton() {
   const rows = 3;
@@ -58,19 +62,28 @@ async function ContactsPage({
     to?: string;
   };
 }) {
+  const session = await getServerSession(authOptions);
+  if (!session) redirect(`/api/auth/signin`);
+
+  const totalContacts = await countContacts(session.user.id);
+
   return (
     <div className="space-y-4">
       <AddContactButton />
-      <div className="flex justify-end">
-        <SortBtn sortOptions={contactsSortOptions} />
-      </div>
-      <div className="flex justify-end gap-4 my-4">
-        <ContactsFilterBtns />
-      </div>
-      <div className="flex justify-end gap-4 my-4">
-        <DateRangePicker className="flex items-center" />
-      </div>
-      <SearchBar />
+      {totalContacts > 0 && (
+        <>
+          <div className="flex justify-end">
+            <SortBtn sortOptions={contactsSortOptions} />
+          </div>
+          <div className="flex justify-end gap-4 my-4">
+            <ContactsFilterBtns />
+          </div>
+          <div className="flex justify-end gap-4 my-4">
+            <DateRangePicker className="flex items-center" />
+          </div>
+          <SearchBar />
+        </>
+      )}
       <ErrorBoundary FallbackComponent={ErrorFallBack}>
         <Suspense fallback={<ContactsTableSkeleton />}>
           <ContactsList
