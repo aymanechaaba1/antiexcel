@@ -10,6 +10,9 @@ import { uncached_user } from '@/prisma/db-calls';
 import ReactQueryClientProvider from '@/providers/ReactQueryClientProvider';
 import { authOptions } from '@/lib/auth';
 import UpdateURL from '@/components/UpdateURL';
+import Link from 'next/link';
+import Image from 'next/image';
+import SideBar from '@/components/SideBar';
 
 export default async function RootLayout({
   children,
@@ -35,9 +38,12 @@ export default async function RootLayout({
             >
               <SubscriptionProvider user={user}>
                 <UpdateURL>
-                  <Header />
                   <UpgradeBanner />
-                  <main className="p-4">{children}</main>
+                  {!session && <Header />}
+                  <div className="flex">
+                    {session && <SideBar />}
+                    <main className="p-4 flex-1">{children}</main>
+                  </div>
                 </UpdateURL>
               </SubscriptionProvider>
               <Toaster />

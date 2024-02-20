@@ -13,7 +13,7 @@ async function Header() {
   return (
     <div className="flex items-center justify-between px-4 py-2">
       <Link href={'/'} prefetch={false} className="">
-        <div>
+        <div className="flex items-center justify-center py-5">
           <Image
             src="https://firebasestorage.googleapis.com/v0/b/school-manager-e26b7.appspot.com/o/Screenshot%202023-12-09%20at%204.33.43%20PM.png?alt=media&token=ced15002-f3f9-47c1-a77a-cb0e203dccb6"
             alt="Logo"
@@ -23,9 +23,7 @@ async function Header() {
           />
         </div>
       </Link>
-      {session && session.user && <Nav />}
       <div className="flex items-center gap-2">
-        {session && <MenuBar />}
         <ToggleDarkMode />
         <UserDropdown />
       </div>

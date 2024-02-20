@@ -11,11 +11,11 @@ async function LatestTeachers({
 
   // if (teachers && isPro)
   return (
-    <div className="p-4 border rounded-lg flex-grow space-y-3">
+    <div className="flex-grow p-4 border rounded-lg space-y-3">
       <h3 className="text-2xl tracking-tight font-semibold scroll-m-20">
         Latest Teachers
       </h3>
-      <div className="space-y-4 max-h-72 overflow-y-scroll">
+      <div className="space-y-4 overflow-y-scroll">
         {teachers?.map((teacher) => (
           <div key={teacher.id} className="flex items-center gap-4">
             <Avatar>
